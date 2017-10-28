@@ -1,4 +1,3 @@
-
 function split(pString, pPattern)
 	local Table = {}
 	local fpat = '(.-)' .. pPattern

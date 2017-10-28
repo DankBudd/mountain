@@ -5,7 +5,6 @@ end
 
 function GameMode:InitGameMode()
 	GameRules:GetGameModeEntity():SetThink( "OnThink", self, "GlobalThink", 2 )
-	GameRules:GetGameModeEntity():SetCameraDistanceOverride( 2250 )
 
 	 -- Setup rules
 	GameRules:SetHeroRespawnEnabled( true )
@@ -32,7 +31,7 @@ function GameMode:InitGameMode()
 	GameRules:LockCustomGameSetupTeamAssignment( true )
 	GameRules:EnableCustomGameSetupAutoLaunch( true )
 
-
+	--Setup Listeners
 	GameMode = self
 	ListenToGameEvent("player_chat", Dynamic_Wrap(GameMode, 'OnPlayerChat'), self)
 	ListenToGameEvent("player_reconnected", Dynamic_Wrap(GameMode, 'OnPlayerReconnect'), self)
@@ -42,7 +41,50 @@ function GameMode:InitGameMode()
 	ListenToGameEvent('dota_player_pick_hero', Dynamic_Wrap(GameMode, 'OnPlayerPickHero'), self)
 	ListenToGameEvent('dota_item_picked_up', Dynamic_Wrap(GameMode, 'OnItemPickedUp'), self)
 	ListenToGameEvent("dota_illusions_created", Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
+
+	--Setup Tables
+	self.DebugEntities = {}
 end
+
+--this function will only run once, when the first player is fully loaded.
+function GameMode:StartGameMode()
+	if mode then
+		return
+	end
+
+	mode = GameRules:GetGameModeEntity()
+
+	-- Set GameMode parameters
+	mode:SetCameraDistanceOverride( 2250 )
+	mode:SetTopBarTeamValuesOverride ( false )
+	mode:SetTopBarTeamValuesVisible( true )
+
+	mode:SetBuybackEnabled( false )
+	mode:SetCustomBuybackCostEnabled( false )
+	mode:SetCustomBuybackCooldownEnabled( false )
+	mode:SetGoldSoundDisabled( false )
+
+	mode:SetRemoveIllusionsOnDeath( false )
+	mode:SetLoseGoldOnDeath( false )
+	mode:SetFixedRespawnTime( 15 ) 
+
+	mode:SetMaximumAttackSpeed( 600 )
+	mode:SetMinimumAttackSpeed( 1 )
+
+	mode:SetStashPurchasingDisabled( true )
+	mode:SetStickyItemDisabled( false )
+	mode:SetRecommendedItemsDisabled( true )
+
+	mode:SetBotThinkingEnabled( false )
+	mode:SetTowerBackdoorProtectionEnabled( false )
+
+	mode:SetAnnouncerDisabled( false )
+	mode:SetKillingSpreeAnnouncerDisabled( true )
+	mode:SetFogOfWarDisabled( false )
+	mode:SetUnseenFogOfWarEnabled( false )
+
+	mode:SetDaynightCycleDisabled( false )
+end 
 
 -- Evaluate the state of the game
 function GameMode:OnThink()
@@ -62,7 +104,9 @@ end
 function GameMode:PlayerConnect( keys )
 end
 
+-- This function is called once when the player fully connects and becomes "Ready" during Loading
 function GameMode:PlayerConnectFull( keys )
+	GameMode:StartGameMode()
 end
 
 function GameMode:OnPlayerPickHero( keys )
@@ -100,7 +144,6 @@ function GameMode:OnPlayerChat( keys )
 
 	if IsCommand("-view") then
 		local distance = arguments[1]
-		print(math.max(math.min(1000, arguments[1]), 2500)))
 		CustomGameEventManager:Send_ServerToPlayer(player, "camera_zoom", {distance = distance})
 	end
 
@@ -110,43 +153,64 @@ function GameMode:OnPlayerChat( keys )
 		local exp = PlayerResource:GetTotalEarnedXP(playerID)
 		local oldHero = PlayerResource:GetSelectedHeroEntity(playerID)
 
+		if not string.match(name, "npc_dota_hero") then
+			name = "npc_dota_hero"..name
+		end
+
 		--grab old heroes items
 		local items = {}
 		for i = 0,DOTA_ITEM_MAX-1 do
 			local item = oldHero:GetItemInSlot(i)
 			if item then
 				items[i] = item
+				oldHero:DropItemAtPositionImmediate(item, Vector(0,0,0))
 			end
 		end
 
 		--precache new hero, and swap their hero
-		local newhero
-		PrecacheUnitByNameAsync(name, function() 
-			newhero = PlayerResource:ReplaceHeroWith(playerID, name, gold, exp)
-		end, playerID)
-
-		--give the new hero their old items
-		if newhero then
-			for pos,itemName in pairs(items) do
-				local item = CreateItem(itemName, newhero, newhero)
-				if item then
-					item:SetPurchaser(newhero)
-					newhero:AddItem(item)
-					hero:SwapItems(hero:GetItemSlot(item), pos)
+		PrecacheUnitByNameAsync(name, function()
+			local newhero = PlayerResource:ReplaceHeroWith(playerID, name, gold, exp)
+			--give the new hero their old items
+			if newhero then
+				for pos,item in pairs(items) do
+					if item then
+						item:SetPurchaser(newhero)
+						newhero:AddItem(item)
+						newhero:SwapItems(newhero:GetItemSlot(item), pos)
+					end
 				end
+				UTIL_Remove(oldHero)
 			end
-		end
+		end, playerID)
 	end
 
 	if IsCommand("-spawn") then
 		local name = arguments[1]
-		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
+		local team = arguments[2]
 
-		CreateUnitByNameAsync(name, hero:GetAbsOrigin(), true, hero, hero, hero:GetTeamNumber(), function(unit)
+		if not string.match(name, "npc_dota_") then
+			name = "npc_dota_"..name
+		end
+
+		local teamNumber = hero:GetTeamNumber()
+		if team then
+			if team == string.match(team, "neutral") then
+				teamNumber = DOTA_TEAM_NEUTRALS
+			elseif team == string.match(team, "goodguy") then
+				teamNumber = DOTA_TEAM_GOODGUYS
+			elseif team == string.match(team, "badguy") then
+				teamNumber = DOTA_TEAM_BADGUYS
+			end
+		end
+
+		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
+		CreateUnitByNameAsync(name, hero:GetAbsOrigin(), true, hero, hero, teamNumber, function(unit)
 			unit:SetControllableByPlayer(playerID, true)
 			unit:SetOwner(hero)
 			unit:SetHasInventory(true)
 			FindClearSpaceForUnit(unit, unit:GetAbsOrigin(), true)
+
+			table.insert(self.DebugEntities, unit:entindex())
 		end)
 	end
 
@@ -164,5 +228,50 @@ function GameMode:OnPlayerChat( keys )
 	if IsCommand("-displayerror") then
 		local msg = arguments[1]
 		DisplayError(playerID, msg)
+	end
+
+	if IsCommand("-debugremove") then
+		for _,ID in pairs(self.DebugEntities) do
+			local debug = EntIndexToHScript(ID)
+			if debug then
+				print( "debug:", debug:GetPlayerID() )
+				local ent = Entities:First()
+				while ent ~= nil do
+					if ent:GetClassname() == "npc_dota_companion" then
+						local companion = EntIndexToHScript(ent:entindex())
+						print( "companion:", companion:GetPlayerID() )
+					end
+					ent = Entities:Next(ent)
+				end
+			end
+		end
+	end
+
+	if IsCommand("-test") then
+		local ents = {}
+		local ent = Entities:First()
+		--index all entities in a sorted table
+		while ent do
+			local className = ent:GetClassname()
+			local tName 
+			if className == "" then
+				tName = ent:GetDebugName()
+			end
+			if not tName or tName:IsNull() then
+				tName = className
+			end
+
+			ents[tName] = ents[tName] or 0
+			ents[tName] = ents[tName] +1
+
+			ent = Entities:Next(ent)
+		end
+		--print entity table
+		if arguments[1] == "print" then
+			table.sort( ents )
+			for k,v in pairs(ents) do
+				print(v,k)
+			end
+		end
 	end
 end

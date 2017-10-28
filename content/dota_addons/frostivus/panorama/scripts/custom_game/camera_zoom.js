@@ -1,12 +1,12 @@
 "use strict";
- 
+
 function SetCameraDistance( args ) 
 {
-     $.Msg("Setting camera distance to: " + args.distance)
-     GameUI.SetCameraDistance( Number(args.distance) )
+    $.Msg("Setting camera distance to: " + args.distance);
+    GameUI.SetCameraDistance( Number(args.distance) );
 }
- 
- function()
+
+(function()
 {
- 	GameEvents.Subscribe( "camera_zoom", SetCameraDistance)
+	GameEvents.Subscribe( "camera_zoom", SetCameraDistance);
 })();
