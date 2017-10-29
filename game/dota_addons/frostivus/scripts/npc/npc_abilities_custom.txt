@@ -1,48 +1,134 @@
 // Dota Heroes File
 "DOTAAbilities"
 {
-	"Version"		"1"
-
-	//=================================================================================================================
-	// Templar Assassin: Refraction Holdout
-	//=================================================================================================================
-	"templar_assassin_refraction_holdout"
+	"generic_invulnerablity"
 	{
-		// General
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
-		"AbilityUnitDamageType"			"DAMAGE_TYPE_PHYSICAL"	
+		"BaseClass"             		"ability_datadriven"
+		"AbilityTextureName"			"omniknight_guardian_angel"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+		"MaxLevel" 						"1"
 
-		// Casting
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastPoint"				"0.0 0.0 0.0 0.0"
-
-		// Time		
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"17.0 17.0 17.0 17.0"
-
-		// Cost
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"100"
+		"Modifiers"
+		{
+			"modifier_generic_invulnerablity"
+			{
+				"Passive"			"1"
+				"IsHidden"			"1"
+				"IsPurgable"		"0"
+				"IsDebuff"			"0"
 		
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
+				"States"
+				{
+					"MODIFIER_STATE_INVULNERABLE"		"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_UNSELECTABLE"		"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	"hero_invulnerablity"
+	{
+		"BaseClass"             		"ability_datadriven"
+		"AbilityTextureName"			"omniknight_guardian_angel"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+		"MaxLevel" 						"1"
+
+		"Modifiers"
+		{
+			"modifier_hero_invulnerablity"
+			{
+				"Passive"			"1"
+				"IsHidden"			"1"
+				"IsPurgable"		"0"
+				"IsDebuff"			"0"
+		
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE" "-100"
+				}
+			}
+		}
+	}
+
+	"tuskarr_snowball"
+	{
+		"BaseClass"             		"ability_lua"
+		"ScriptFile"					"heroes/tuskarr.lua"
+		"AbilityTextureName"			"tusk_snowball"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"MaxLevel" 						"1"
+
 		"AbilitySpecial"
 		{
 			"01"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"damage_absorb"				"200 300 400 500"
+				"snowball_speed"			"675"
 			}
 			"02"
 			{
-				"var_type"					"FIELD_INTEGER"
-				"bonus_damage"				"20 40 60 80"
+				"var_type"					"FIELD_FLOAT"
+				"stun_duration"				"0.5 0.75 1.0 1.25"
 			}
 			"04"
 			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_radius"			"200"
+			}
+			"05"
+			{
 				"var_type"					"FIELD_FLOAT"
-				"duration"					"17.0 17.0 17.0 17.0"
+				"snowball_windup"			"3.0"
+			}		
+			"06"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_grow_rate"		"40"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"snowball_speed_growth"		"20"
+			}
+		}
+	}
+
+	"penguin_ability"
+	{
+		"BaseClass"             		"ability_lua"
+		"ScriptFile"					"heroes/snowboard"
+		"AbilityTextureName"			"tusk_frozen_sigil"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"MaxLevel" 						"1"
+
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"base_speed"		"50"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"max_speed"			"600"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"speed_growth"		"15"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"turn_rate"			"60"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"delay"				"1.2"
 			}
 		}
 	}

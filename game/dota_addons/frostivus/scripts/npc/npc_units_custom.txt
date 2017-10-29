@@ -2,6 +2,100 @@
 "DOTAUnits"
 {
 	"Version"	"1"
+  
+	"npc_dota_penguin"
+	{
+		// General
+		//----------------------------------------------------------------
+		"BaseClass"					"npc_dota_creature"
+		"Model"						"models/creeps/ice_biome/penguin/penguin.vmdl"
+		"SoundSet"					"Creep_Good_Melee_Mega"
+		"ModelScale"				"2.6"
+		"Level"						"1"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					"penguin_ability"
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
+		"Ability5"					""
+		"Ability6"					""
+		"Ability7"					""
+		"Ability8"					""
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"5"
+		"AttackDamageMax"			"500"
+		"AttackDamageType"			"DAMAGE_TYPE_ArmorPhysical"
+		"AttackRate"				"1"
+		"AttackAnimationPoint"		"0.467"
+		"AttackAcquisitionRange"	"500"
+		"AttackRange"				"130"
+		"ProjectileModel"			""
+		"ProjectileSpeed"			""
+
+		// Attributes
+		//----------------------------------------------------------------
+		"AttributePrimary"			"DOTA_ATTRIBUTE_STRENGTH"
+		"AttributeBaseStrength"		"0"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"0"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
+
+		// Bounty
+		//----------------------------------------------------------------
+		"BountyXP"					"25"
+		"BountyGoldMin"				"16"
+		"BountyGoldMax"				"24"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"BoundsHullName"			"DOTA_HULL_SIZE_REGULAR"
+		"RingRadius"				"45"
+		"HealthBarOffset"			"160"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"325"
+		"MovementTurnRate"			"0.5"
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"10"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_BASIC"
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"0"
+		"VisionNighttimeRange"		"0"
+
+		//Inventory
+		"HasInventory"				"0"
+		"Creature"
+		{
+		}
+  }
+  
 	//=================================================================================================================
 	// HERO: Tusk
 	//=================================================================================================================
@@ -56,9 +150,10 @@
             "Wearable4" { "ItemDef" "4460" } // Tusk's head
             "Wearable5" { "ItemDef" "4498" } // Tusk's back
             "Wearable6" { "ItemDef" "4499" } // Tusk's arms
-        	}
+      }
 		}
 	}
+  
 	//=================================================================================================================
 	// HERO: Tiny
 	//=================================================================================================================
@@ -106,9 +201,10 @@
             "Wearable2" { "ItemDef" "6867" } // Tiny's offhand_weapon
             "Wearable3" { "ItemDef" "6868" } // Tiny's arms
             "Wearable4" { "ItemDef" "6869" } // Tiny's armor
-        	}
+      }
 		}
 	}
+  
 	//=================================================================================================================
 	// HERO: Drow Ranger
 	//=================================================================================================================
@@ -167,9 +263,10 @@
             "Wearable5" { "ItemDef" "7244" } // Drow's shoulder
             "Wearable6" { "ItemDef" "7245" } // Drow's head
             "Wearable7" { "ItemDef" "7246" } // Drow's misc
-        	}
+      }
 		}
 	}
+  
 	//=================================================================================================================
 	// HERO: Morphling
 	//=================================================================================================================
@@ -221,9 +318,10 @@
             "Wearable3" { "ItemDef" "7560" } // Morphling's head
             "Wearable4" { "ItemDef" "7561" } // Morphling's shoulder
             "Wearable5" { "ItemDef" "7562" } // Morphling's arms
-        	}
+      }
 		}
 	}
+  
 	//=================================================================================================================
 	// HERO: Ancient Apparition
 	//=================================================================================================================
@@ -270,10 +368,10 @@
 			"AttachWearables"
 			{
             "Wearable1" { "ItemDef" "7462" } // Aa's head
-        	}
+      }
 		}
-		
 	}
+
 	//=================================================================================================================
 	// HERO: Crystal Maiden
 	//=================================================================================================================
@@ -324,9 +422,10 @@
             "Wearable4" { "ItemDef" "8697" } // Cm's shoulder
             "Wearable5" { "ItemDef" "8698" } // Cm's head
             "Wearable6" { "ItemDef" "4041" } // Cm's taunt
-        	}
+      }
 		}
 	}
+  
 	//=================================================================================================================
 	// HERO: Invoker
 	//=================================================================================================================
@@ -385,9 +484,10 @@
             "Wearable2" { "ItemDef" "5866" } // Invoker's back
             "Wearable3" { "ItemDef" "5785" } // Invoker's arms
             "Wearable4" { "ItemDef" "5865" } // Invoker's shoulder
-        	}
+      }
 		}
 	}
+  
 	//=================================================================================================================
 	// HERO: Jakiro
 	//=================================================================================================================
@@ -433,9 +533,10 @@
 			{
             "Wearable1" { "ItemDef" "7820" } // Jakiro's head
             "Wearable2" { "ItemDef" "9213" } // Jakiro's taunt
-        	}
+      }
 		}
 	}
+  
 	//=================================================================================================================
 	// HERO: Lich
 	//=================================================================================================================
@@ -484,9 +585,10 @@
             "Wearable3" { "ItemDef" "8600" } // Lich's back
             "Wearable4" { "ItemDef" "8601" } // Lich's belt
             "Wearable5" { "ItemDef" "8602" } // Lich's head
-        	}
+      }
 		}
 	}
+  
 	//=================================================================================================================
 	// HERO: Winter Wyvern
 	//=================================================================================================================
@@ -542,8 +644,7 @@
             "Wearable1" { "ItemDef" "8017" } // Ww's head
             "Wearable2" { "ItemDef" "9036" } // Ww's back
            	"Wearable3" { "ItemDef" "9167" } // Ww's taunt
-        	}
+      }
 		}
-		
 	}
 }

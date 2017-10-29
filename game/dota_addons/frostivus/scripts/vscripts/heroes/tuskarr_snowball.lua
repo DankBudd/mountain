@@ -4,7 +4,6 @@ function tuskarr_snowball:OnSpellStart()
 	local target = self:GetCursorTarget()
 	if not target then return end
 
-	--start 'projectile'
 	self:GetCaster():AddNewModifier(self:GetCaster(), self, "modifier_tuskarr_snowball", {target = target:entindex()})
 end
 
@@ -12,10 +11,14 @@ modifier_tuskarr_snowball = class({
 	IsHidden = function(self) return true end,
 	IsPurgable = function(self) return false end,
 
+	DeclareFunctions = function(self) return {MODIFIER_EVENT_ON_UNIT_MOVED, }
+	CheckState = function(self) return {[MODIFIER_STATE_INVULNERABLE] = true, } end,
+	GetAttributes = function(self) return MODIFIER_ATTRIBUTE_IGNORE_INVULNERABLE end,
+
+
 	OnCreated = function(self, kv)
 		local tick = 1/30
 		
-		--hide tusk
 		self:GetCaster():AddNoDraw()
 
 		self.target = EntIndexToHScript(kv.target)
@@ -27,9 +30,8 @@ modifier_tuskarr_snowball = class({
 		self.radius = self:GetAbility():GetSpecialValueFor("snowball_radius")
 		self.windup = self:GetAbility():GetSpecialValueFor("snowball_windup")
 
-		--make snowball
-		self.p = ParticleManager:CreateParticle("", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster())
-		--cp 3 vector(0,0,growth)
+		self.p = ParticleManager:CreateParticle("particles/units/heroes/hero_tusk/tusk_snowball.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetCaster())
+		ParticleManager:SetParticleControl(self.p, 3, Vector(0,0,self.growRate))
 
 		self:StartIntervalThink(1/30)
 	end,
