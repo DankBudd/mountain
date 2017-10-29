@@ -2,7 +2,7 @@
 "DOTAAbilities"
 {
 	"Version"		"1"
-
+	//Items:-
 	//=================================================================================================================
 	// Blink dagger
 	//=================================================================================================================
@@ -1342,5 +1342,2139 @@
 			}
 		}
 	}
+	//Abilities:-
+	//=================================================================================================================
+	// Tusk: Ice Shards
+	//=================================================================================================================
+	"tusk_ice_shards"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5565"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_DIRECTIONAL | DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Tusk.IceShards"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"2000"
+		"AbilityCastPoint"				"0.1"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10.0"
+
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"shard_width"				"300"
+			}
+			
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"shard_damage"				"0"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"shard_count"				"10"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"shard_speed"				"1200.0"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"shard_duration"				"25.0"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"shard_angle_step"			"40.0"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"shard_distance"			"200"
+			}
+			"08"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"cast_range_tooltip"			"1800"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Tusk: Snowball
+	//=================================================================================================================
+	"tusk_snowball"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5566"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_NO"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Tusk.Snowball.Cast"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"90000"
+		"AbilityCastPoint"				"0.1"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"18"
+
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_damage"			"0"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_speed"			"750"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_damage_bonus"		"0"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"stun_duration"				"1.25"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_windup_radius"	"100"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"snowball_duration"			"15.0"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_radius"			"200"
+			}			
+			"08"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_grow_rate"		"50"
+			}
+			"09"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"snowball_windup"			"0.5"
+			}
+			"10"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"snowball_grab_radius"		"50"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Tusk: Walrus Punch
+	//=================================================================================================================
+	"tusk_walrus_punch"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5568"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_ATTACK"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetFlags"		"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Tusk.WalrusPunch.Target"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastPoint"				"0"
+		"AbilityCastRange"				"200"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"12"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"crit_multiplier"			"0"
+				"LinkedSpecialBonus"		"special_bonus_unique_tusk"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"air_time"					"2.0"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"slow_duration"				"3.0"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"move_slow"					"60"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"push_length"				"1000"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Tusk: Walrus Kick
+	//=================================================================================================================
+	"tusk_walrus_kick"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5672"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetFlags"		"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"MaxLevel"						"1"
+		"FightRecapLevel"				"1"
+		"IsGrantedByScepter"			"1"
+		"HasScepterUpgrade"				"1"
+		"AbilitySound"					"Hero_Tusk.WalrusKick.Target"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastPoint"				"0.2"
+		"AbilityCastRange"				"200"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"8"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"crit_multiplier"			"0.0"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"air_time"					"2.0"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"push_length"				"1400"
+			}			
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"move_slow"					"60"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"slow_duration"				"4"
+			}			
+			"06"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"cooldown_scepter"			"8"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"damage"					"0"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Tiny: Avalanche
+	//=================================================================================================================
+	"tiny_avalanche"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5106"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES_STRONG"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Ability.Avalanche"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"600"
+		"AbilityCastPoint"				"0.0"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"17.0"
+		"AbilityDuration"				"2.0"
+
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"radius"					"350"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"tick_interval"				"0.25"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"num_ticks"					"6"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"stun_duration"				"2.0"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"projectile_duration"		"0.5"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"avalanche_damage"			"0"
+				"LinkedSpecialBonus"		"special_bonus_unique_tiny"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Tiny: Toss
+	//=================================================================================================================
+	"tiny_toss"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5107"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_RUNE_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_CUSTOM"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_CUSTOM"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"FightRecapLevel"				"1"
+		
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"90000"
+		"AbilityCastPoint"				"0"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"5"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0"	// generally used for damage only
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"2.5"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"grab_radius"			"400"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius"				"400"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bonus_damage_pct"		"0"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"grow_bonus_damage_pct"		"0"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"tooltip_range"				"90000"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"toss_damage"				"0"
+			}
+
+		}
+	}
+	//=================================================================================================================
+	// Ability: Drow Ranger	Frost Arrows
+	//=================================================================================================================
+	"drow_ranger_frost_arrows"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5019"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_ATTACK"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"AbilitySound"					"Hero_DrowRanger.FrostArrows"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"800"
+		"AbilityCastPoint"				"0.0"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0.0"
+		"AbilityDuration"				"1.5"
+
+		// Damage.
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDamage"					"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"frost_arrows_movement_speed"	"-120"
+			}
+			"02"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"frost_arrows_hero_duration_tooltip"	"1.5"
+			}
+			"03"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"frost_arrows_creep_duration"	"7.0"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Ability: Drow Ranger Wave of Silence
+	//=================================================================================================================
+	"drow_ranger_wave_of_silence"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5632"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_DrowRanger.Silence"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"900"
+		"AbilityCastPoint"				"0.25"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"13"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"wave_speed"		"2000.0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"wave_range_tooltip"	"900"
+				"LinkedSpecialBonus"	"special_bonus_unique_drow_ranger_2"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"wave_width"		"350"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"silence_duration"	"6"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"knockback_distance_max"	"450"
+				"LinkedSpecialBonus"	"special_bonus_unique_drow_ranger_2"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"knockback_duration"		"1.0"
+			}
+			"07"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"knockback_height"		"0"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Ability: Drow Ranger's Marksmanship
+	//=================================================================================================================
+	"drow_ranger_marksmanship"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5022"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityCastRange"				"400"
+
+		"HasScepterUpgrade"			"1"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"marksmanship_agility_bonus"	"80"
+				"LinkedSpecialBonus"			"special_bonus_unique_drow_ranger_3"
+			}
+			"02"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"radius"						"400"
+			}
+			"03"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"split_count_scepter"			"9"
+			}
+			"04"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"scepter_range"					"550"
+			}
+			"05"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"damage_reduction_scepter"		"50"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Morphling: Waveform
+	//=================================================================================================================
+	"morphling_waveform"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5052"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_ROOT_DISABLES"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Morphling.Waveform"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1200"
+		"AbilityCastPoint"				"0.25"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"5.0"
+
+		// Damage.
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDamage"					"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"speed"					"1250"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"width"					"300"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Morphling: Adaptive Strike
+	//=================================================================================================================
+	"morphling_adaptive_strike"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5053"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES_STRONG"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Morphling.AdaptiveStrike"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"900"
+		"AbilityCastPoint"				"0.25"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"		
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.3"	// Primarily about the damage
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"damage_base"					"0.0"
+			}
+			"02"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"damage_min"					"0.0"
+			}
+			"03"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"damage_max"					"0.0"
+			}
+			"04"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"stun_min"						"1.5"
+			}
+			"05"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"stun_max"						"4.0"
+			}
+			"06"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"knockback_min"					"150"
+			}
+			"07"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"knockback_max"					"400"
+			}
+			"08"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"range_tooltip"					"900"
+			}
+			"09"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"projectile_speed"					"1250"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Morphling: Morph (Agility Gain)
+	//=================================================================================================================
+	"morphling_morph_agi"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5055"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0.0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"mana_cost"				"0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"points_per_tick"		"1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"morph_cooldown"		"0.0625"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bonus_attributes"		"6"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Morphling: Morph (Strength Gain)
+	//=================================================================================================================
+	"morphling_morph_str"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5056"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0.0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"mana_cost"				"0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"points_per_tick"		"1"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"morph_cooldown"		"0.0625"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bonus_attributes"		"6"
+			}
+		}
+	}
+	
+	//=================================================================================================================
+	// Ancient Apparition: Cold Feet
+	//=================================================================================================================
+	"ancient_apparition_cold_feet"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5345"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Ancient_Apparition.ColdFeetCast"
+	
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1000"
+		"AbilityCastPoint"				"0.01"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"4"
+		"AbilityDuration"				"4.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.5"	// Does two modifiers 
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"break_distance"		"1000"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stun_duration"			"2"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"cast_range_tooltip"	"1000"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"charge_restore_time"	"4"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ancient Apparition: Ice Vortex
+	//=================================================================================================================
+	"ancient_apparition_ice_vortex"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5346"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_NO"
+		"AbilitySound"					"Hero_Ancient_Apparition.IceVortexCast"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1500"
+		"AbilityCastPoint"				"0.01"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"4.0"
+		"AbilityDuration"				"16"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius"				"350"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"movement_speed_pct"	"-50"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"spell_resist_pct"		"0"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"vision_aoe"			"350"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Ability: Crystal Maiden's Crystal Nova
+	//=================================================================================================================
+	"crystal_maiden_crystal_nova"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5126"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityType"					"DOTA_ABILITY_TYPE_BASIC"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Crystal.CrystalNova"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"800"
+		"AbilityCastPoint"				"0.3"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"9"
+		
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"radius"			"600"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"movespeed_slow"	"-200"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attackspeed_slow"	"0"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"duration"			"4.0"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"vision_duration"	"6.0"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"nova_damage"			"0"
+				"LinkedSpecialBonus"	"special_bonus_unique_crystal_maiden_2"
+			}
+		}
+	}	
+
+	//=================================================================================================================
+	// Ability: Crystal Maiden's Frostbite
+	//=================================================================================================================
+	"crystal_maiden_frostbite"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5127"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityType"					"DOTA_ABILITY_TYPE_BASIC"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"hero_Crystal.frostbite"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"550"
+		"AbilityCastPoint"				"0.3"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"8"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.5"	// Applies multiple modifiers
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"damage_per_second_tooltip"			"0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"3.0"
+				"LinkedSpecialBonus"	"special_bonus_unique_crystal_maiden_1"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"hero_damage_tooltip"			"0"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"creep_duration"	"10.0"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"creep_damage_tooltip"	"0"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"damage"			"0"
+			}
+		}
+	}	
+	//=================================================================================================================
+	// Ability: Crystal Maiden's Freezing Field
+	//=================================================================================================================
+	"crystal_maiden_freezing_field"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5129"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_CHANNELLED | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"				"2"
+		"AbilitySound"					"hero_Crystal.freezingField.wind"
+
+		"HasScepterUpgrade"			"1"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityChannelTime"			"10"
+		"AbilityCastPoint"				"0.3"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"60"
+		"AbilityDuration"				"10.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.35"	// Primarily about the damage
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"radius"			"1000"
+			}		
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"explosion_radius"	"500"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"explosion_interval"	"0.1"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"movespeed_slow"	"-450"
+			}
+			"06"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"attack_slow"		"0"
+			}
+			"07"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"slow_duration"		"2.0"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"explosion_min_dist"	"50"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"explosion_max_dist"	"950"
+			}
+			"10"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"damage"			"0"
+				"LinkedSpecialBonus"	"special_bonus_unique_crystal_maiden_3"
+			}
+			"11"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"duration_tooltip"	"10"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"scepter_delay"			"2.0"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Invoker: Cold Snap
+	//=================================================================================================================
+	"invoker_cold_snap"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5376"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"MaxLevel"						"1"
+		"HotKeyOverride"				"Y"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Invoker.ColdSnap"
+		
+		// Unit Targeting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1000"
+		"AbilityCastPoint"				"0.05"
+		"AbilityCooldown"				"0.5"
+		"AbilityManaCost"				"0"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.15"	// Applies multiple modifiers
+			
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5.5"
+				"levelkey"				"quaslevel"	
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"freeze_duration"		"0.5"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"freeze_cooldown"		"0.5"
+				"levelkey"				"quaslevel"	
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"freeze_damage"			"0"
+				"levelkey"				"quaslevel"	
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_trigger"		"0.0"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Invoker: Ghost Walk
+	//=================================================================================================================
+	"invoker_ghost_walk"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5381"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_NO"
+		"MaxLevel"						"1"
+		"HotKeyOverride"				"V"
+		"AbilitySound"					"Hero_Invoker.GhostWalk"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0"
+		"AbilityManaCost"				"0"
+		"AbilityCastPoint"				"0.05"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"100.0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"area_of_effect"		"600"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"enemy_slow"			"-150"
+				"levelkey"				"quaslevel"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"self_slow"				"0"
+				"levelkey"				"wexlevel"
+			}			
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"aura_fade_time"		"4.0"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Invoker: Tornado
+	//=================================================================================================================
+	"invoker_tornado"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5382"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"MaxLevel"						"1"
+		"HotKeyOverride"				"X"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"AbilitySound"					"Hero_Invoker.Tornado"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"4000"
+		"AbilityCastPoint"				"0.05"
+		"AbilityCooldown"				"60"
+		"AbilityManaCost"				"0"
+			
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"travel_distance"		"4000"
+				"levelkey"				"wexlevel"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"travel_speed"			"1000"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"area_of_effect"		"250"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"vision_distance"		"500"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"end_vision_duration"	"2.50"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"lift_duration"			"2.5"
+				"levelkey"				"quaslevel"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"base_damage"			"0"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"quas_damage"			"0"
+				"levelkey"				"quaslevel"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"wex_damage"			"0"
+				"levelkey"				"wexlevel"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Invoker: Ice Wall
+	//=================================================================================================================
+	"invoker_ice_wall"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5389"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_NO"
+		"MaxLevel"						"1"
+		"HotKeyOverride"				"G"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Invoker.IceWall.Cast"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"27"
+		"AbilityManaCost"				"0"
+		"AbilityCastPoint"				"0.05"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"13.5"
+				"levelkey"				"quaslevel"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"slow"					"-200"
+				"levelkey"				"quaslevel"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"slow_duration"			"3.0"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_per_second"		"0"
+				"levelkey"				"exortlevel"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"wall_place_distance"	"250"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"num_wall_elements"		"25"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"wall_element_spacing"	"80"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"wall_element_radius"	"150"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Invoker: Deafening Blast
+	//=================================================================================================================
+	"invoker_deafening_blast"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5390"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_NO"
+		"MaxLevel"						"1"
+		"HotKeyOverride"				"B"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Invoker.DeafeningBlast"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1500"
+		"AbilityCastPoint"				"0.05"
+		"AbilityCooldown"				"40"
+		"AbilityManaCost"				"0"
+		"AbilityModifierSupportValue"	"0.5"	// Applies 2 modifiers
+
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"travel_distance"		"1500"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"travel_speed"			"1100"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius_start"			"175"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius_end"			"275"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"end_vision_duration"	"2.00"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage"				"0"
+				"levelkey"				"exortlevel"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"knockback_duration"	"2.0"
+				"levelkey"				"quaslevel"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"disarm_duration"		"5"
+				"levelkey"				"wexlevel"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Ability: Jakiro's Dual Breath
+	//=================================================================================================================
+	"jakiro_dual_breath"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5297"								// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Jakiro.DualBreath"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"800"
+		"AbilityCastPoint"				"0.65"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"15.0"
+		"AbilityDuration"				"5.0"
+
+		
+		// Damage.
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDamage"					"0"
+		
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.25"	// Applies two modifiers 
+		
+		// Special	
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"start_radius"			"150"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"end_radius"			"300"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"range"					"800"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"speed"					"1050"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"fire_delay"			"0.3"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"burn_damage"			"0"
+				"LinkedSpecialBonus"	"special_bonus_unique_jakiro_2"
+			}
+			"07"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"slow_movement_speed_pct"	"-60"
+			}
+			"08"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"slow_attack_speed_pct"		"0"
+			}
+			"09"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"tooltip_duration"		"5"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"speed_fire"			"1050"
+			}
+		}		
+	}
+
+	//=================================================================================================================
+	// Ability: Jakiro's Ice Path
+	//=================================================================================================================
+	"jakiro_ice_path"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5298"									// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES_STRONG"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Jakiro.IcePath"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1500"
+		"AbilityCastPoint"				"0.65"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"5.0"
+
+		// Damage.
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDamage"					"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"		
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"path_delay"				"0.5"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"duration"					"2.5"
+				"LinkedSpecialBonus"		"special_bonus_unique_jakiro"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"path_radius"				"200"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"damage"					"0"
+			}
+		}		
+	}
+	//=================================================================================================================
+	// Lich: Frost Nova
+	//=================================================================================================================
+	"lich_frost_nova"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5134"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AOE"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Ability.FrostNova"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"700"
+		"AbilityCastPoint"				"0.4"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"8.0"
+		"AbilityDuration"				"4.0"
+
+		// Damage.
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDamage"					"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.3"	// Primarily about the damage
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{			
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius"				"400"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"slow_movement_speed"	"-150"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"slow_attack_speed"		"0"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"aoe_damage"			"0"
+			}
+		}
+	}
+	//=================================================================================================================
+	// Lich: Chain Frost
+	//=================================================================================================================
+	"lich_chain_frost"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5137"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetFlags"		"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"FightRecapLevel"				"2"
+		"AbilitySound"					"Hero_Lich.ChainFrost"
+
+		"HasScepterUpgrade"			"1"
+		
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"850"
+		"AbilityCastPoint"				"0.4"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.0"	// Primarily about the damage
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"damage"				"0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"jumps"					"20"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"jump_range"			"850"
+			}			
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"slow_movement_speed"	"-200"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"slow_attack_speed"		"0"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"slow_duration"			"2.5"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"projectile_speed"		"900"
+			}
+			"08"
+			{	
+				"var_type"				"FIELD_INTEGER"
+				"vision_radius"			"800"
+			}			
+			"09"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"damage_scepter"		"0"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"cast_range_scepter"	"850"
+			}
+		}			
+	}
+	//=================================================================================================================
+	// Winter Wyvern: Arctic Burn
+	//=================================================================================================================
+	"winter_wyvern_arctic_burn"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5651"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"		
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilitySound"					"Hero_WinterWyvern.ArcticBurn.Cast"
+
+		"HasScepterUpgrade"			"1"
+		
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastPoint"				"0.0"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"20.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"10.0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"attack_range_bonus"	"600"
+			}			
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"percent_damage"		"0"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"tick_rate"				"1.0"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_duration"		"5.0"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"move_slow"				"180"
+				"LinkedSpecialBonus"	"special_bonus_unique_winter_wyvern_1"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"night_vision_bonus"	"500"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"projectile_speed_bonus"	"550"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"tree_destruction_radius"	"250"
+			}
+			"10"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"attack_point"			"0.1"
+			}
+			"11"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"max_attacks"			"10"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"mana_cost_scepter"		"0"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Winter Wyvern: Splinter Blast
+	//=================================================================================================================
+	"winter_wyvern_splinter_blast"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5652"	// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AOE"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"				"1"
+		
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1500"
+		"AbilityCastPoint"				"0.3"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"7.0"
+
+		// Damage.
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDamage"					"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"projectile_speed"		"650"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"projectile_max_time"	"1.0"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"split_radius"			"800"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bonus_movespeed"		"-150"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"movespeed_slow_tooltip"		"150"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"5.0"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"secondary_projectile_speed"		"650"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Winter Wyvern: Cold Embrace
+	//=================================================================================================================
+	"winter_wyvern_cold_embrace"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5653"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_CREEP"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ALLIES_YES"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_NO"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Winter_Wyvern.ColdEmbrace"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1000"
+		"AbilityCastPoint"				"0.3"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+				
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{	
+				"var_type"			"FIELD_FLOAT"
+				"duration"			"2.0"
+			}
+			"02"
+			{	
+				"var_type"			"FIELD_INTEGER"
+				"heal_additive"		"0"
+			}
+			"03"
+			{	
+				"var_type"			"FIELD_FLOAT"
+				"heal_percentage"	"0.0"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Winter Wyvern: Winter's Curse
+	//=================================================================================================================
+	"winter_wyvern_winters_curse"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"5654"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AOE"		
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_CREEP"
+		"AbilityUnitTargetFlags"		"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"FightRecapLevel"				"2"
+		"AbilitySound"					"Hero_WinterWyvern.WintersCurse.Target"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"800"
+		"AbilityCastPoint"				"0.3"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"30"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+				
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{	
+				"var_type"			"FIELD_INTEGER"
+				"radius"			"800"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"damage_reduction"	"100"
+			}
+			"03"
+			{	
+				"var_type"			"FIELD_FLOAT"
+				"damage_amplification"	"0"
+			}
+			"04"
+			{	
+				"var_type"			"FIELD_INTEGER"
+				"bonus_attack_speed"	"85"
+			}
+			"05"
+			{	
+				"var_type"			"FIELD_FLOAT"
+				"duration"			"4.50"
+			}
+		}
+	}
+
 }
 	
