@@ -1,7 +1,8 @@
 # changelog 
 
-## v0.1
+### v0.1
 ### mounts
++ reworked mount movement to work with forced motion
 + fixed penguin spawning
 + short delay before mount movement, double turn rate before movement starts
 + trees now get destroyed upon crashing into them
@@ -13,7 +14,6 @@
 + fixed newhero
 + fixed debugremove
 + added item and lvlup commands
-
 
 ### known bugs
 + not picking a hero during hero pick screen will not random your hero, resulting in having no hero at all

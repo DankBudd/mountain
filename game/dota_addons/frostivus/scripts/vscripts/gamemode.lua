@@ -163,7 +163,7 @@ function GameMode:GiveMount(hero, mountName)
 		FindClearSpaceForUnit(unit, hero:GetAbsOrigin() + hero:GetForwardVector() * 150, true)
 
 		--ensure mount has leveled abilities
-		for i = 1,6 do
+		for i = 0,6 do
 			local ab = unit:GetAbilityByIndex(i)
 			if ab then
 				ab:SetLevel(1)
@@ -261,6 +261,7 @@ function GameMode:OnPlayerChat( keys )
 			if item then
 				items[i] = item
 				oldHero:DropItemAtPositionImmediate(item, Vector(0,0,0))
+				item:GetContainer():Destroy()
 			end
 		end
 
@@ -293,8 +294,23 @@ function GameMode:OnPlayerChat( keys )
 		local name = arguments[1]
 		local team = arguments[2]
 
-		if not string.match(name, "npc_dota_") then
-			name = "npc_dota_"..name
+		local exceptions = {
+			["tusk_the_snowballer"] = true,
+			["tiny_the_tosser"] = true,
+			["drow_the_guster"] = true,
+			["morphling_the_striker"] = true,
+			["aa_the_vortexer"] = true,
+			["cm_the_frostbiter"] = true,
+			["invoker_the_ghost"] = true,
+			["jakiro_the_icepather"] = true,
+			["lich_the_froster"] = true,
+			["ww_the_curser"] = true,
+		}
+
+		if not exceptions[name] then
+			if not string.match(name, "npc_dota_") then
+				name = "npc_dota_"..name
+			end
 		end
 
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
@@ -369,7 +385,7 @@ function GameMode:OnPlayerChat( keys )
 	end
 
 	if IsCommand("-item") then
-		if IsCheatMode() then return end
+		if GameRules:IsCheatMode() then return end
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
 		local name = arguments[1]
 
@@ -391,7 +407,7 @@ function GameMode:OnPlayerChat( keys )
 	end
 
 	if IsCommand("-lvlup") then
-		if IsCheatMode() then return end
+		if GameRules:IsCheatMode() then return end
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
 		local num = arguments[1]
 		for i=1,num do

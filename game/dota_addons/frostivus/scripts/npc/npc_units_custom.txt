@@ -143,18 +143,18 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "4097" } // Tusk's weapen
-            "Wearable2" { "ItemDef" "4123" } // Tusk's shoulder
-            "Wearable3" { "ItemDef" "4441" } // Tusk's neck
-            "Wearable4" { "ItemDef" "4460" } // Tusk's head
-            "Wearable5" { "ItemDef" "4498" } // Tusk's back
-            "Wearable6" { "ItemDef" "4499" } // Tusk's arms
-        	}
-        	"HasInventory" "1"
-        	"EquippedItems"
-        	{
-        		"scepter"	{	"item"	"item_ultimate_scepter"	}
-        	}
+				"Wearable1" { "ItemDef" "4097" } // Tusk's weapen
+				"Wearable2" { "ItemDef" "4123" } // Tusk's shoulder
+				"Wearable3" { "ItemDef" "4441" } // Tusk's neck
+				"Wearable4" { "ItemDef" "4460" } // Tusk's head
+				"Wearable5" { "ItemDef" "4498" } // Tusk's back
+				"Wearable6" { "ItemDef" "4499" } // Tusk's arms
+			}
+			"HasInventory" "1"
+			"EquippedItems"
+			{
+				"scepter"	{	"item"	"item_ultimate_scepter"	}
+			}
 		}
 	}
 	//=================================================================================================================
@@ -200,16 +200,16 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "6866" } // Tiny's head
-            "Wearable2" { "ItemDef" "6867" } // Tiny's offhand_weapon
-            "Wearable3" { "ItemDef" "6868" } // Tiny's arms
-            "Wearable4" { "ItemDef" "6869" } // Tiny's armor
-        	}
-        	"HasInventory" "1"
-        	"EquippedItems"
-        	{
-        		"scepter"	{	"item"	"item_ultimate_scepter"	}
-        	}
+				"Wearable1" { "ItemDef" "6866" } // Tiny's head
+				"Wearable2" { "ItemDef" "6867" } // Tiny's offhand_weapon
+				"Wearable3" { "ItemDef" "6868" } // Tiny's arms
+				"Wearable4" { "ItemDef" "6869" } // Tiny's armor
+			}
+			"HasInventory" "1"
+			"EquippedItems"
+			{
+				"scepter"	{	"item"	"item_ultimate_scepter"	}
+			}
 		}
 	}
 	//=================================================================================================================
@@ -263,19 +263,19 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "7232" } // Drow's legs
-            "Wearable2" { "ItemDef" "7238" } // Drow's weapon
-            "Wearable3" { "ItemDef" "7242" } // Drow's arms
-            "Wearable4" { "ItemDef" "7243" } // Drow's back
-            "Wearable5" { "ItemDef" "7244" } // Drow's shoulder
-            "Wearable6" { "ItemDef" "7245" } // Drow's head
-            "Wearable7" { "ItemDef" "7246" } // Drow's misc
-        	}
-        	"HasInventory" "1"
-        	"EquippedItems"
-        	{
-        		"scepter"	{	"item"	"item_ultimate_scepter"	}
-        	}
+				"Wearable1" { "ItemDef" "7232" } // Drow's legs
+				"Wearable2" { "ItemDef" "7238" } // Drow's weapon
+				"Wearable3" { "ItemDef" "7242" } // Drow's arms
+				"Wearable4" { "ItemDef" "7243" } // Drow's back
+				"Wearable5" { "ItemDef" "7244" } // Drow's shoulder
+				"Wearable6" { "ItemDef" "7245" } // Drow's head
+				"Wearable7" { "ItemDef" "7246" } // Drow's misc
+			}
+			"HasInventory" "1"
+			"EquippedItems"
+			{
+				"scepter"	{	"item"	"item_ultimate_scepter"	}
+			}
 		}
 	}
 	//=================================================================================================================
@@ -323,12 +323,12 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "7558" } // Morphling's misc
-            "Wearable2" { "ItemDef" "7559" } // Morphling's back
-            "Wearable3" { "ItemDef" "7560" } // Morphling's head
-            "Wearable4" { "ItemDef" "7561" } // Morphling's shoulder
-            "Wearable5" { "ItemDef" "7562" } // Morphling's arms
-        	}
+				"Wearable1" { "ItemDef" "7558" } // Morphling's misc
+				"Wearable2" { "ItemDef" "7559" } // Morphling's back
+				"Wearable3" { "ItemDef" "7560" } // Morphling's head
+				"Wearable4" { "ItemDef" "7561" } // Morphling's shoulder
+				"Wearable5" { "ItemDef" "7562" } // Morphling's arms
+			}
 		}
 	}
 	//=================================================================================================================
@@ -376,8 +376,8 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "7462" } // Aa's head
-        	}
+				"Wearable1" { "ItemDef" "7462" } // Aa's head
+			}
 		}
 		
 	}
@@ -425,18 +425,18 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "8694" } // Cm's weapon
-            "Wearable2" { "ItemDef" "8695" } // Cm's back
-            "Wearable3" { "ItemDef" "8696" } // Cm's arms
-            "Wearable4" { "ItemDef" "8697" } // Cm's shoulder
-            "Wearable5" { "ItemDef" "8698" } // Cm's head
-            "Wearable6" { "ItemDef" "4041" } // Cm's taunt
-        	}
-        	"HasInventory" "1"
-        	"EquippedItems"
-        	{
-        		"scepter"	{	"item"	"item_ultimate_scepter"	}
-        	}
+				"Wearable1" { "ItemDef" "8694" } // Cm's weapon
+				"Wearable2" { "ItemDef" "8695" } // Cm's back
+				"Wearable3" { "ItemDef" "8696" } // Cm's arms
+				"Wearable4" { "ItemDef" "8697" } // Cm's shoulder
+				"Wearable5" { "ItemDef" "8698" } // Cm's head
+				"Wearable6" { "ItemDef" "4041" } // Cm's taunt
+			}
+			"HasInventory" "1"
+			"EquippedItems"
+			{
+				"scepter"	{	"item"	"item_ultimate_scepter"	}
+			}
 		}
 	}
 	//=================================================================================================================
@@ -493,16 +493,16 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "5867" } // Invoker's head
-            "Wearable2" { "ItemDef" "5866" } // Invoker's back
-            "Wearable3" { "ItemDef" "5785" } // Invoker's arms
-            "Wearable4" { "ItemDef" "5865" } // Invoker's shoulder
-        	}
-        	"HasInventory" "1"
-        	"EquippedItems"
-        	{
-        		"scepter"	{	"item"	"item_ultimate_scepter"	}
-        	}
+				"Wearable1" { "ItemDef" "5867" } // Invoker's head
+				"Wearable2" { "ItemDef" "5866" } // Invoker's back
+				"Wearable3" { "ItemDef" "5785" } // Invoker's arms
+				"Wearable4" { "ItemDef" "5865" } // Invoker's shoulder
+			}
+			"HasInventory" "1"
+			"EquippedItems"
+			{
+				"scepter"	{	"item"	"item_ultimate_scepter"	}
+			}
 		}
 	}
 	//=================================================================================================================
@@ -542,19 +542,19 @@
 		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
 		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
 		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
-		
+
 		"Creature"
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "7820" } // Jakiro's head
-            "Wearable2" { "ItemDef" "9213" } // Jakiro's taunt
-        	}
-        	"HasInventory" "1"
-        	"EquippedItems"
-        	{
-        		"scepter"	{	"item"	"item_ultimate_scepter"	}
-        	}
+				"Wearable1" { "ItemDef" "7820" } // Jakiro's head
+				"Wearable2" { "ItemDef" "9213" } // Jakiro's taunt
+			}
+			"HasInventory" "1"
+			"EquippedItems"
+			{
+				"scepter"	{	"item"	"item_ultimate_scepter"	}
+			}
 		}
 	}
 	//=================================================================================================================
@@ -600,17 +600,17 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "7576" } // Lich's neck
-            "Wearable2" { "ItemDef" "8599" } // Lich's arms
-            "Wearable3" { "ItemDef" "8600" } // Lich's back
-            "Wearable4" { "ItemDef" "8601" } // Lich's belt
-            "Wearable5" { "ItemDef" "8602" } // Lich's head
-        	}
-        	"HasInventory" "1"
-        	"EquippedItems"
-        	{
-        		"scepter"	{	"item"	"item_ultimate_scepter"	}
-        	}
+				"Wearable1" { "ItemDef" "7576" } // Lich's neck
+				"Wearable2" { "ItemDef" "8599" } // Lich's arms
+				"Wearable3" { "ItemDef" "8600" } // Lich's back
+				"Wearable4" { "ItemDef" "8601" } // Lich's belt
+				"Wearable5" { "ItemDef" "8602" } // Lich's head
+			}
+			"HasInventory" "1"
+			"EquippedItems"
+			{
+				"scepter"	{	"item"	"item_ultimate_scepter"	}
+			}
 		}
 	}
 	//=================================================================================================================
@@ -665,10 +665,10 @@
 		{
 			"AttachWearables"
 			{
-            "Wearable1" { "ItemDef" "8017" } // Ww's head
-            "Wearable2" { "ItemDef" "9036" } // Ww's back
-           	"Wearable3" { "ItemDef" "9167" } // Ww's taunt
-        	}
+				"Wearable1" { "ItemDef" "8017" } // Ww's head
+				"Wearable2" { "ItemDef" "9036" } // Ww's back
+				"Wearable3" { "ItemDef" "9167" } // Ww's taunt
+			}
 		}
 		
 	}
