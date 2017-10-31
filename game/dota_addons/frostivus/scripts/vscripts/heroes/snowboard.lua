@@ -46,8 +46,10 @@ modifier_penguin_thinker = class({
 			for k,unit in pairs(units) do
 				if not unit:HasModifier("modifier_mount_movement") then
 					if unit:GetPlayerID() == self:GetParent():GetOwner():GetPlayerID() then
-						self:GetParent():AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_movement", {}).player = unit
-						unit:AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_movement", {})
+						if not unit:IsHexed() and not unit:IsRooted() and not unit:IsStunned() then
+							self:GetParent():AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_movement", {}).player = unit
+							unit:AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_movement", {})
+						end
 						break
 					else
 						DisplayError(unit:GetPlayerID(), "#not_your_mount")
@@ -63,6 +65,9 @@ modifier_mount_movement = class({
 	IsHidden = function(self) return true end,
 	IsPurgable = function(self) return false end,
 	GetModifierDisableTurning = function(self, params) return 1 end,
+	GetModifierMoveSpeed_Max = function(self) return self.maxSpeed end,
+	GetModifierMoveSpeed_Limit = function(self) return self.maxSpeed end,
+	GetModifierMoveSpeedOverride = function(self) return self.baseSpeed end,
 
 	GetOverrideAnimation = function(self, params)
 		if self:GetParent() ~= self:GetCaster() then
@@ -81,15 +86,32 @@ modifier_mount_movement = class({
 		return funcs
 	end,
 
+	GetModifierMoveSpeedBonus_Constant = function(self)
+		if IsClient() then
+			return self:GetStackCount()
+		end
+	end,
+  
+	DeclareFunctions = function(self)
+		return {
+			MODIFIER_PROPERTY_MOVESPEED_MAX,
+			MODIFIER_PROPERTY_MOVESPEED_LIMIT,
+			MODIFIER_PROPERTY_MOVESPEED_BONUS_CONSTANT,
+			MODIFIER_PROPERTY_MOVESPEED_BASE_OVERRIDE,
+		}
+	end,
+
 	OnCreated = function(self, kv)
 		if IsServer() then
-			self.max_sled_speed = self:GetAbility():GetSpecialValueFor("max_speed")
-			self.speed_step = self:GetAbility():GetSpecialValueFor("speed_growth")
-			self.nCurSpeed = self:GetAbility():GetSpecialValueFor("base_speed")
-			self.flTurnRate = self:GetAbility():GetSpecialValueFor("turn_rate")
-			self.flDesiredYaw = self:GetCaster():GetAnglesAsVector().y
+			self.maxSpeed = self:GetAbility():GetSpecialValueFor("max_speed")
+			self.speedStep = self:GetAbility():GetSpecialValueFor("speed_growth")
+			self.turnRate = self:GetAbility():GetSpecialValueFor("turn_rate")
+			self.baseSpeed = self:GetAbility():GetSpecialValueFor("base_speed")
+			self.curSpeed = self.baseSpeed
 
-			self.delay = self:GetAbility():GetSpecialValueFor("delay") or 1.0
+			self.desiredYaw = self:GetCaster():GetAnglesAsVector().y
+
+			self.delay = self:GetAbility():GetSpecialValueFor("delay")
 
 			if self:GetParent() == self:GetCaster() then
 				self:GetParent():StartGesture( ACT_DOTA_SLIDE )
@@ -110,18 +132,11 @@ modifier_mount_movement = class({
 			end
 			--when destroy on player do
 			self:GetCaster():RemoveModifierByName("modifier_mount_movement")
+			self:GetParent():RemoveModifierByName("modifier_movespeed")
 
-			--TODO: spiritbreaker-like knockback away from crash location
+			--TODO: spiritbreaker-like knockback away from crash location (respects gridNav)
 		end
 	end,
-
---[[OnAbilityFullyCast = function(self, params)
-		if IsServer() then
-			if self:GetParent() == params.caster then
-				self:GetParent():Stop()
-			end
-		end
-	end,]]
 
 	OnOrder = function(self, params)
 		if IsServer() then
@@ -134,11 +149,11 @@ modifier_mount_movement = class({
 			or nOrderType == DOTA_UNIT_ORDER_CAST_TARGET_TREE then
 				if hOrderedUnit == self:GetParent() then
 					if self:GetParent() ~= self:GetCaster() then
-						local vDir = params.new_pos - self:GetParent():GetAbsOrigin()
-						vDir.z = 0
-						vDir = vDir:Normalized()
-						local angles = VectorAngles( vDir )
-						self.flDesiredYaw = angles.y
+						local dir = params.new_pos - self:GetParent():GetAbsOrigin()
+						dir.z = 0
+						dir = dir:Normalized()
+						local angles = VectorAngles( dir )
+						self.desiredYaw = angles.y
 					end	
 				end
 			end
@@ -157,61 +172,68 @@ modifier_mount_movement = class({
 				if player:IsMoving() then
 					player:Stop()
 				end
+				if player:IsHexed() or player:IsRooted() or player:IsStunned() then
+					self.curSpeed = self.baseSpeed
+					return
+				end
 
 				local exceptions = {
 					"modifier_eul_cyclone",
-					--force_staff
-					--toss
-					--walrus punch
-					--walrus kick
-					--tornado
+					"modifier_tiny_toss",
+					"modifier_item_forcestaff_active",
+					"modifier_tusk_walrus_punch_air_time",
+					"modifier_tusk_walrus_kick_air_time",
+					"modifier_invoker_tornado",
 				}
 				
-				--skip this tick if the player is effected by an exception
+				--skip this tick if the player is affected by an exception
 				for _,name in pairs(exceptions) do
 					if player:HasModifier(name) then
 						return
 					end
 				end
 
-				local flTurnAmount = 0.0
+				local turnAmount = 0.0
 				local curAngles = mount:GetAngles()
-				local flAngleDiff = UTIL_AngleDiff( self.flDesiredYaw, curAngles.y )
+				local angleDiff = UTIL_AngleDiff( self.desiredYaw, curAngles.y )
 
-				local flTurnRate
+				local turnRate
 				if self.delay <= 0 then
-					flTurnRate = self.flTurnRate
+					turnRate = self.turnRate
 				else
-					flTurnRate = self.flTurnRate*2
+					turnRate = self.turnRate*2
 				end
 
-				flTurnAmount = math.min( flTurnRate * (1/30), math.abs( flAngleDiff ) )
+				turnAmount = math.min( turnRate * (1/30), math.abs( angleDiff ) )
 			
-				if flAngleDiff < 0.0 then
-					flTurnAmount = flTurnAmount * -1
+				if angleDiff < 0.0 then
+					turnAmount = turnAmount * -1
 				end
 
-				if flAngleDiff ~= 0.0 then
-					curAngles.y = curAngles.y + flTurnAmount
+				if angleDiff ~= 0.0 then
+					curAngles.y = curAngles.y + turnAmount
 					player:SetAbsAngles( curAngles.x, curAngles.y, curAngles.z )
 				end
 
 				--short delay before movement, to prevent insta crashing into wall/tree again
 				if self.delay <= 0 then
-					local vNewPos = player:GetAbsOrigin() + player:GetForwardVector() * ( (1/30) * self.nCurSpeed )
-					vNewPos.z = GetGroundHeight(vNewPos, player) + 5
+					local newPos = player:GetAbsOrigin() + player:GetForwardVector() * ( (1/30) * self.curSpeed )
+					newPos.z = GetGroundHeight(newPos, player) + 5
 
 					--end slide if unpathable, and destroy any trees at unpathable position
-					if not GridNav:CanFindPath( player:GetAbsOrigin(), vNewPos ) then
-						GridNav:DestroyTreesAroundPoint( vNewPos, 25, true)
-						ResolveNPCPositions( vNewPos, 25 )
+					if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) then
+						GridNav:DestroyTreesAroundPoint( newPos, 25, true)
+						ResolveNPCPositions( newPos, 25 )
 						self:Destroy()
 						return
 					end
 
 					--continue slide
-					player:SetAbsOrigin( vNewPos )
-					self.nCurSpeed = math.min( self.nCurSpeed + self.speed_step, self.max_sled_speed )
+					player:SetAbsOrigin( newPos )
+					self.curSpeed = math.min( self.curSpeed + self.speedStep, self.maxSpeed )
+
+					--update player movement speed
+					self:SetStackCount(self.curSpeed)
 				else
 					self.delay = self.delay - (1/30)
 				end
@@ -219,8 +241,8 @@ modifier_mount_movement = class({
 			--if parent is mount
 			else
 				--short delay for animations
-				if self.bStartedLoop == nil and self:GetElapsedTime() > 0.3 then
-					self.bStartedLoop = true
+				if self.startedLoop == nil and self:GetElapsedTime() > 0.3 then
+					self.startedLoop = true
 					self:GetCaster():StartGesture( ACT_DOTA_SLIDE_LOOP )
 				end
 
