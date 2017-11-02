@@ -1,4 +1,4 @@
-"CustomHeroList" 
+"whitelist" 
 {
 		"npc_dota_hero_doom"				"1"
 		"npc_dota_hero_chaos_knight"		"1"
