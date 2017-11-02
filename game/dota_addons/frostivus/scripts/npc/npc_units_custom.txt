@@ -80,9 +80,9 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_BASIC"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_BASIC"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 		
 		// Vision
 		//----------------------------------------------------------------
@@ -135,26 +135,26 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "4097" } // Tusk's weapen
-				"Wearable2" { "ItemDef" "4123" } // Tusk's shoulder
-				"Wearable3" { "ItemDef" "4441" } // Tusk's neck
-				"Wearable4" { "ItemDef" "4460" } // Tusk's head
-				"Wearable5" { "ItemDef" "4498" } // Tusk's back
-				"Wearable6" { "ItemDef" "4499" } // Tusk's arms
-			}
-			"HasInventory" "1"
-			"EquippedItems"
-			{
-				"scepter"	{	"item"	"item_ultimate_scepter"	}
-			}
+            "Wearable1" { "ItemDef" "4097" } // Tusk's weapen
+            "Wearable2" { "ItemDef" "4123" } // Tusk's shoulder
+            "Wearable3" { "ItemDef" "4441" } // Tusk's neck
+            "Wearable4" { "ItemDef" "4460" } // Tusk's head
+            "Wearable5" { "ItemDef" "4498" } // Tusk's back
+            "Wearable6" { "ItemDef" "4499" } // Tusk's arms
+        	}
+        	//"HasInventory" "1"
+        	//"EquippedItems"
+        	//{
+        	//	"scepter"	{	"item"	"item_ultimate_scepter"	}
+        	//}
 		}
 	}
 	//=================================================================================================================
@@ -183,7 +183,8 @@
 		"BoundsHullName"		"DOTA_HULL_SIZE_TOWER"
 		// Movement
 		//----------------------------------------------------------------
-		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_NONE"
+		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5" 
 		// Vision
 		//----------------------------------------------------------------
@@ -192,24 +193,24 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "6866" } // Tiny's head
-				"Wearable2" { "ItemDef" "6867" } // Tiny's offhand_weapon
-				"Wearable3" { "ItemDef" "6868" } // Tiny's arms
-				"Wearable4" { "ItemDef" "6869" } // Tiny's armor
-			}
-			"HasInventory" "1"
-			"EquippedItems"
-			{
-				"scepter"	{	"item"	"item_ultimate_scepter"	}
-			}
+            "Wearable1" { "ItemDef" "6866" } // Tiny's head
+            "Wearable2" { "ItemDef" "6867" } // Tiny's offhand_weapon
+            "Wearable3" { "ItemDef" "6868" } // Tiny's arms
+            "Wearable4" { "ItemDef" "6869" } // Tiny's armor
+        	}
+        	//"HasInventory" "1"
+        	//"EquippedItems"
+        	//{
+        	//	"scepter"	{	"item"	"item_ultimate_scepter"	}
+        	//}
 		}
 	}
 	//=================================================================================================================
@@ -235,7 +236,7 @@
 		"AttackCapabilities"		"DOTA_UNIT_CAP_RANGED_ATTACK"
 		"AttackDamageMin"				"0"
 		"AttackDamageMax"				"0"
-		"AttackRate"				"3.500000" //might tweak this
+		"AttackRate"				"2.500000" //might tweak this
 		"AttackAnimationPoint"		"0.500000"
 		"AttackAcquisitionRange"		"800"
 		"AttackRange"					"800"
@@ -246,7 +247,8 @@
 		"BoundsHullName"		"DOTA_HULL_SIZE_HERO"
 		// Movement
 		//----------------------------------------------------------------
-		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_NONE"
+		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5" 
 		// Vision
 		//----------------------------------------------------------------
@@ -255,27 +257,27 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "7232" } // Drow's legs
-				"Wearable2" { "ItemDef" "7238" } // Drow's weapon
-				"Wearable3" { "ItemDef" "7242" } // Drow's arms
-				"Wearable4" { "ItemDef" "7243" } // Drow's back
-				"Wearable5" { "ItemDef" "7244" } // Drow's shoulder
-				"Wearable6" { "ItemDef" "7245" } // Drow's head
-				"Wearable7" { "ItemDef" "7246" } // Drow's misc
-			}
-			"HasInventory" "1"
-			"EquippedItems"
-			{
-				"scepter"	{	"item"	"item_ultimate_scepter"	}
-			}
+            "Wearable1" { "ItemDef" "7232" } // Drow's legs
+            "Wearable2" { "ItemDef" "7238" } // Drow's weapon
+            "Wearable3" { "ItemDef" "7242" } // Drow's arms
+            "Wearable4" { "ItemDef" "7243" } // Drow's back
+            "Wearable5" { "ItemDef" "7244" } // Drow's shoulder
+            "Wearable6" { "ItemDef" "7245" } // Drow's head
+            "Wearable7" { "ItemDef" "7246" } // Drow's misc
+        	}
+        	//"HasInventory" "1"
+        	//"EquippedItems"
+        	//{
+        	//	"scepter"	{	"item"	"item_ultimate_scepter"	}
+        	//}
 		}
 	}
 	//=================================================================================================================
@@ -293,10 +295,11 @@
 		// Abilities
 		//----------------------------------------------------------------
 		"Ability1"		"morphling_waveform"
-		"Ability2"		"morphling_adaptive_strike"
-		"Ability3"		"morphling_morph_agi"
-		"Ability4"		"morphling_morph_str"
-		"Ability5"		"generic_invulnerablity"
+		"Ability2"		"morphling_adaptive_strike_agi"
+		"Ability3"		"morphling_adaptive_strike_str"
+		"Ability4"		"morphling_morph_agi"
+		"Ability5"		"morphling_morph_str"
+		"Ability6"		"generic_invulnerablity"
 		// Attack
 		//----------------------------------------------------------------
 		"AttackCapabilities"  "DOTA_UNIT_CAP_NO_ATTACK"
@@ -306,7 +309,7 @@
 		// Movement
 		//----------------------------------------------------------------
 		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_GROUND"
-		"MovementSpeed"					"360"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5"
 		// Vision
 		//----------------------------------------------------------------
@@ -315,20 +318,20 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "7558" } // Morphling's misc
-				"Wearable2" { "ItemDef" "7559" } // Morphling's back
-				"Wearable3" { "ItemDef" "7560" } // Morphling's head
-				"Wearable4" { "ItemDef" "7561" } // Morphling's shoulder
-				"Wearable5" { "ItemDef" "7562" } // Morphling's arms
-			}
+            "Wearable1" { "ItemDef" "7558" } // Morphling's misc
+            "Wearable2" { "ItemDef" "7559" } // Morphling's back
+            "Wearable3" { "ItemDef" "7560" } // Morphling's head
+            "Wearable4" { "ItemDef" "7561" } // Morphling's shoulder
+            "Wearable5" { "ItemDef" "7562" } // Morphling's arms
+        	}
 		}
 	}
 	//=================================================================================================================
@@ -359,7 +362,7 @@
 		// Movement
 		//----------------------------------------------------------------
 		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_FLY"
-		"MovementSpeed"					"360"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5"
 		// Vision
 		//----------------------------------------------------------------
@@ -368,16 +371,16 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "7462" } // Aa's head
-			}
+            "Wearable1" { "ItemDef" "7462" } // Aa's head
+        	}
 		}
 		
 	}
@@ -408,7 +411,7 @@
 		// Movement
 		//----------------------------------------------------------------
 		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_FLY"
-		"MovementSpeed"					"360"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5"
 		// Vision
 		//----------------------------------------------------------------
@@ -417,26 +420,26 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 		
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "8694" } // Cm's weapon
-				"Wearable2" { "ItemDef" "8695" } // Cm's back
-				"Wearable3" { "ItemDef" "8696" } // Cm's arms
-				"Wearable4" { "ItemDef" "8697" } // Cm's shoulder
-				"Wearable5" { "ItemDef" "8698" } // Cm's head
-				"Wearable6" { "ItemDef" "4041" } // Cm's taunt
-			}
-			"HasInventory" "1"
-			"EquippedItems"
-			{
-				"scepter"	{	"item"	"item_ultimate_scepter"	}
-			}
+            "Wearable1" { "ItemDef" "8694" } // Cm's weapon
+            "Wearable2" { "ItemDef" "8695" } // Cm's back
+            "Wearable3" { "ItemDef" "8696" } // Cm's arms
+            "Wearable4" { "ItemDef" "8697" } // Cm's shoulder
+            "Wearable5" { "ItemDef" "8698" } // Cm's head
+            "Wearable6" { "ItemDef" "4041" } // Cm's taunt
+        	}
+        	//"HasInventory" "1"
+        	//"EquippedItems"
+        	//{
+        	//	"scepter"	{	"item"	"item_ultimate_scepter"	}
+        	//}
 		}
 	}
 	//=================================================================================================================
@@ -476,7 +479,8 @@
 		"BoundsHullName"		"DOTA_HULL_SIZE_HERO"
 		// Movement
 		//----------------------------------------------------------------
-		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_NONE"
+		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5"
 		// Vision
 		//----------------------------------------------------------------
@@ -485,24 +489,24 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 		
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "5867" } // Invoker's head
-				"Wearable2" { "ItemDef" "5866" } // Invoker's back
-				"Wearable3" { "ItemDef" "5785" } // Invoker's arms
-				"Wearable4" { "ItemDef" "5865" } // Invoker's shoulder
-			}
-			"HasInventory" "1"
-			"EquippedItems"
-			{
-				"scepter"	{	"item"	"item_ultimate_scepter"	}
-			}
+            "Wearable1" { "ItemDef" "5867" } // Invoker's head
+            "Wearable2" { "ItemDef" "5866" } // Invoker's back
+            "Wearable3" { "ItemDef" "5785" } // Invoker's arms
+            "Wearable4" { "ItemDef" "5865" } // Invoker's shoulder
+        	}
+        	//"HasInventory" "1"
+        	//"EquippedItems"
+        	//{
+        	//	"scepter"	{	"item"	"item_ultimate_scepter"	}
+        	//}
 		}
 	}
 	//=================================================================================================================
@@ -530,7 +534,8 @@
 		"BoundsHullName"		"DOTA_HULL_SIZE_TOWER"
 		// Movement
 		//----------------------------------------------------------------
-		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_NONE"
+		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5"
 		// Vision
 		//----------------------------------------------------------------
@@ -539,22 +544,22 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
-
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "7820" } // Jakiro's head
-				"Wearable2" { "ItemDef" "9213" } // Jakiro's taunt
-			}
-			"HasInventory" "1"
-			"EquippedItems"
-			{
-				"scepter"	{	"item"	"item_ultimate_scepter"	}
-			}
+            "Wearable1" { "ItemDef" "7820" } // Jakiro's head
+            "Wearable2" { "ItemDef" "9213" } // Jakiro's taunt
+        	}
+        	//"HasInventory" "1"
+        	//"EquippedItems"
+        	//{
+        	//	"scepter"	{	"item"	"item_ultimate_scepter"	}
+        	//}
 		}
 	}
 	//=================================================================================================================
@@ -583,7 +588,8 @@
 		"BoundsHullName"		"DOTA_HULL_SIZE_TOWER"
 		// Movement
 		//----------------------------------------------------------------
-		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_NONE"
+		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5"
 		// Vision
 		//----------------------------------------------------------------
@@ -592,25 +598,25 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 		
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "7576" } // Lich's neck
-				"Wearable2" { "ItemDef" "8599" } // Lich's arms
-				"Wearable3" { "ItemDef" "8600" } // Lich's back
-				"Wearable4" { "ItemDef" "8601" } // Lich's belt
-				"Wearable5" { "ItemDef" "8602" } // Lich's head
-			}
-			"HasInventory" "1"
-			"EquippedItems"
-			{
-				"scepter"	{	"item"	"item_ultimate_scepter"	}
-			}
+            "Wearable1" { "ItemDef" "7576" } // Lich's neck
+            "Wearable2" { "ItemDef" "8599" } // Lich's arms
+            "Wearable3" { "ItemDef" "8600" } // Lich's back
+            "Wearable4" { "ItemDef" "8601" } // Lich's belt
+            "Wearable5" { "ItemDef" "8602" } // Lich's head
+        	}
+        	//"HasInventory" "1"
+        	//"EquippedItems"
+        	//{
+        	//	"scepter"	{	"item"	"item_ultimate_scepter"	}
+        	//}
 		}
 	}
 	//=================================================================================================================
@@ -648,7 +654,8 @@
 		"BoundsHullName"		"DOTA_HULL_SIZE_TOWER"
 		// Movement
 		//----------------------------------------------------------------
-		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_NONE"
+		"MovementCapabilities"        "DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"					"550"
 		"MovementTurnRate"				"1.5"
 		// Vision
 		//----------------------------------------------------------------
@@ -657,18 +664,18 @@
 		// Team
 		//----------------------------------------------------------------
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
-		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
-		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		//"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_LIGHT"
+		//"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRONG"
+		//"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 
 		"Creature"
 		{
 			"AttachWearables"
 			{
-				"Wearable1" { "ItemDef" "8017" } // Ww's head
-				"Wearable2" { "ItemDef" "9036" } // Ww's back
-				"Wearable3" { "ItemDef" "9167" } // Ww's taunt
-			}
+            "Wearable1" { "ItemDef" "8017" } // Ww's head
+            "Wearable2" { "ItemDef" "9036" } // Ww's back
+           	"Wearable3" { "ItemDef" "9167" } // Ww's taunt
+        	}
 		}
 		
 	}
