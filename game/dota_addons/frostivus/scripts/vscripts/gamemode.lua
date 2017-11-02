@@ -4,15 +4,17 @@ if GameMode == nil then
 end
 
 --require stuff
---require('')
+--require('ai/base_ai')
 
 --link global modifiers
 --LinkLuaModifier(className,fileName,LuaModifierType)
 
 function GameMode:InitGameMode()
-	GameRules:GetGameModeEntity():SetThink( "OnThink", self, "GlobalThink", 2 )
+	print("INIT")
+--	GameRules:GetGameModeEntity():SetThink( "OnThink", self, "GlobalThink", 2 )
+--	print("POST THINK")
 
-	 -- Setup rules
+	 -- Setup Rules
 	GameRules:SetHeroRespawnEnabled( true )
 	GameRules:SetUseUniversalShopMode( true )
 	GameRules:SetSameHeroSelectionEnabled( false )
@@ -23,9 +25,11 @@ function GameMode:InitGameMode()
 	GameRules:SetStrategyTime( 0 )
 	GameRules:SetPostGameTime( 30 )
 	GameRules:SetTreeRegrowTime( 60 )
+	GameRules:SetRuneSpawnTime( 30 )
+
 	GameRules:SetGoldPerTick( 0 )
 	GameRules:SetGoldTickTime( 0 )
-	GameRules:SetRuneSpawnTime( 30 )
+	GameRules:SetStartingGold( 0 )
 
 	GameRules:SetUseBaseGoldBountyOnHeroes( true )
 	GameRules:SetUseCustomHeroXPValues( false )
@@ -35,14 +39,14 @@ function GameMode:InitGameMode()
 
 	GameRules:SetCustomGameEndDelay( 5 )
 	GameRules:SetCustomVictoryMessageDuration( 20 )
-	GameRules:SetStartingGold( 0 )
 
 	GameRules:SetCustomGameSetupAutoLaunchDelay( 0 )
 	GameRules:LockCustomGameSetupTeamAssignment( true )
 	GameRules:EnableCustomGameSetupAutoLaunch( true )
 
+	print("POST RULES")
+
 	--Setup Listeners
-	GameMode = self
 	ListenToGameEvent("player_chat", Dynamic_Wrap(GameMode, 'OnPlayerChat'), self)
 	ListenToGameEvent("player_reconnected", Dynamic_Wrap(GameMode, 'OnPlayerReconnect'), self)
 	ListenToGameEvent('player_disconnect', Dynamic_Wrap(GameMode, 'OnPlayerDisconnect'), self)
@@ -53,10 +57,13 @@ function GameMode:InitGameMode()
 	ListenToGameEvent("dota_illusions_created", Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
 	ListenToGameEvent("npc_spawned", Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
 
-
+	print("POST LISTEN")
 
 	--Setup Filters
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, "OrderManager"), self)
+	GameRules:GetGameModeEntity():SetModifierGainedFilter(Dynamic_Wrap(GameMode, "ModifierManager"), self)
+
+	print("POST FILTERS")
 
 	--Setup Tables
 	self.trackedEntities = {}
@@ -66,6 +73,7 @@ end
 
 --this function will only run once, when the first player is fully loaded.
 function GameMode:StartGameMode()
+	print("START")
 	if mode then
 		return
 	end
@@ -98,7 +106,7 @@ function GameMode:StartGameMode()
 
 	mode:SetAnnouncerDisabled( false )
 	mode:SetKillingSpreeAnnouncerDisabled( true )
-	mode:SetFogOfWarDisabled( false )
+	mode:SetFogOfWarDisabled( true )
 	mode:SetUnseenFogOfWarEnabled( false )
 
 	mode:SetDaynightCycleDisabled( false )
@@ -106,14 +114,13 @@ end
 
 -- Evaluate the state of the game
 function GameMode:OnThink()
+	print("THINK")
 	if GameRules:State_Get() == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
 	elseif GameRules:State_Get() >= DOTA_GAMERULES_STATE_POST_GAME then
 		return nil
 	end
 	return 1
 end
-
-
 
 --------------------------------------------------------------
 
@@ -126,6 +133,8 @@ function GameMode:OrderManager( keys )
 	local pos = Vector(keys.position_x, keys.position_y, keys.position_z)
 	local queue = keys.queue
 	local sequenceNumber = keys.sequence_number_const
+
+	print("ORDER")
 
 	--PrintRelevent(filterTable)
 
@@ -149,7 +158,43 @@ function GameMode:OrderManager( keys )
 	return true
 end
 
+function GameMode:ModifierManager( keys )
+	local parentIndex = keys.entindex_parent_const
+	local casterIndex = keys.entindex_caster_const
+	local abilityIndex = keys.entindex_ability_const
+	local modifierName = keys.name_const
+	local duration = keys.duration
+
+	print("MODIFIER")
+	if not parentIndex or not casterIndex or not abilityIndex then
+--[[		print(
+		"modifier: "..modifierName,
+		 "parent: "..tostring((parentIndex ~= nil and (EntIndexToHScript(parentIndex):GetUnitName() ~= "" and EntIndexToHScript(parentIndex):GetUnitName()) or EntIndexToHScript(parentIndex):GetName()) or nil),
+		  "caster: "..tostring((casterIndex ~= nil and (EntIndexToHScript(casterIndex):GetUnitName() ~= "" and EntIndexToHScript(casterIndex):GetUnitName()) or EntIndexToHScript(casterIndex):GetName()) or nil),
+		   "ability: "..tostring((abilityIndex ~= nil and EntIndexToHScript(abilityIndex):GetName()) or nil)
+		)]]
+		return true
+	end
+	local parent = EntIndexToHScript( parentIndex )
+	local caster = EntIndexToHScript( casterIndex )
+	local ability = EntIndexToHScript( abilityIndex )
+	local modifier = parent:FindModifierByNameAndCaster(modifierName, caster)
+--[[
+	print(
+	"modifier: "..modifierName,
+	 "parent: "..parent:GetUnitName(),
+	  "caster: "..caster:GetUnitName(),
+	   "ability: "..ability:GetName()
+	)]]
+
+	if modifierName == "modifier_generic_invulnerablity" then return false end
+
+	--return true by default to leave all other modifiers unchanged
+	return true
+end
+
 function GameMode:GiveMount(hero, mountName)
+	print("giveMOUNT")
 	--remove old mount if they have one
 	if self.mounts[hero:GetPlayerID()] then
 		UTIL_Remove(EntIndexToHScript(self.mounts[hero:GetPlayerID()]))
@@ -175,7 +220,10 @@ function GameMode:GiveMount(hero, mountName)
 end
 
 function GameMode:OnNpcSpawn(keys)
+	print("NPC SPAWN")
 	local npc = EntIndexToHScript(keys.entindex)
+	--print("npc: "..npc:GetUnitName().." has spawned")
+
 	if npc:GetClassname() == "npc_dota_companion" then
 		npc:SetOwner(self.lastSpawnedHero)
 		self.trackedEntities[self.lastSpawnedHero:entindex()] = keys.entindex
@@ -187,26 +235,33 @@ function GameMode:OnNpcSpawn(keys)
 end
 
 function GameMode:OnPlayerReconnect( keys )
+	print("reconnect")
 end
 
 function GameMode:OnPlayerDisconnect( keys )
+	print("disconnect")
 end
 
 function GameMode:PlayerConnect( keys )
+	print("connect")
 end
 
 -- This function is called once when the player fully connects and becomes "Ready" during Loading
 function GameMode:PlayerConnectFull( keys )
+	print("connect FULL")
 	GameMode:StartGameMode()
 end
 
 function GameMode:OnPlayerPickHero( keys )
+	print("pick hero")
 end
 
 function GameMode:OnItemPickedUp( keys )
+	print("pick item")
 end
 
 function GameMode:OnIllusionsCreated( keys )
+	print("illusion")
 end
 
 function GameMode:OnPlayerChat( keys )
@@ -216,6 +271,8 @@ function GameMode:OnPlayerChat( keys )
 
 	local command
 	local arguments = {}
+
+	print("chat")
 
 	for k,v in pairs(split(text, " ")) do
 		if string.match(v, "-") and not command then
@@ -334,6 +391,7 @@ function GameMode:OnPlayerChat( keys )
 				local ab = unit:GetAbilityByIndex(i)
 				if ab then
 					ab:SetLevel(1)
+					ab:SetHidden(false)
 				end
 			end
 
@@ -417,6 +475,7 @@ function GameMode:OnPlayerChat( keys )
 end
 
 function GameMode:RemovePet(hero)
+	print("kill pet")
 	if type(hero) == "number" then
 		hero = EntIndexToHScript(hero)
 	end

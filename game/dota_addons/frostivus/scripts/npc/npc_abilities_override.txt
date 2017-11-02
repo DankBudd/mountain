@@ -176,34 +176,29 @@
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_damage"			"0"
+				"bonus_mana_regen"		"0"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_mana_regen"		"0"
+				"bonus_aura_movement_speed"	"20"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_aura_movement_speed"	"20"
+				"bonus_attack_speed_pct"	"0"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_attack_speed_pct"	"0"
+				"bonus_movement_speed_pct"	"13"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_movement_speed_pct"	"13"
-			}
-			"09"
-			{
-				"var_type"				"FIELD_INTEGER"
 				"duration"				"5"
 			}
-			"10"
+			"09"
 			{
 				"var_type"				"FIELD_INTEGER"
 				"radius"				"900"
@@ -264,15 +259,10 @@
 			}
 			"04"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"bonus_damage"			"0"
-			}
-			"05"
-			{
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"2.0"
 			}
-			"06"
+			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
 				"tooltip_range"			"1200"
@@ -290,7 +280,7 @@
 		"ID"							"102"														// unique ID number for this item.  Do not change this once established or it will invalidate collected stats.
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_BOTH"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"FightRecapLevel"				"1"
 
 		// Stats
@@ -511,18 +501,43 @@
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"phase_movement_speed"  "25"
+				"damage_block_melee"	"0"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"phase_movement_speed_range"  "25"
+				"damage_block_ranged"	"0"
 			}
 			"05"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"phase_duration"		"5.0"
+				"var_type"				"FIELD_INTEGER"
+				"block_chance"			"0"
+			}		
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"phase_movement_speed"  "24"
+			}		
+			"07"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"phase_movement_speed_range"  "20"
 			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"phase_duration"		"2.5"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bonus_attack_speed"	"0"
+			}		
+			"10"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bonus_armor"			"0"
+			}	
 		}
 	}
 	
@@ -653,37 +668,32 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_damage"			"0"
+				"bonus_armor"			"0"
 			}
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"bonus_armor"			"0"
+				"var_type"				"FIELD_FLOAT"
+				"bonus_health_regen"	"0"
 			}
 			"03"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"bonus_health_regen"	"0"
-			}
+				"var_type"				"FIELD_FLOAT"
+				"bonus_mana_regen"		"0"
+			}			
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_mana_regen"		"0"
+				"bonus_mana"			"0"
 			}
 			"05"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"bonus_mana"			"0"
-			}			
+				"var_type"				"FIELD_FLOAT"
+				"active_duration"		"6"
+			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"active_duration"		"5"
-			}
-			"07"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"cast_range_tooltip"		"1000"
+				"cast_range_tooltip"		"900"
 			}
 		}
 	}
@@ -976,62 +986,52 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_agility"			"0 0"
+				"bonus_agility"			"0"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_intellect"		"0 0"
+				"bonus_intellect"		"0"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"initial_charges"		"1"
+				"feedback_mana_burn"	"50"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"feedback_mana_burn"	"0"
+				"feedback_mana_burn_illusion_melee"	"16"
 			}
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"feedback_mana_burn_illusion_melee"	"0"
+				"feedback_mana_burn_illusion_ranged"	"8"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"feedback_mana_burn_illusion_ranged"	"0"
-			}
-			"07"
-			{
-				"var_type"				"FIELD_INTEGER"
-				"purge_summoned_damage"	"99999"
-			}
-			"08"
-			{
-				"var_type"				"FIELD_INTEGER"
 				"purge_rate"			"5"
 			}
-			"09"
+			"07"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"purge_root_duration"	"3.0"
 			}
-			"10"
+			"08"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"purge_slow_duration"	"4.0"
 			}
-			"11"
+			"09"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"damage_per_burn"		"0.0"
+				"damage_per_burn"		"0.8"
 			}
-			"12"
+			"10"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"cast_range_tooltip"		"700"
+				"cast_range_tooltip"		"600"
 			}
 		}
 	}
@@ -1135,28 +1135,23 @@
 			}
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
+				"var_type"				"FIELD_FLOAT"
 				"bonus_health_regen"	"0"
 			}
 			"03"
 			{
-				"var_type"				"FIELD_INTEGER"
+				"var_type"				"FIELD_FLOAT"
 				"bonus_mana_regen"		"0"
 			}
 			"04"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"bonus_damage"			"0"
+				"var_type"				"FIELD_FLOAT"
+				"block_cooldown"		"13.0"
 			}
 			"05"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"block_cooldown"		"35.0"
-			}
-			"06"
-			{
 				"var_type"				"FIELD_INTEGER"
-				"cast_range_tooltip"	"1000"
+				"cast_range_tooltip"	"700"
 			}
 		}
 	}
@@ -1288,60 +1283,57 @@
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"block_damage_melee"	"0"
+				"block_damage_melee"	"70"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"block_damage_ranged"	"0"
+				"block_damage_ranged"	"35"
 			}			
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"block_chance"			"0"
+				"block_chance"			"50"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_damage"				"0"
+				"bonus_strength"		"0"
 			}
 			"07"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_strength"				"0"
+				"bash_chance_melee"		"25"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bash_chance_melee"		"0"
+				"bash_chance_ranged"		"10"
 			}
 			"09"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"bash_chance_ranged"	"0"
+				"var_type"				"FIELD_FLOAT"
+				"bash_duration"			"1.4"
 			}
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"bash_duration"			"0"
+				"bash_cooldown"			"2.3"
 			}
 			"11"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_chance_damage"	"0"
-			}	
-			"12"
-			{
-				"var_type"				"FIELD_FLOAT"
-				"bash_cooldown"			"0"
+				"bonus_chance_damage"	"100"
 			}
-			"13"
+			"12"
 			{
 				"var_type"				"FIELD_FLOAT"
 				"stun_duration"				"2.5"
 			}
 		}
 	}
+
+
 	//Abilities:-
 	//=================================================================================================================
 	// Tusk: Ice Shards
@@ -1380,7 +1372,7 @@
 			"01"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"shard_width"				"300"
+				"shard_width"				"200"
 			}
 			
 			"02"
@@ -1401,7 +1393,7 @@
 			"05"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"shard_duration"				"25.0"
+				"shard_duration"				"15.0"
 			}
 			"06"
 			{
@@ -1416,7 +1408,7 @@
 			"08"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"cast_range_tooltip"			"1800"
+				"cast_range_tooltip"			"2000"
 			}
 		}
 	}
@@ -1458,12 +1450,14 @@
 			"01"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"snowball_damage"			"0"
+				"snowball_damage"			"1"
+				"LinkedSpecialBonus"		"special_bonus_unique_tusk_2"
 			}
 			"02"
 			{
 				"var_type"					"FIELD_INTEGER"
 				"snowball_speed"			"750"
+				"LinkedSpecialBonus"		"special_bonus_unique_tusk_3"
 			}
 			"03"
 			{
@@ -1545,7 +1539,7 @@
 			"01"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"crit_multiplier"			"0"
+				"crit_multiplier"			"1"
 				"LinkedSpecialBonus"		"special_bonus_unique_tusk"
 			}
 			"02"
@@ -1561,7 +1555,7 @@
 			"04"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"move_slow"					"60"
+				"move_slow"					"50"
 			}
 			"05"
 			{
@@ -1627,7 +1621,7 @@
 			"04"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"move_slow"					"60"
+				"move_slow"					"40"
 			}
 			"05"
 			{
@@ -1698,7 +1692,7 @@
 			"04"
 			{
 				"var_type"					"FIELD_FLOAT"
-				"stun_duration"				"2.0"
+				"stun_duration"				"1.5"
 			}
 			"05"
 			{
@@ -1708,7 +1702,7 @@
 			"06"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"avalanche_damage"			"0"
+				"avalanche_damage"			"1"
 				"LinkedSpecialBonus"		"special_bonus_unique_tiny"
 			}
 		}
@@ -1752,41 +1746,42 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"2.5"
+				"duration"				"2.0"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"grab_radius"			"400"
+				"grab_radius"			"275"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"radius"				"400"
+				"radius"				"275"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_damage_pct"		"0"
+				"bonus_damage_pct"		"20 20 20 20"
 			}
 			"05"
 			{
-				"var_type"					"FIELD_INTEGER"
-				"grow_bonus_damage_pct"		"0"
+				"var_type"				"FIELD_INTEGER"
+				"tooltip_range"			"90000"
 			}
 			"06"
 			{
-				"var_type"					"FIELD_INTEGER"
-				"tooltip_range"				"90000"
+				"var_type"				"FIELD_INTEGER"
+				"toss_damage"			"0"
 			}
 			"07"
 			{
-				"var_type"					"FIELD_INTEGER"
-				"toss_damage"				"0"
+				"var_type"				"FIELD_INTEGER"
+				"charge_restore_time"	"8"
 			}
-
 		}
 	}
+
+
 	//=================================================================================================================
 	// Ability: Drow Ranger	Frost Arrows
 	//=================================================================================================================
@@ -1880,7 +1875,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"wave_range_tooltip"	"900"
+				"wave_range_tooltip"	"800"
 				"LinkedSpecialBonus"	"special_bonus_unique_drow_ranger_2"
 			}
 			"03"
@@ -1896,7 +1891,7 @@
 			"05"
 			{
 				"var_type"			"FIELD_FLOAT"
-				"knockback_distance_max"	"450"
+				"knockback_distance_max"	"350"
 				"LinkedSpecialBonus"	"special_bonus_unique_drow_ranger_2"
 			}
 			"06"
@@ -1911,6 +1906,7 @@
 			}
 		}
 	}
+
 	//=================================================================================================================
 	// Ability: Drow Ranger's Marksmanship
 	//=================================================================================================================
@@ -2004,10 +2000,11 @@
 			}
 		}
 	}
+
 	//=================================================================================================================
 	// Morphling: Adaptive Strike
 	//=================================================================================================================
-	"morphling_adaptive_strike"
+	"morphling_adaptive_strike_agi"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------
@@ -2032,7 +2029,7 @@
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"				"0"		
+		"AbilityManaCost"				"80"		
 
 		// Stats
 		//-------------------------------------------------------------------------------------------------------------
@@ -2045,7 +2042,7 @@
 			"01"
 			{
 				"var_type"						"FIELD_FLOAT"
-				"damage_base"					"0.0"
+				"damage_base"					"0"
 			}
 			"02"
 			{
@@ -2060,35 +2057,97 @@
 			"04"
 			{
 				"var_type"						"FIELD_FLOAT"
-				"stun_min"						"1.5"
+				"range_tooltip"					"900"
 			}
 			"05"
 			{
 				"var_type"						"FIELD_FLOAT"
-				"stun_max"						"4.0"
-			}
-			"06"
-			{
-				"var_type"						"FIELD_INTEGER"
-				"knockback_min"					"150"
+				"projectile_speed"				"1150"
 			}
 			"07"
 			{
-				"var_type"						"FIELD_INTEGER"
-				"knockback_max"					"400"
+				"var_type"						"FIELD_FLOAT"
+				"shared_cooldown"				"3"
 			}
-			"08"
+		}
+	}
+	
+	//=================================================================================================================
+	// Morphling: Adaptive Strike
+	//=================================================================================================================
+	"morphling_adaptive_strike_str"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"					"7000"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES_STRONG"
+		"FightRecapLevel"				"1"
+		"AbilitySound"					"Hero_Morphling.AdaptiveStrike"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"900"
+		"AbilityCastPoint"				"0.25"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"80"		
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.3"	// Primarily about the damage
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"stun_min"						"0.25"
+			}
+			"02"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"stun_max"						"3.0"
+			}
+			"03"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"knockback_min"					"100"
+			}
+			"04"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"knockback_max"					"500"
+			}
+			"05"
 			{
 				"var_type"						"FIELD_FLOAT"
 				"range_tooltip"					"900"
 			}
-			"09"
+			"06"
 			{
 				"var_type"						"FIELD_FLOAT"
-				"projectile_speed"					"1250"
+				"projectile_speed"				"1150"
+			}
+			"07"
+			{
+				"var_type"						"FIELD_FLOAT"
+				"shared_cooldown"				"3"
 			}
 		}
 	}
+
 	//=================================================================================================================
 	// Morphling: Morph (Agility Gain)
 	//=================================================================================================================
@@ -2098,6 +2157,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"					"5055"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+		"LinkedAbility"					"morphling_morph_str"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2110,22 +2170,22 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"mana_cost"				"0"
+				"points_per_tick"		"1"
 			}
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"points_per_tick"		"1"
+				"var_type"				"FIELD_FLOAT"
+				"morph_cooldown"		"0.04"
 			}
 			"03"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"morph_cooldown"		"0.0625"
+				"var_type"				"FIELD_INTEGER"
+				"bonus_attributes"		"6"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_attributes"		"6"
+				"morph_rate_tooltip"	"25"
 			}
 		}
 	}
@@ -2139,6 +2199,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"					"5056"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+		"LinkedAbility"					"morphling_morph_agi"
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2151,22 +2212,22 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"mana_cost"				"0"
+				"points_per_tick"		"1"
 			}
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"points_per_tick"		"1"
+				"var_type"				"FIELD_FLOAT"
+				"morph_cooldown"		"0.04"
 			}
 			"03"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"morph_cooldown"		"0.0625"
+				"var_type"				"FIELD_INTEGER"
+				"bonus_attributes"		"6"
 			}
 			"04"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_attributes"		"6"
+				"morph_rate_tooltip"	"25"
 			}
 		}
 	}
@@ -2277,12 +2338,14 @@
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"movement_speed_pct"	"-50"
+				"movement_speed_pct"	"-30"
+				"LinkedSpecialBonus"	"special_bonus_unique_ancient_apparition_4"
 			}
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"spell_resist_pct"		"0"
+				"spell_resist_pct"		"1"
+				"LinkedSpecialBonus"	"special_bonus_unique_ancient_apparition_4"
 			}
 			"04"
 			{
@@ -2570,6 +2633,7 @@
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"5.5"
 				"levelkey"				"quaslevel"	
+				"LinkedSpecialBonus"	"special_bonus_unique_invoker_7"
 			}
 			"02"
 			{
@@ -3475,6 +3539,5 @@
 			}
 		}
 	}
-
 }
 	

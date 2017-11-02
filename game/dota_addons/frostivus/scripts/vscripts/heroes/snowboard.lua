@@ -62,7 +62,32 @@ modifier_penguin_thinker = class({
 
 
 heightOffset = {
-	["npc_dota_hero_lina"] = 5
+	["npc_dota_penguin"] = {
+		["default"] = 5,
+		["npc_dota_hero_doom"] = 5,
+		["npc_dota_hero_chaos_knight"] = 5,
+		["npc_dota_hero_huskar"] = 5,
+		["npc_dota_hero_phoenix"] = 5,
+		["npc_dota_hero_clinkz"] = 5,
+		["npc_dota_hero_lina"] = 5,
+		["npc_dota_hero_batrider"] = 5,
+		["npc_dota_hero_ogre_magi"] = 5,
+		["npc_dota_hero_warlock"] = 5,
+		["npc_dota_hero_ember_spirit"] = 5,
+	},
+	["npc_dota_"] = {
+		["default"] = 5,
+		["npc_dota_hero_doom"] = 5,
+		["npc_dota_hero_chaos_knight"] = 5,
+		["npc_dota_hero_huskar"] = 5,
+		["npc_dota_hero_phoenix"] = 5,
+		["npc_dota_hero_clinkz"] = 5,
+		["npc_dota_hero_lina"] = 5,
+		["npc_dota_hero_batrider"] = 5,
+		["npc_dota_hero_ogre_magi"] = 5,
+		["npc_dota_hero_warlock"] = 5,
+		["npc_dota_hero_ember_spirit"] = 5,
+	},
 }
 
 modifier_mount_movement = class({
@@ -127,6 +152,7 @@ modifier_mount_movement = class({
 			--when destroy on mount do
 			if self:GetParent() == self:GetCaster() then
 				EmitSoundOn( "Hero_Tusk.IceShards.Penguin", self:GetParent() )
+				self:GetCaster():RemoveGesture( ACT_DOTA_SLIDE_LOOP )
 				self.player:RemoveModifierByName("modifier_mount_movement")
 				return
 			end
@@ -216,8 +242,9 @@ modifier_mount_movement = class({
 
 				--short delay before movement, to prevent insta crashing into wall/tree again
 				if self.delay <= 0 then
+					local offset = heightOffset[self:GetCaster():GetUnitName()][player:GetName()] or heightOffset[self:GetCaster():GetUnitName()]["default"]
 					local newPos = player:GetAbsOrigin() + player:GetForwardVector() * ( (1/30) * self.curSpeed )
-					newPos.z = GetGroundHeight(newPos, player) + (heightOffset[player:GetName()] or 0)
+					newPos.z = GetGroundHeight(newPos, player) + offset
 
 					--end slide if unpathable, and destroy any trees at unpathable position
 					if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) then

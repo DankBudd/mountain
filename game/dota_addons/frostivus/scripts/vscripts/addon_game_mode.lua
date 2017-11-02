@@ -41,6 +41,7 @@ end
 
 -- Create the game mode when we activate
 function Activate()
+	print("ACTIVATE")
 	GameRules.GameMode = GameMode()
 	GameRules.GameMode:InitGameMode()
 end
