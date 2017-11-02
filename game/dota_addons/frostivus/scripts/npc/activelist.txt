@@ -1,7 +1,7 @@
 "whitelist" 
 {
 		"npc_dota_hero_doom"				"1"
-		"npc_dota_hero_chaos_knight"		"1"
+		"npc_dota_hero_chaos_knight"			"1"
 		"npc_dota_hero_huskar"				"1"
 		"npc_dota_hero_phoenix"				"1"
 		"npc_dota_hero_clinkz"				"1"
@@ -9,5 +9,5 @@
 		"npc_dota_hero_batrider"			"1"
 		"npc_dota_hero_ogre_magi"			"1"
 		"npc_dota_hero_warlock"				"1"
-		"npc_dota_hero_ember_spirit"		"1"
+		"npc_dota_hero_ember_spirit"			"1"
 }
