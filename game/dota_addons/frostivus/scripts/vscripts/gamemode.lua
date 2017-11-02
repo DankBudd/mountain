@@ -4,15 +4,13 @@ if GameMode == nil then
 end
 
 --require stuff
---require('ai/base_ai')
+require('ai/base_ai')
 
 --link global modifiers
 --LinkLuaModifier(className,fileName,LuaModifierType)
 
 function GameMode:InitGameMode()
-	print("INIT")
---	GameRules:GetGameModeEntity():SetThink( "OnThink", self, "GlobalThink", 2 )
---	print("POST THINK")
+	GameRules:GetGameModeEntity():SetThink( "OnThink", self, "GlobalThink", 2 )
 
 	 -- Setup Rules
 	GameRules:SetHeroRespawnEnabled( true )
@@ -44,8 +42,13 @@ function GameMode:InitGameMode()
 	GameRules:LockCustomGameSetupTeamAssignment( true )
 	GameRules:EnableCustomGameSetupAutoLaunch( true )
 
-	print("POST RULES")
+	--Setup Tables
+	self.trackedEntities = {}
+	self.debugEntities = {}
+	self.mounts = {}
+	print("set tables")
 
+	GameMode = self
 	--Setup Listeners
 	ListenToGameEvent("player_chat", Dynamic_Wrap(GameMode, 'OnPlayerChat'), self)
 	ListenToGameEvent("player_reconnected", Dynamic_Wrap(GameMode, 'OnPlayerReconnect'), self)
@@ -54,26 +57,16 @@ function GameMode:InitGameMode()
 	ListenToGameEvent('player_connect_full', Dynamic_Wrap(GameMode, 'PlayerConnectFull'), self)
 	ListenToGameEvent('dota_player_pick_hero', Dynamic_Wrap(GameMode, 'OnPlayerPickHero'), self)
 	ListenToGameEvent('dota_item_picked_up', Dynamic_Wrap(GameMode, 'OnItemPickedUp'), self)
-	ListenToGameEvent("dota_illusions_created", Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
-	ListenToGameEvent("npc_spawned", Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
-
-	print("POST LISTEN")
+	ListenToGameEvent('dota_illusions_created', Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
+	ListenToGameEvent('npc_spawned', Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
 
 	--Setup Filters
-	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, "OrderManager"), self)
-	GameRules:GetGameModeEntity():SetModifierGainedFilter(Dynamic_Wrap(GameMode, "ModifierManager"), self)
-
-	print("POST FILTERS")
-
-	--Setup Tables
-	self.trackedEntities = {}
-	self.debugEntities = {}
-	self.mounts = {}
+	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, 'OrderManager'), self)
+	GameRules:GetGameModeEntity():SetModifierGainedFilter(Dynamic_Wrap(GameMode, 'ModifierManager'), self)
 end
 
 --this function will only run once, when the first player is fully loaded.
 function GameMode:StartGameMode()
-	print("START")
 	if mode then
 		return
 	end
@@ -114,10 +107,9 @@ end
 
 -- Evaluate the state of the game
 function GameMode:OnThink()
-	print("THINK")
 	if GameRules:State_Get() == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
 	elseif GameRules:State_Get() >= DOTA_GAMERULES_STATE_POST_GAME then
-		return nil
+		return
 	end
 	return 1
 end
@@ -133,8 +125,6 @@ function GameMode:OrderManager( keys )
 	local pos = Vector(keys.position_x, keys.position_y, keys.position_z)
 	local queue = keys.queue
 	local sequenceNumber = keys.sequence_number_const
-
-	print("ORDER")
 
 	--PrintRelevent(filterTable)
 
@@ -165,7 +155,6 @@ function GameMode:ModifierManager( keys )
 	local modifierName = keys.name_const
 	local duration = keys.duration
 
-	print("MODIFIER")
 	if not parentIndex or not casterIndex or not abilityIndex then
 --[[		print(
 		"modifier: "..modifierName,
@@ -194,7 +183,6 @@ function GameMode:ModifierManager( keys )
 end
 
 function GameMode:GiveMount(hero, mountName)
-	print("giveMOUNT")
 	--remove old mount if they have one
 	if self.mounts[hero:GetPlayerID()] then
 		UTIL_Remove(EntIndexToHScript(self.mounts[hero:GetPlayerID()]))
@@ -220,7 +208,6 @@ function GameMode:GiveMount(hero, mountName)
 end
 
 function GameMode:OnNpcSpawn(keys)
-	print("NPC SPAWN")
 	local npc = EntIndexToHScript(keys.entindex)
 	--print("npc: "..npc:GetUnitName().." has spawned")
 
@@ -254,10 +241,13 @@ end
 
 function GameMode:OnPlayerPickHero( keys )
 	print("pick hero")
+	for k,v in pairs(keys) do
+		print("",k,v)
+	end
 end
 
 function GameMode:OnItemPickedUp( keys )
-	print("pick item")
+	print("grab item")
 end
 
 function GameMode:OnIllusionsCreated( keys )
@@ -271,8 +261,6 @@ function GameMode:OnPlayerChat( keys )
 
 	local command
 	local arguments = {}
-
-	print("chat")
 
 	for k,v in pairs(split(text, " ")) do
 		if string.match(v, "-") and not command then
@@ -387,7 +375,16 @@ function GameMode:OnPlayerChat( keys )
 			unit:SetOwner(hero)
 			FindClearSpaceForUnit(unit, unit:GetAbsOrigin(), true)
 
-			for i = 0,15 do
+			BaseAi:MakeInstance(unit, {
+				state = PROTECTIVE,
+				protect = {unit},
+				aggroRange = 600,
+				leash = 800,
+				buffer = 200,
+				spawn = unit:GetAbsOrigin(),
+			})
+
+			for i = 0,6 do
 				local ab = unit:GetAbilityByIndex(i)
 				if ab then
 					ab:SetLevel(1)
@@ -474,14 +471,13 @@ function GameMode:OnPlayerChat( keys )
 	end
 end
 
-function GameMode:RemovePet(hero)
-	print("kill pet")
-	if type(hero) == "number" then
-		hero = EntIndexToHScript(hero)
+function GameMode:RemovePet(index)
+	if type(index) ~= "number" then
+		index = index:entindex()
 	end
-	local petIndex = self.trackedEntities[hero:entindex()]
+	local petIndex = self.trackedEntities[index]
 	if petIndex then
 		UTIL_Remove( EntIndexToHScript( petIndex ) )
-		self.trackedEntities[hero:entindex()] = nil
+		self.trackedEntities[index] = nil
 	end
 end

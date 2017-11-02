@@ -3,7 +3,7 @@ require('gamemode')
 
 function Precache( context )
 	local heroes = {
-		"doom",
+		"doom_bringer",
 		"chaos_knight",
 		"huskar",
 		"phoenix",
@@ -18,7 +18,7 @@ function Precache( context )
 	local enemyHeroes = {
 		"tusk",
 		"tiny",
-		"drow",
+		"drow_ranger",
 		"morphling",
 		"ancient_apparition",
 		"crystal_maiden",
@@ -41,7 +41,6 @@ end
 
 -- Create the game mode when we activate
 function Activate()
-	print("ACTIVATE")
 	GameRules.GameMode = GameMode()
 	GameRules.GameMode:InitGameMode()
 end
