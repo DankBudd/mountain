@@ -64,6 +64,7 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
+				"base_speed"		"300"
 			}
 			"02"
 			{
@@ -73,6 +74,7 @@
 			"03"
 			{
 				"var_type"			"FIELD_INTEGER"
+				"speed_growth"		"25"
 			}
 			"04"
 			{
