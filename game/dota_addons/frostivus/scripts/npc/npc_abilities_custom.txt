@@ -64,17 +64,15 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"base_speed"		"50"
 			}
 			"02"
 			{
 				"var_type"			"FIELD_FLOAT"
-				"max_speed"			"600"
+				"max_speed"			"1000"
 			}
 			"03"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"speed_growth"		"15"
 			}
 			"04"
 			{
@@ -84,8 +82,17 @@
 			"05"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"delay"				"1.2"
+				"delay"				"1.0"
 			}
 		}
+	}
+
+	"base_ai"
+	{
+		"BaseClass"             		"ability_lua"
+		"ScriptFile"					"heroes/base_ai.lua"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"			"disruptor_thunder_strike"
+		"MaxLevel" 						"1"
 	}
 }

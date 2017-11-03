@@ -254,6 +254,8 @@ function GameMode:OnIllusionsCreated( keys )
 	print("illusion")
 end
 
+--probably need to add checks to all these commands for if the arguments are null
+--might do it inside IsCommand and add an input for how many arguments a command should have
 function GameMode:OnPlayerChat( keys )
 	local teamonly = keys.teamonly
 	local playerID = keys.playerid
@@ -375,14 +377,16 @@ function GameMode:OnPlayerChat( keys )
 			unit:SetOwner(hero)
 			FindClearSpaceForUnit(unit, unit:GetAbsOrigin(), true)
 
-			BaseAi:MakeInstance(unit, {
-				state = PROTECTIVE,
-				protect = {unit},
-				aggroRange = 600,
-				leash = 800,
-				buffer = 200,
-				spawn = unit:GetAbsOrigin(),
-			})
+			if not unit.instance then
+				unit.instance = BaseAi:MakeInstance(unit, {
+					state = WANDER_IDLE,
+					--protect = {unit},
+					aggroRange = 600,
+					leash = 800,
+					buffer = 200,
+					--spawn = unit:GetAbsOrigin(),
+				})
+			end
 
 			for i = 0,6 do
 				local ab = unit:GetAbilityByIndex(i)

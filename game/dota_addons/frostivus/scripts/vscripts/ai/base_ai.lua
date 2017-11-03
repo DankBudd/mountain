@@ -13,7 +13,7 @@ THINK_STATES = {
 }
 
 local function HasBehavior(ability, behavior)
-	return bit.band(ability:GetBehavior(), behavior) == behavior
+	return bit.band(tonumber(tostring(ability:GetBehavior())), behavior) == behavior
 end
 
 --might need to improve this further
@@ -42,11 +42,12 @@ local function CanTargetUnit(ability, unit)
 end
 
 --need to improve spell casting ai
---	make this return nil if MAX(5) spells have been cycled and none are castable
 local function GetSpellToCast(unit, optStart)
 	local min = optStart or 0
 	local max = 5
 	if min > max then return end
+
+	print("searching for spell...")
 
 	local behav
 	local result
@@ -55,15 +56,19 @@ local function GetSpellToCast(unit, optStart)
 		local temp = unit:GetAbilityByIndex(i)
 		if temp then
 			ab = temp
-			if ab:IsCooldownReady() and ab:GetManaCost(-1) <= unit:GetMana() then
+			if ab:GetLevel() > 0 and ab:IsCooldownReady() and ab:GetManaCost(-1) <= unit:GetMana() then
 				break
 			end
+		else
+			ab = nil
 		end
 	end
 
+	print("current spell: ", ab:GetName())
+
 	if ab then
 		if HasBehavior(ab, DOTA_ABILITY_BEHAVIOR_PASSIVE) then
-			ab,behav = GetSpellToCast(unit, min+1)
+			return GetSpellToCast(unit, min+1)
 
 		elseif HasBehavior(ab, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) then
 			behav = DOTA_ABILITY_BEHAVIOR_UNIT_TARGET
@@ -74,6 +79,8 @@ local function GetSpellToCast(unit, optStart)
 		elseif HasBehavior(ab, DOTA_ABILITY_BEHAVIOR_NO_TARGET) then
 			behav = DOTA_ABILITY_BEHAVIOR_NO_TARGET
 		end
+	else
+		behav = nil
 	end
 
 	return ab,behav
@@ -109,10 +116,10 @@ local function CastSpell(unit, target, ability, behavior)
 	return false
 end
 
-BaseAi = class({
+BaseAi = {
 	MakeInstance = function(self, unit, info)
-		if not IsServer() or not unit then return end
-		print("making_instance")
+		if not IsServer() or not unit or not info then return end
+		if not self.initialized then self:Init() end
 		local instance = {}
 		setmetatable(instance, self)
 
@@ -120,31 +127,76 @@ BaseAi = class({
 		instance.state = info.state or IDLE
 
 		local ar = unit:GetAcquisitionRange()
-		instance.aggroRange = info.aggroRange or (ar ~= 0 and ar) or 1200
+		local var = info.aggroRange or info.aggrorange
+		instance.aggroRange = var or (ar ~= 0 and ar) or 1200
 		instance.leash = info.leash or (ar ~= 0 and ar+250) or 1750
 		instance.spawn = info.spawn or unit:GetAbsOrigin()
 		instance.buffer = info.buffer or 500
 		instance.idleTime = info.idleTime or 0
 		instance.protect = info.protect or {}
 
-		unit:SetContextThink(DoUniqueString("aiThinker"), function()
-			if not instance.unit then print("no unit to think") return end
-			if not instance.unit:IsAlive() then print(instance.unit:GetUnitName().." has died. kill thinker") return end
-			--print(instance.unit:GetUnitName().." is thinking...")
-			if instance.unit:IsStunned() or instance.unit:IsHexed() or GameRules:IsGamePaused() then
-				return 0.5
-			end
+		instance.id = DoUniqueString("instance")
+		instance.nextThink = GameRules:GetGameTime()+0.5
 
-			--think on state with info instance
-			Dynamic_Wrap(self, THINK_STATES[instance.state])(instance)
-			return 0.5
-		end, 0.5)
+		self.thinkers[instance.id] = instance
+
+		print('created instance: '..instance.id)
 
 		return instance
 	end,
 
+	Init = function(self)
+		self.thinkers = {}
+
+		local thinker = SpawnEntityFromTableSynchronous("info_target",{targetname="ai_thinker"})
+		thinker:SetThink("Think", self)
+
+		print("AI_INIT")
+		self.initialized = true
+	end,
+
+	Think = function(self)
+		local time = GameRules:GetGameTime()
+
+		--iterate thru current ai thinkers
+		for k,v in pairs(self.thinkers) do
+
+			--check if its time to think
+			if time >= v.nextThink then
+				local success,tick
+
+				self.thinkers[k] = nil
+
+				--make sure unit is able to think right now
+				if v.unit and v.unit:IsAlive() then
+					--print("unit can think: "..v.unit:GetUnitName())
+					if not v.unit:IsStunned() and not v.unit:IsHexed() then
+						success,tick = xpcall(function()
+							return Dynamic_Wrap(self, THINK_STATES[v.state])(v)
+						end, function(err)
+							return err..'\n'..debug.traceback()..'\n'
+						end)
+					end
+				end
+
+				if success then
+					--set next think
+					if tick then
+						v.nextThink = v.nextThink + tick
+						self.thinkers[k] = v
+					end
+				else
+					--think has failed
+					print("think failed", k, tick)
+				end
+			end
+		end
+		return 0.01
+	end,
+
 	IdleThink = function(self)
 		print("idle_think")
+
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, self.aggroRange,
 		DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 
@@ -154,46 +206,40 @@ BaseAi = class({
 				if GridNav:FindPathLength(self.unit:GetAbsOrigin(), units[1]:GetAbsOrigin()) < self.leash + self.buffer then
 					self.unit:MoveToTargetToAttack( units[1] )
 					self.aggroTarget = units[1]
-					self.idleTime = 0
 					self.state = AGGRESSIVE
-					return true
+					return RandomFloat(0.5, 3.0)
 				end
 			end
 		end
-
-		--this needs to be improved
-		self.idleTime = self.idleTime + 0.5
-		if self.idleTime >= 3 + (0.5*RandomInt(0,6)) then
-			--insert taunt here
-			print("taunt")
-			self.idleTime = 0
-		end
-
-
-		print("idleTime: "..tostring(self.idleTime))
+		return RandomFloat(0.5, 3.0)
 	end,
 
 	AggresiveThink = function(self)
 		print("aggro_think")
+
 		--check if we have moved too far away from spawn
 		if (self.spawn - self.unit:GetAbsOrigin()):Length2D() > self.leash then
 			self.unit:MoveToPosition( self.spawn )
+			self.aggroTarget = nil
 			self.state = RETURNING
-			return true
+			return RandomFloat(0.5, 3.0)
 		end
 
 		--check if target is still alive
 		if not self.aggroTarget:IsAlive() then
 			self.unit:MoveToPosition( self.spawn )
+			self.aggroTarget = nil
 			self.state = RETURNING
-			return true
+			return RandomFloat(0.5, 3.0)
 		end
 
 		self.unit:MoveToTargetToAttack(self.aggroTarget)
+		return RandomFloat(0.5, 3.0)
 	end,
 
 	ReturningThink = function(self)
 		print("return_think")
+
 		local range = self.aggroRange * 0.5
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, range,
 		DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
@@ -205,89 +251,121 @@ BaseAi = class({
 					self.unit:MoveToTargetToAttack( units[1] )
 					self.aggroTarget = units[1]
 					self.state = AGGRESSIVE
-					return true
+					return RandomFloat(0.5, 3.0)
 				end
 			end
 		end
 
 		--check if we have returned to spawn
 		if (self.spawn - self.unit:GetAbsOrigin()):Length2D() <= 10 then
-			self.aggroTarget = nil
 			self.state = IDLE
-			return true
+			return RandomFloat(0.5, 3.0)
 		end
+		return RandomFloat(0.5, 3.0)
 	end,
 
 	WanderIdleThink = function(self)
 		print("wander_think")
+
+		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, self.aggroRange,
+		DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+
+		print("", "found "..tostring(#units).." enemy heroes")
+		--check if state should change
+		if #units > 0 then
+			print("","", "enemy is in range!")
+			if GetSpellToCast(self.unit) then
+				print("","", "spell can be cast on enemy!")
+				if self.protect == nil or self.protect == {} then
+					self.protect = {self.unit}
+				end
+				self.waypoints = nil
+				self.state = PROTECTIVE
+
+				print("", "back to protective..")
+				return RandomFloat(0.5, 3.0)
+			end
+		end
+
 		--make some random waypoints
 		self.waypoints = self.waypoints or {}
+
+		print("", "we have "..#self.waypoints.." waypoints")
+
 		while #self.waypoints < 3 do
 			local wp = self.unit:GetAbsOrigin() + RandomVector(500)
 			if GridNav:CanFindPath(self.unit:GetAbsOrigin(), wp) then
 				if GridNav:FindPathLength(self.unit:GetAbsOrigin(), wp) < self.leash + self.buffer then
 					table.insert(self.waypoints, wp)
+					print("","", "making new waypoint["..tostring(#self.waypoints).."] at: Vector("..tostring(wp.x)..", "..tostring(wp.y)..", "..tostring(wp.z)..")")
 				end
 			end 
 		end
 
 		--check if waypoint reached
 		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 then
+			print("","", "reached a waypoint! removing it..")
 			table.remove(self.waypoints, 1)
 		end
 
-		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, self.aggroRange,
-		DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
-
-		--TODO: improve logic between wander and protective
-		--check if state should change
-		if #units > 0 then
-			--if has any castable spells
-				--if can attack
-					self.state = PROTECTIVE
-					self.protect = (self.protect ~= {} and self.protect) or {self.unit}
-					return true
-				--end
-			--end
-		end
-
+		print("", "moving to next waypoint")
 		--move towards next waypoint 
 		self.unit:MoveToPosition(self.waypoints[1])
+		return RandomFloat(0.5, 3.0)
 	end,
 
 	ProtectiveThink = function(self)
 		print("protective_think")
+
 		--check if theres actually something to protect
-		if #self.protect <= 0 then
+		if self.protect and #self.protect <= 0 then
+			print("", "nothing to protect", type(self.protect), self.protect)
 			self.state = WANDER_IDLE
-			return true
+			return RandomFloat(0.5, 3.0)
 		end
 
 		--iterate thru areas/units to protect
 		for i = 1,#self.protect do
+			print("", "currently protecting:", self.protect[i])
 			--grab a spell
 			local ab,behav = GetSpellToCast(self.unit)
+			if not ab then
+				print("","", "nothing to cast, stop protecting for this think")
+				break
+			end
 			--grab an instance of thing we are protecting
 			local protect = self.protect[i]
 			if type(protect) ~= "vector" then
+				print("", "protecting a unit")
 				--try to buff thing if its a unit
 				if CanTargetUnit(ab, protect) then
-					CastSpell(self.unit, protect, ab, behav)
+					print("", "our unit can be buffed")
+					if CastSpell(self.unit, protect, ab, behav) then
+						print("", "SUCCEEDED in buffing ally")
+					else
+						print("", "FAILED in buffing ally")
+					end
 				end
 				protect = protect:GetAbsOrigin()
 			end
 
 			--find and target any enemies near protect
 			local units = FindUnitsInRadius(self.unit:GetTeam(), protect, nil, self.aggroRange,
-			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 
+			print("", "found "..tostring(#units).." enemy heroes")
 			for _,unit in pairs(units) do
-				CastSpell(self.unit, unit, ab, behav)
-				return true
+				if CastSpell(self.unit, unit, ab, behav) then
+					print("","", "SUCCEEDED in attacking enemy")
+					break
+				else
+					print("","", "FAILED in attacking enemy")
+				end
 			end
-
-			self.state = WANDER_IDLE
-			return true
 		end
+
+		print("", "back to wandering..")
+		self.state = WANDER_IDLE
+		return RandomFloat(0.5, 3.0)
 	end,
-})
+}
