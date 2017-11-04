@@ -142,15 +142,16 @@ BaseAi = {
 
 	Init = function(self)
 		self.thinkers = {}
+		self.initialized = true
 
 		local thinker = SpawnEntityFromTableSynchronous("info_target",{targetname="ai_thinker"})
 		thinker:SetThink("Think", self)
 
 		print("AI_INIT")
-		self.initialized = true
 	end,
 
 	Think = function(self)
+		if not self.initialized then return end
 		local time = GameRules:GetGameTime()
 
 		--iterate thru current ai thinkers

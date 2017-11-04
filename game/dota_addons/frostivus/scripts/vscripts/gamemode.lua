@@ -71,6 +71,8 @@ function GameMode:StartGameMode()
 		return
 	end
 
+	math.randomseed(Time())
+
 	mode = GameRules:GetGameModeEntity()
 
 	-- Set GameMode parameters
