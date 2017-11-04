@@ -16,15 +16,10 @@ local function HasBehavior(ability, behavior)
 	return bit.band(tonumber(tostring(ability:GetBehavior())), behavior) == behavior
 end
 
---might need to improve this further
 local function CanTargetUnit(ability, unit)
 	local team = ability:GetAbilityTargetTeam()
 	local caster = ability:GetCaster()
 	if not unit.GetTeam then return false end
-
-	local NT_behav = HasBehavior(ability, DOTA_ABILITY_BEHAVIOR_NO_TARGET)
-	local UT_behav = HasBehavior(ability, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET)
-	local PT_behav = HasBehavior(ability, DOTA_ABILITY_BEHAVIOR_POINT)
 
 	if team == DOTA_UNIT_TARGET_TEAM_FRIENDLY then
 		if caster:GetTeam() == unit:GetTeam() then
@@ -37,11 +32,10 @@ local function CanTargetUnit(ability, unit)
 		end
 	end
 	if team == DOTA_UNIT_TARGET_TEAM_BOTH then return true end
-	if NT_behav then return true end
+	if HasBehavior(ability, DOTA_ABILITY_BEHAVIOR_NO_TARGET) then return true end
 	return false
 end
 
---need to improve spell casting ai
 local function GetSpellToCast(unit, optStart)
 	local min = optStart or 0
 	local max = 5
@@ -137,6 +131,7 @@ BaseAi = {
 
 		instance.id = DoUniqueString("instance")
 		instance.nextThink = GameRules:GetGameTime()+0.5
+		instance.lastThink = GameRules:GetGameTime()
 
 		self.thinkers[instance.id] = instance
 
@@ -161,17 +156,16 @@ BaseAi = {
 		--iterate thru current ai thinkers
 		for k,v in pairs(self.thinkers) do
 
+
 			--check if its time to think
 			if time >= v.nextThink then
-				local success,tick
-
 				self.thinkers[k] = nil
-
 				--make sure unit is able to think right now
+				local success,null
 				if v.unit and v.unit:IsAlive() then
 					--print("unit can think: "..v.unit:GetUnitName())
 					if not v.unit:IsStunned() and not v.unit:IsHexed() then
-						success,tick = xpcall(function()
+						success,null = xpcall(function()
 							return Dynamic_Wrap(self, THINK_STATES[v.state])(v)
 						end, function(err)
 							return err..'\n'..debug.traceback()..'\n'
@@ -179,15 +173,15 @@ BaseAi = {
 					end
 				end
 
+				--set next think
 				if success then
-					--set next think
-					if tick then
-						v.nextThink = v.nextThink + tick
-						self.thinkers[k] = v
-					end
+					--print("think succeeded", k)							
+					v.lastThink = time
+					v.nextThink = v.nextThink + RandomFloat(1.0, 2.5)
+					self.thinkers[k] = v
 				else
 					--think has failed
-					print("think failed", k, tick)
+					print("think failed", k)
 				end
 			end
 		end
@@ -207,11 +201,11 @@ BaseAi = {
 					self.unit:MoveToTargetToAttack( units[1] )
 					self.aggroTarget = units[1]
 					self.state = AGGRESSIVE
-					return RandomFloat(0.5, 3.0)
+					return
 				end
 			end
 		end
-		return RandomFloat(0.5, 3.0)
+		return
 	end,
 
 	AggresiveThink = function(self)
@@ -222,7 +216,7 @@ BaseAi = {
 			self.unit:MoveToPosition( self.spawn )
 			self.aggroTarget = nil
 			self.state = RETURNING
-			return RandomFloat(0.5, 3.0)
+			return
 		end
 
 		--check if target is still alive
@@ -230,11 +224,11 @@ BaseAi = {
 			self.unit:MoveToPosition( self.spawn )
 			self.aggroTarget = nil
 			self.state = RETURNING
-			return RandomFloat(0.5, 3.0)
+			return
 		end
 
 		self.unit:MoveToTargetToAttack(self.aggroTarget)
-		return RandomFloat(0.5, 3.0)
+		return
 	end,
 
 	ReturningThink = function(self)
@@ -251,7 +245,7 @@ BaseAi = {
 					self.unit:MoveToTargetToAttack( units[1] )
 					self.aggroTarget = units[1]
 					self.state = AGGRESSIVE
-					return RandomFloat(0.5, 3.0)
+					return
 				end
 			end
 		end
@@ -259,9 +253,9 @@ BaseAi = {
 		--check if we have returned to spawn
 		if (self.spawn - self.unit:GetAbsOrigin()):Length2D() <= 10 then
 			self.state = IDLE
-			return RandomFloat(0.5, 3.0)
+			return
 		end
-		return RandomFloat(0.5, 3.0)
+		return
 	end,
 
 	WanderIdleThink = function(self)
@@ -283,27 +277,33 @@ BaseAi = {
 				self.state = PROTECTIVE
 
 				print("", "back to protective..")
-				return RandomFloat(0.5, 3.0)
+				return
 			end
 		end
 
 		--make some random waypoints
 		self.waypoints = self.waypoints or {}
+		self.wpTimes = self.wpTimes or {}
 
-		print("", "we have "..#self.waypoints.." waypoints")
+		print("", "we have "..tostring(#self.waypoints).." waypoints")
 
+		local attempts = 0
 		while #self.waypoints < 3 do
+			attempts = attempts+1
+			print("", "generating waypoints for "..self.unit:GetUnitName().."...")
 			local wp = self.unit:GetAbsOrigin() + RandomVector(500)
-			if GridNav:CanFindPath(self.unit:GetAbsOrigin(), wp) then
-				if GridNav:FindPathLength(self.unit:GetAbsOrigin(), wp) < self.leash + self.buffer then
+			if GridNav:CanFindPath(self.unit:GetAbsOrigin(), wp) or attempts > 4 then
+				if GridNav:FindPathLength(self.unit:GetAbsOrigin(), wp) < self.leash + self.buffer or attempts > 4 then
 					table.insert(self.waypoints, wp)
-					print("","", "making new waypoint["..tostring(#self.waypoints).."] at: Vector("..tostring(wp.x)..", "..tostring(wp.y)..", "..tostring(wp.z)..")")
+					self.wpTimes[wp] = self.lastThink
+					print("","", "making new waypoint["..tostring(#self.waypoints).."] at: Vector("..tostring(wp.x)..", "..tostring(wp.y)..", "..tostring(wp.z)..") after "..tostring(attempts).." attempts")
+					attempts = 0
 				end
 			end 
 		end
 
 		--check if waypoint reached
-		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 then
+		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 or GameRules:GetGameTime()-5 > self.wpTimes[self.waypoints[1]] then
 			print("","", "reached a waypoint! removing it..")
 			table.remove(self.waypoints, 1)
 		end
@@ -311,7 +311,7 @@ BaseAi = {
 		print("", "moving to next waypoint")
 		--move towards next waypoint 
 		self.unit:MoveToPosition(self.waypoints[1])
-		return RandomFloat(0.5, 3.0)
+		return
 	end,
 
 	ProtectiveThink = function(self)
@@ -321,7 +321,7 @@ BaseAi = {
 		if self.protect and #self.protect <= 0 then
 			print("", "nothing to protect", type(self.protect), self.protect)
 			self.state = WANDER_IDLE
-			return RandomFloat(0.5, 3.0)
+			return
 		end
 
 		--iterate thru areas/units to protect
@@ -352,6 +352,7 @@ BaseAi = {
 			--find and target any enemies near protect
 			local units = FindUnitsInRadius(self.unit:GetTeam(), protect, nil, self.aggroRange,
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+			print(units, type(units), (type(units) == "table" and #units) or nil )
 
 			print("", "found "..tostring(#units).." enemy heroes")
 			for _,unit in pairs(units) do
@@ -366,6 +367,6 @@ BaseAi = {
 
 		print("", "back to wandering..")
 		self.state = WANDER_IDLE
-		return RandomFloat(0.5, 3.0)
+		return
 	end,
 }
