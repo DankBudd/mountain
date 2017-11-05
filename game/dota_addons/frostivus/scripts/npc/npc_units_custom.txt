@@ -16,13 +16,6 @@
 		// Abilities
 		//----------------------------------------------------------------
 		"Ability1"					"penguin_ability"
-		"Ability2"					""
-		"Ability3"					""
-		"Ability4"					""
-		"Ability5"					""
-		"Ability6"					""
-		"Ability7"					""
-		"Ability8"					""
 
 		// Armor
 		//----------------------------------------------------------------
@@ -39,8 +32,6 @@
 		"AttackAnimationPoint"		"0.467"
 		"AttackAcquisitionRange"	"500"
 		"AttackRange"				"130"
-		"ProjectileModel"			""
-		"ProjectileSpeed"			""
 
 		// Attributes
 		//----------------------------------------------------------------
@@ -91,9 +82,7 @@
 
 		//Inventory
 		"HasInventory"				"0"
-		"Creature"
-		{
-		}
+		"Creature"{}
 	}
   	//=================================================================================================================
 	// HERO: Tusk
@@ -109,12 +98,12 @@
 		"IsNeutralUnitType"			"1"
 		// Abilities
 		//----------------------------------------------------------------
-		"Ability1"		"tusk_ice_shards"
-		"Ability2"		"tusk_snowball" 
-		"Ability3"		"hero_invulnerablity"
-		"Ability4"		"tusk_launch_snowball" 
-		"Ability5"		"tusk_walrus_kick"
-		"Ability6"		"tusk_walrus_punch"
+		"Ability1"		"tusk_snowball"
+		"Ability2"		"tusk_walrus_punch" 
+		"Ability3"		"tusk_walrus_kick"
+		"Ability4"		"tusk_ice_shards" 
+		"Ability5"		"tusk_launch_snowball"
+		"Ability6"		"hero_invulnerablity"
 		// Attack
 		//----------------------------------------------------------------
 		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
@@ -153,7 +142,7 @@
         	"HasInventory" "1"
         	"EquippedItems"
         	{
-        		"Scepter"	{	"item"	"item_ultimate_scepter"	}
+        		"Scepter"	{	"Item"	"item_ultimate_scepter"	}
         	}
 		}
 	}
@@ -178,7 +167,6 @@
 		"Ability5"		"base_ai"
 
 		//currently, the ai will only attempt to cast their first 6 abilities
-
 		"state"		 "WANDER_IDLE" //the state this unit will start in
 		"aggroRange" "800" //the range at which this unit will look for enemies
 		"leash"		 "1000" //the range at which this unit will stop chaseing enemies
@@ -218,7 +206,7 @@
         	"HasInventory" "1"
         	"EquippedItems"
         	{
-        		"Scepter"	{	"item"	"item_ultimate_scepter"	}
+        		"Scepter"	{	"Item"	"item_ultimate_scepter"	}
         	}
 		}
 	}
@@ -236,10 +224,10 @@
 		"IsNeutralUnitType"			"1"
 		// Abilities
 		//----------------------------------------------------------------
-		"Ability1"		"drow_ranger_frost_arrows"
-		"Ability2"		"drow_ranger_wave_of_silence"
-		"Ability3"		"generic_invulnerablity"
-		"Ability4"		"drow_ranger_marksmanship"
+		"Ability1"		"drow_ranger_wave_of_silence"
+		"Ability2"		"drow_ranger_frost_arrows"
+		"Ability3"		"drow_ranger_marksmanship"
+		"Ability4"		"generic_invulnerablity"
 		"Ability5"		"base_ai"
 
 		"state"		 "WANDER_IDLE"
@@ -292,7 +280,7 @@
         	"HasInventory" "1"
         	"EquippedItems"
         	{
-        		"Scepter"	{	"item"	"item_ultimate_scepter"	}
+        		"Scepter"	{	"Item"	"item_ultimate_scepter"	}
         	}
 		}
 	}
@@ -318,7 +306,7 @@
 		"Ability6"		"generic_invulnerablity"
 		"Ability7"		"base_ai"
 
-		"state"		 "WANDER_IDLE"
+		"state"		 "PATROL"
 		"aggroRange" "800"
 		"leash"		 "1000"
 		"buffer"	 "250"
@@ -469,7 +457,7 @@
         	"HasInventory" "1"
         	"EquippedItems"
         	{
-        		"Scepter"	{	"item"	"item_ultimate_scepter"	}
+        		"Scepter"	{	"Item"	"item_ultimate_scepter"	}
         	}
 		}
 	}
@@ -543,7 +531,7 @@
         	"HasInventory" "1"
         	"EquippedItems"
         	{
-        		"Scepter"	{	"item"	"item_ultimate_scepter"	}
+        		"Scepter"	{	"Item"	"item_ultimate_scepter"	}
         	}
 		}
 	}
@@ -561,12 +549,12 @@
 		"IsNeutralUnitType"			"1"
 		// Abilities
 		//----------------------------------------------------------------
-		"Ability1"		"jakiro_dual_breath"
-		"Ability2"		"jakiro_ice_path"
+		"Ability1"		"jakiro_ice_path"
+		"Ability2"		"jakiro_dual_breath"
 		"Ability3"		"generic_invulnerablity"
 		"Ability4"		"base_ai"
 
-		"state"		 "WANDER_IDLE"
+		"state"		 "SENTRY"
 		"aggroRange" "800"
 		"leash"		 "1000"
 		"buffer"	 "250"
@@ -603,7 +591,7 @@
         	"HasInventory" "1"
         	"EquippedItems"
         	{
-        		"Scepter"	{	"item"	"item_ultimate_scepter"	}
+        		"Scepter"	{	"Item"	"item_ultimate_scepter"	}
         	}
 		}
 	}
@@ -622,9 +610,9 @@
 		// Abilities
 		//----------------------------------------------------------------
 		"Ability1"		"lich_frost_nova"
-		"Ability2"		"generic_invulnerablity"
+		"Ability2"		"lich_chain_frost"
 		"Ability3"		"lich_dark_ritual"
-		"Ability4"		"lich_chain_frost"
+		"Ability4"		"generic_invulnerablity"
 		"Ability5"		"base_ai"
 
 		"state"		 "WANDER_IDLE"
@@ -667,7 +655,7 @@
         	"HasInventory" "1"
         	"EquippedItems"
         	{
-        		"Scepter"	{	"item"	"item_ultimate_scepter"	}
+        		"Scepter"	{	"Item"	"item_ultimate_scepter"	}
         	}
 		}
 	}

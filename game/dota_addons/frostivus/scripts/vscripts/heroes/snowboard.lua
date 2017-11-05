@@ -60,36 +60,6 @@ modifier_penguin_thinker = class({
 	end,
 })
 
-
-heightOffset = {
-	["npc_dota_penguin"] = {
-		["default"] = 5,
-		["npc_dota_hero_doom"] = 5,
-		["npc_dota_hero_chaos_knight"] = 5,
-		["npc_dota_hero_huskar"] = 5,
-		["npc_dota_hero_phoenix"] = 5,
-		["npc_dota_hero_clinkz"] = 5,
-		["npc_dota_hero_lina"] = 5,
-		["npc_dota_hero_batrider"] = 5,
-		["npc_dota_hero_ogre_magi"] = 5,
-		["npc_dota_hero_warlock"] = 5,
-		["npc_dota_hero_ember_spirit"] = 5,
-	},
-	["npc_dota_"] = {
-		["default"] = 5,
-		["npc_dota_hero_doom"] = 5,
-		["npc_dota_hero_chaos_knight"] = 5,
-		["npc_dota_hero_huskar"] = 5,
-		["npc_dota_hero_phoenix"] = 5,
-		["npc_dota_hero_clinkz"] = 5,
-		["npc_dota_hero_lina"] = 5,
-		["npc_dota_hero_batrider"] = 5,
-		["npc_dota_hero_ogre_magi"] = 5,
-		["npc_dota_hero_warlock"] = 5,
-		["npc_dota_hero_ember_spirit"] = 5,
-	},
-}
-
 modifier_mount_movement = class({
 	IsHidden = function(self) return true end,
 	IsPurgable = function(self) return false end,
@@ -130,7 +100,6 @@ modifier_mount_movement = class({
 		self.turnRate = self:GetAbility():GetSpecialValueFor("turn_rate")
 		self.baseSpeed = self:GetAbility():GetSpecialValueFor("base_speed")
 		self.curSpeed = self.baseSpeed
-
 
 		self.delay = self:GetAbility():GetSpecialValueFor("delay")
 
@@ -242,9 +211,8 @@ modifier_mount_movement = class({
 
 				--short delay before movement, to prevent insta crashing into wall/tree again
 				if self.delay <= 0 then
-					local offset = heightOffset[self:GetCaster():GetUnitName()][player:GetName()] or heightOffset[self:GetCaster():GetUnitName()]["default"]
 					local newPos = player:GetAbsOrigin() + player:GetForwardVector() * ( (1/30) * self.curSpeed )
-					newPos.z = GetGroundHeight(newPos, player) + offset
+					newPos.z = GetGroundHeight(newPos, player) + 10
 
 					--end slide if unpathable, and destroy any trees at unpathable position
 					if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) then

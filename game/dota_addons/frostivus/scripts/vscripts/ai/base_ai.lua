@@ -3,13 +3,30 @@ AGGRESSIVE = 1
 RETURNING = 2
 WANDER_IDLE = 3
 PROTECTIVE = 4
+PATROL = 5
+PATROL_AGGRO = 6
+SENTRY = 7
 
 THINK_STATES = {
+	---------------------------------
+	--these think states are unused--
+	---------------------------------
 	[IDLE] = "IdleThink",
 	[AGGRESSIVE] = "AggresiveThink",
 	[RETURNING] = "ReturningThink",
-	[WANDER_IDLE] = "WanderIdleThink",
-	[PROTECTIVE] = "ProtectiveThink",
+	-------------------------------------------
+	--these think states are fully functional--
+	-------------------------------------------
+										 -- UNIQUE PARAMETERS
+	[WANDER_IDLE] = "WanderIdleThink", 	 -- 
+
+	[PROTECTIVE] = "ProtectiveThink",	 -- aggroTarget (unit)
+										 -- protect (table); units or positions that the thinking unit will attempt to protect
+
+	[PATROL] = "PatrolThink",			 -- patrolPoints (table); positions that the thinking unit will repeatedly traverse in table order
+
+	[PATROL_AGGRO] = "PatrolAggroThink", -- aggroTarget (unit)
+	[SENTRY] = "SentryThink",			 -- spawn (vector)
 }
 
 local function HasBehavior(ability, behavior)
@@ -32,7 +49,7 @@ local function CanTargetUnit(ability, unit)
 		end
 	end
 	if team == DOTA_UNIT_TARGET_TEAM_BOTH then return true end
-	if HasBehavior(ability, DOTA_ABILITY_BEHAVIOR_NO_TARGET) then return true end
+	--if HasBehavior(ability, DOTA_ABILITY_BEHAVIOR_NO_TARGET) then return true end
 	return false
 end
 
@@ -41,16 +58,15 @@ local function GetSpellToCast(unit, optStart)
 	local max = 5
 	if min > max then return end
 
-	print("searching for spell...")
+	print("","searching for spell...")
 
 	local behav
-	local result
 	local ab
 	for i = min,max do
 		local temp = unit:GetAbilityByIndex(i)
 		if temp then
-			ab = temp
-			if ab:GetLevel() > 0 and ab:IsCooldownReady() and ab:GetManaCost(-1) <= unit:GetMana() then
+			if temp:GetLevel() > 0 and temp:IsCooldownReady() and temp:GetManaCost(-1) <= unit:GetMana() then
+				ab = temp
 				break
 			end
 		else
@@ -58,9 +74,8 @@ local function GetSpellToCast(unit, optStart)
 		end
 	end
 
-	print("current spell: ", ab:GetName())
-
 	if ab then
+		print("","current spell: ", ab:GetName())
 		if HasBehavior(ab, DOTA_ABILITY_BEHAVIOR_PASSIVE) then
 			return GetSpellToCast(unit, min+1)
 
@@ -126,12 +141,26 @@ BaseAi = {
 		instance.leash = info.leash or (ar ~= 0 and ar+250) or 1750
 		instance.spawn = info.spawn or unit:GetAbsOrigin()
 		instance.buffer = info.buffer or 500
-		instance.idleTime = info.idleTime or 0
 		instance.protect = info.protect or {}
 
 		instance.id = DoUniqueString("instance")
 		instance.nextThink = GameRules:GetGameTime()+0.5
 		instance.lastThink = GameRules:GetGameTime()
+
+		--store everything else passed into MakeInstance
+		for k,v in pairs(info) do
+			--dont overwrite instance data
+			if not instance[k] then
+				instance[k] = v
+			end
+		end
+
+		--if unit already has an instance then overwrite the old one per request
+		if unit.instance then
+			if info.override then
+				self.thinkers[unit.instance.id] = nil
+			end
+		end
 
 		self.thinkers[instance.id] = instance
 
@@ -152,37 +181,42 @@ BaseAi = {
 
 	Think = function(self)
 		if not self.initialized then return end
-		local time = GameRules:GetGameTime()
 
 		--iterate thru current ai thinkers
-		for k,v in pairs(self.thinkers) do
-
-
+		for id,instance in pairs(self.thinkers) do
 			--check if its time to think
-			if time >= v.nextThink then
-				self.thinkers[k] = nil
+			local time = GameRules:GetGameTime()
+			if time >= instance.nextThink then
 				--make sure unit is able to think right now
-				local success,null
-				if v.unit and v.unit:IsAlive() then
-					--print("unit can think: "..v.unit:GetUnitName())
-					if not v.unit:IsStunned() and not v.unit:IsHexed() then
-						success,null = xpcall(function()
-							return Dynamic_Wrap(self, THINK_STATES[v.state])(v)
-						end, function(err)
-							return err..'\n'..debug.traceback()..'\n'
-						end)
-					end
+
+				local success,int
+				if instance.unit and not instance.unit:IsNull() then
+					--print("unit can think: "..instance.unit:GetUnitName())
+
+					success,int = xpcall(function()
+						return Dynamic_Wrap(self, THINK_STATES[instance.state])(instance)
+					end, function(err)
+						return err.."\n"..debug.traceback().."\n"
+					end)
+				else
+					print("null unit is trying to think.. kill thinker", id)
+					self.thinkers[id] = nil
 				end
 
 				--set next think
 				if success then
-					--print("think succeeded", k)							
-					v.lastThink = time
-					v.nextThink = v.nextThink + RandomFloat(1.0, 2.5)
-					self.thinkers[k] = v
+					--print("think succeeded", id)
+					local nextThink = RandomFloat(1.0, 3.0)
+					if int then nextThink = int end
+					if self.thinkers[id] then
+						self.thinkers[id].lastThink = time
+						self.thinkers[id].nextThink = time + nextThink
+					end
 				else
 					--think has failed
-					print("think failed", k)
+					print("think failed.. kill thinker", id)
+					print(int)
+					self.thinkers[id] = nil
 				end
 			end
 		end
@@ -293,11 +327,11 @@ BaseAi = {
 			attempts = attempts+1
 			print("", "generating waypoints for "..self.unit:GetUnitName().."...")
 			local wp = self.unit:GetAbsOrigin() + RandomVector(500)
-			if GridNav:CanFindPath(self.unit:GetAbsOrigin(), wp) or attempts > 4 then
-				if GridNav:FindPathLength(self.unit:GetAbsOrigin(), wp) < self.leash + self.buffer or attempts > 4 then
+			if GridNav:CanFindPath(self.unit:GetAbsOrigin(), wp) or attempts > 2 then
+				if GridNav:FindPathLength(self.unit:GetAbsOrigin(), wp) < self.leash + self.buffer or attempts > 2 then
 					table.insert(self.waypoints, wp)
 					self.wpTimes[wp] = self.lastThink
-					print("","", "making new waypoint["..tostring(#self.waypoints).."] at: Vector("..tostring(wp.x)..", "..tostring(wp.y)..", "..tostring(wp.z)..") after "..tostring(attempts).." attempts")
+					print("","", "making new waypoint["..tostring(#self.waypoints).."] at: Vector("..tostring(math.ceil(wp.x))..", "..tostring(math.ceil(wp.y))..", "..tostring(math.ceil(wp.z))..") after "..tostring(attempts).." attempts")
 					attempts = 0
 				end
 			end 
@@ -353,7 +387,6 @@ BaseAi = {
 			--find and target any enemies near protect
 			local units = FindUnitsInRadius(self.unit:GetTeam(), protect, nil, self.aggroRange,
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
-			print(units, type(units), (type(units) == "table" and #units) or nil )
 
 			print("", "found "..tostring(#units).." enemy heroes")
 			for _,unit in pairs(units) do
@@ -368,6 +401,110 @@ BaseAi = {
 
 		print("", "back to wandering..")
 		self.state = WANDER_IDLE
+		return
+	end,
+
+	--take preset waypoints and patrol between them
+	PatrolThink = function(self)
+		print("patrol_think")
+		if not self.patrolPoints or #self.patrolPoints < 2 then
+			print("", ((self.patrolPoints ~= nil and "we only have "..tostring(#self.patrolPoints)) or "no") .. " points to patrol.. killing thinker")
+			BaseAi.thinkers[self.id] = nil
+			return
+		end
+		print("", "we have "..tostring(#self.patrolPoints).." patrol points to traverse")
+
+		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, self.aggroRange,
+			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+
+		if #units>0 then
+			self.lastPos = self.unit:GetAbsOrigin()
+			self.aggroTarget = units[1]
+			self.state = PATROL_AGGRO
+			return
+		end
+
+		local toPatrol = self.lastPos or self.patrolPoints[1]
+		--check if waypoint reached
+		if (toPatrol - self.unit:GetAbsOrigin()):Length2D() <= 10 then
+			print("","", "reached a patrol point!")
+			self.lastPos = nil
+			--cycle patrol points
+			table.insert(self.patrolPoints, table.remove(self.patrolPoints, 1))
+		end
+		print("", "moving to patrol point... Vector("..tostring(math.ceil(self.patrolPoints[1].x))..", "..tostring(math.ceil(self.patrolPoints[1].y))..", "..tostring(math.ceil(self.patrolPoints[1].z))..")" )
+		--move towards next patrol point 
+		self.unit:MoveToPosition(self.patrolPoints[1])
+	end,
+
+	PatrolAggroThink = function(self)
+		print("patrol_aggro")
+		--check if we have moved too far away from patrol point
+		if (self.lastPos - self.unit:GetAbsOrigin()):Length2D() > self.leash then
+			print("", "too far from waypoints, return to patrol")
+			self.unit:MoveToPosition( self.lastPos )
+			self.aggroTarget = nil
+			self.state = PATROL
+			return
+		end
+
+		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, self.aggroRange,
+			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+
+		--if current enemy is still in range
+		if (self.lastPos - self.aggroTarget:GetAbsOrigin()):Length2D() < self.aggroRange then
+			print("", "enemy still in range")
+			--cast on enemy
+			local ab,behav = GetSpellToCast(self.unit)
+			if ab then
+				print("", "valid ability found, casting..")
+				if CastSpell(self.unit, self.aggroTarget, ab, behav) then
+					print("","", "cast on target success")
+					return
+				else
+					print("","", "cast on target failed")
+				end
+			else
+				print("", "no valid ability to cast")
+			end
+		else
+			print("", "target is out of range..")
+			--find new target
+			if #units > 0 then
+				print("","", "found a new target, continue think")
+				self.aggroTarget = units[1]
+				return
+			end
+			print("","", "no targets in range")
+		end
+
+		print("", "returning to patrol...")
+		self.aggroTarget = nil
+		self.state = PATROL
+		return
+	end,
+
+	SentryThink = function(self)
+		print("sentry_think")
+		local ab,behav = GetSpellToCast(self.unit)
+		if not ab then print("", "no valid ability to cast") return end
+
+		local range = ab:GetCastRange() or self.aggroRange
+		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, range,
+			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+
+		print("", "ability cast range: "..tostring(range))
+		if #units>0 then
+			if CastSpell(self.unit, units[1], ab, behav) then
+				print("","cast success")
+				return
+			else
+				print("","cast fail")
+			end
+		end
+
+		print("","no units to act on")
+		self.unit:MoveToPosition(self.spawn)
 		return
 	end,
 }

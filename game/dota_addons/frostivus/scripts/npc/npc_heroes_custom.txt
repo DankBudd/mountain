@@ -10,13 +10,13 @@
 	{
 		"override_hero"				"npc_dota_hero_doom_bringer"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -31,13 +31,13 @@
 	{
 		"override_hero"				"npc_dota_hero_chaos_knight"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -52,13 +52,13 @@
 	{
 		"override_hero"				"npc_dota_hero_huskar"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -73,13 +73,13 @@
 	{
 		"override_hero"				"npc_dota_hero_phoenix"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -93,13 +93,13 @@
 	{
 		"override_hero"				"npc_dota_hero_clinkz"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -113,13 +113,13 @@
 	{
 		"override_hero"				"npc_dota_hero_lina"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -133,13 +133,13 @@
 	{
 		"override_hero"				"npc_dota_hero_batrider"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -153,13 +153,13 @@
 	{
 		"override_hero"				"npc_dota_hero_ogre_magi"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -173,13 +173,13 @@
 	{
 		"override_hero"				"npc_dota_hero_warlock"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
@@ -193,13 +193,13 @@
 	{
 		"override_hero"				"npc_dota_hero_ember_spirit"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					"generic_stop"											
-		"Ability2"					"generic_jump"
-		"Ability3"					"generic_speed"
-		"Ability4"					"random_ability1"
+		"Ability1"					""											
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
-		"Ability6"					"random_ability2"
-		"Ability7"					"random_ability3"
+		"Ability6"					""
+		"Ability7"					""
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"

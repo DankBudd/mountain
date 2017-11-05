@@ -256,8 +256,6 @@ function GameMode:OnIllusionsCreated( keys )
 	print("illusion")
 end
 
---probably need to add checks to all these commands for if the arguments are null
---might do it inside IsCommand and add an input for how many arguments a command should have
 function GameMode:OnPlayerChat( keys )
 	local teamonly = keys.teamonly
 	local playerID = keys.playerid
@@ -278,16 +276,20 @@ function GameMode:OnPlayerChat( keys )
 	local player = PlayerResource:GetPlayer(playerID)
 	if not player then return end
 
-	local function IsCommand(str)
-		return string.sub(text, 1, string.len(str)) == str
+	local function IsCommand(str, num)
+		if string.sub(text, 1, string.len(str)) == str then
+				return true
+			end
+		end
+		return false 
 	end
 
-	if IsCommand("-view") then
+	if IsCommand("-view", 1) then
 		local distance = arguments[1]
 		CustomGameEventManager:Send_ServerToPlayer(player, "camera_zoom", {distance = distance})
 	end
 
-	if IsCommand("-newhero") then
+	if IsCommand("-newhero", 1) then
 		local name = arguments[1]
 		local gold = PlayerResource:GetGold(playerID)
 		local exp = PlayerResource:GetTotalEarnedXP(playerID)
@@ -339,7 +341,7 @@ function GameMode:OnPlayerChat( keys )
 		end, playerID)
 	end
 
-	if IsCommand("-spawn") then
+	if IsCommand("-spawn", 1) then
 		local name = arguments[1]
 		local team = arguments[2]
 
@@ -379,16 +381,15 @@ function GameMode:OnPlayerChat( keys )
 			unit:SetOwner(hero)
 			FindClearSpaceForUnit(unit, unit:GetAbsOrigin(), true)
 
-			if not unit.instance then
-				unit.instance = BaseAi:MakeInstance(unit, {
-					state = WANDER_IDLE,
-					--protect = {unit},
-					aggroRange = 600,
-					leash = 800,
-					buffer = 200,
-					--spawn = unit:GetAbsOrigin(),
-				})
-			end
+			unit.instance = BaseAi:MakeInstance(unit, {
+				state = SENTRY,
+				--patrolPoints = {hero:GetAbsOrigin(), hero:GetAbsOrigin()+hero:GetForwardVector()*500, hero:GetAbsOrigin()+hero:GetRightVector()*500},
+				aggroRange = 600,
+				leash = 800,
+				buffer = 200,
+				spawn = unit:GetAbsOrigin(),
+				override = true,
+			})
 
 			for i = 0,6 do
 				local ab = unit:GetAbilityByIndex(i)
@@ -402,12 +403,12 @@ function GameMode:OnPlayerChat( keys )
 		end)
 	end
 
-	if IsCommand("-displayerror") then
+	if IsCommand("-displayerror", 0) then
 		local msg = arguments[1]
 		DisplayError(playerID, msg)
 	end
 
-	if IsCommand("-debugremove") then
+	if IsCommand("-debugremove", 0) then
 		for _,ID in pairs(self.debugEntities) do
 			local debug = EntIndexToHScript(ID)
 			if debug then
@@ -417,7 +418,7 @@ function GameMode:OnPlayerChat( keys )
 		end
 	end
 
-	if IsCommand("-test") then
+	if IsCommand("-test", 0) then
 		local ents = {}
 		local ent = Entities:First()
 		--index all entities in a sorted table
@@ -445,7 +446,7 @@ function GameMode:OnPlayerChat( keys )
 		end
 	end
 
-	if IsCommand("-item") then
+	if IsCommand("-item", 1) then
 		if GameRules:IsCheatMode() then return end
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
 		local name = arguments[1]
@@ -467,10 +468,10 @@ function GameMode:OnPlayerChat( keys )
 		end
 	end
 
-	if IsCommand("-lvlup") then
+	if IsCommand("-lvlup", 1) then
 		if GameRules:IsCheatMode() then return end
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
-		local num = arguments[1]
+		local num = arguments[1] or 1
 		for i=1,num do
 			hero:HeroLevelUp(false)
 		end
