@@ -278,6 +278,7 @@ function GameMode:OnPlayerChat( keys )
 
 	local function IsCommand(str, num)
 		if string.sub(text, 1, string.len(str)) == str then
+			if #arguments >= num then
 				return true
 			end
 		end
