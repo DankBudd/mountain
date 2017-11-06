@@ -305,15 +305,19 @@ BaseAi = {
 			print("","", "enemy is in range!")
 			if GetSpellToCast(self.unit) then
 				print("","", "spell can be cast on enemy!")
-				if self.protect == nil or self.protect == {} then
-					self.protect = {self.unit}
-				end
+				self.protect = {self.unit}
 				self.waypoints = nil
 				self.state = PROTECTIVE
 
 				print("", "back to protective..")
 				return
 			end
+		end
+
+		--send them back to spawn if they go too far away
+		if (self.spawn - self.unit:GetAbsOrigin()):Length2D() > self.leash+self.buffer then
+			self.unit:MoveToPosition(self.spawn)
+			return 3.0
 		end
 
 		--make some random waypoints
@@ -338,7 +342,7 @@ BaseAi = {
 		end
 
 		--check if waypoint reached
-		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 or GameRules:GetGameTime()-5 > self.wpTimes[self.waypoints[1]] then
+		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 or GameRules:GetGameTime()-10 > self.wpTimes[self.waypoints[1]] then
 			print("","", "reached a waypoint! removing it..")
 			table.remove(self.waypoints, 1)
 		end
@@ -353,8 +357,8 @@ BaseAi = {
 		print("protective_think")
 
 		--check if theres actually something to protect
-		if self.protect and #self.protect <= 0 then
-			print("", "nothing to protect", type(self.protect), self.protect)
+		if not self.protect or self.protect and #self.protect <= 0 then
+			print("", "nothing to protect", self.protect)
 			self.state = WANDER_IDLE
 			return
 		end
@@ -452,7 +456,7 @@ BaseAi = {
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 
 		--if current enemy is still in range
-		if (self.lastPos - self.aggroTarget:GetAbsOrigin()):Length2D() < self.aggroRange then
+		if (self.unit:GetAbsOrigin() - self.aggroTarget:GetAbsOrigin()):Length2D() < self.aggroRange then
 			print("", "enemy still in range")
 			--cast on enemy
 			local ab,behav = GetSpellToCast(self.unit)
