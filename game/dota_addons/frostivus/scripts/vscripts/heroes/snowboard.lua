@@ -90,7 +90,11 @@ modifier_mount_movement = class({
 
 	GetModifierMoveSpeedBonus_Constant = function(self)
 		if IsClient() then
-			return self:GetStackCount()
+			local spd = self:GetStackCount() - self.baseSpeed
+			if spd < 0 then
+				spd = 0
+			end
+			return spd 
 		end
 	end,
 
