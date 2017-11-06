@@ -1,11 +1,13 @@
 --[[ Snowboard Race checkpoints ]]
 
 function Checkpoint_OnStartTouch( trigger )
-	if not tCPRecord then
-		tCPRecord = {}--construct global table once
-	end
+	GameRules.GameMode.tCPRecord = GameRules.GameMode.tCPRecord or {}
+	local tCPRecord = GameRules.GameMode.tCPRecord
+	
 	local hHero = trigger.activator --this holds info on checkpoint trigger hero
+	print(hHero:GetName())
 	local sCheckpointTriggerName = thisEntity:GetName() --this holds info on which checkpoint triggered
+	print(sCheckpointTriggerName)
 	local triggerflag = 1 --Assume triggered when function called
 	print "all initial variable stored and declared"
 
