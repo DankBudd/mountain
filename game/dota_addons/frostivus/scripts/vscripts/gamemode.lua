@@ -46,6 +46,7 @@ function GameMode:InitGameMode()
 	self.trackedEntities = {}
 	self.debugEntities = {}
 	self.mounts = {}
+	self.tCPRecord = {}
 	print("set tables")
 
 	GameMode = self
@@ -132,6 +133,12 @@ function GameMode:OrderManager( keys )
 
 	if abilityIndex then
 		local ability = EntIndexToHScript(abilityIndex)
+		if ability.IsItem then
+			if ability:GetName() == "item_ancient_janggo" and orderType == DOTA_UNIT_ORDER_CAST_NO_TARGET and not GameRules:IsCheatMode() then
+				--set to 2 because its going to use a charge immeditetly after we set it
+				ability:SetCurrentCharges(2)
+			end
+		end
 --		print("Filter | ability cast: "..ability:GetName())
 	end
 
@@ -383,7 +390,7 @@ function GameMode:OnPlayerChat( keys )
 			FindClearSpaceForUnit(unit, unit:GetAbsOrigin(), true)
 
 			unit.instance = BaseAi:MakeInstance(unit, {
-				state = SENTRY,
+				state = WANDER_IDLE,
 				--patrolPoints = {hero:GetAbsOrigin(), hero:GetAbsOrigin()+hero:GetForwardVector()*500, hero:GetAbsOrigin()+hero:GetRightVector()*500},
 				aggroRange = 600,
 				leash = 800,

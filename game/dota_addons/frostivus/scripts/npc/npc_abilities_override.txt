@@ -181,7 +181,7 @@
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_aura_movement_speed"	"20"
+				"bonus_aura_movement_speed"	"0"
 			}
 			"06"
 			{
@@ -191,7 +191,7 @@
 			"07"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_movement_speed_pct"	"13"
+				"bonus_movement_speed_pct"	"15"
 			}
 			"08"
 			{
@@ -491,7 +491,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"bonus_movement_speed"	"45"
+				"bonus_movement_speed"	"0"
 			}
 			"02"
 			{

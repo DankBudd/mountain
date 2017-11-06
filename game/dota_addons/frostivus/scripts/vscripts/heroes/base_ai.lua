@@ -51,16 +51,20 @@ function base_ai:OnUpgrade()
 		end
 
 		if not thisMorph then return end
+		print(thisMorph)
 		
 		for i=1,4 do
-			local ent = Entities:FindByName(nil, "patrol_point_"..i.."_"..thisMorph)
+			print("searching for: ".."patrol_point_"..tostring(i).."_"..thisMorph)
+			local ent = Entities:FindByName(nil, "patrol_point_"..tostring(i).."_"..thisMorph)
 			if ent then
 				if ent.GetAbsOrigin then
+					print("found em!")
 					table.insert(info.patrolPoints, ent:GetAbsOrigin())
 				end
 			end
 		end
 	end
+	if true then return end
 
 	self.instance = BaseAi:MakeInstance(self:GetCaster(), info)
 end

@@ -64,8 +64,8 @@ modifier_mount_movement = class({
 	IsHidden = function(self) return true end,
 	IsPurgable = function(self) return false end,
 	GetModifierDisableTurning = function(self, params) return 1 end,
-	GetModifierMoveSpeed_Max = function(self) return self.maxSpeed end,
-	GetModifierMoveSpeed_Limit = function(self) return self.maxSpeed end,
+	GetModifierMoveSpeed_Max = function(self) return self.maxSpeed*2 end,
+	GetModifierMoveSpeed_Limit = function(self) return self.maxSpeed*2 end,
 	GetModifierMoveSpeedOverride = function(self) return self.baseSpeed end,
 
 	DeclareFunctions = function(self)
@@ -104,6 +104,7 @@ modifier_mount_movement = class({
 		self.turnRate = self:GetAbility():GetSpecialValueFor("turn_rate")
 		self.baseSpeed = self:GetAbility():GetSpecialValueFor("base_speed")
 		self.curSpeed = self.baseSpeed
+		self.boost = 0
 
 		self.delay = self:GetAbility():GetSpecialValueFor("delay")
 
@@ -163,6 +164,7 @@ modifier_mount_movement = class({
 		if IsServer() then
 			local player = self:GetParent()
 			local mount = self:GetCaster()
+
 
 			--if parent is player
 			if self:GetCaster() ~= self:GetParent() then
@@ -226,12 +228,21 @@ modifier_mount_movement = class({
 						return
 					end
 
+
 					--continue slide
 					player:SetAbsOrigin( newPos )
-					self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep), self.maxSpeed )
 
-					--update player movement speed
-					self:SetStackCount(self.curSpeed)
+					--reset the boost before calculations
+					self.curSpeed = self.curSpeed - self.boost
+
+					--calculate bonus movespeed from items
+					self.boost = (self:GetParent():GetMoveSpeedModifier(self.baseSpeed) - self.baseSpeed) * (1/30)
+
+					--update mount speed
+					self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep) + self.boost, self.maxSpeed + self.boost )
+
+					--display mount speed as player movement speed
+					self:SetStackCount(math.floor(self.curSpeed))
 				else
 					self.delay = self.delay - (1/30)
 				end
