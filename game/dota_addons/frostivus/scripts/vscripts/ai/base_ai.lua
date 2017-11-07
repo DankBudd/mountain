@@ -166,6 +166,18 @@ BaseAi = {
 
 		print('created instance: '..instance.id)
 
+		--fix for tiny toss
+		if unit:GetUnitName() == "tiny_the_tosser" then
+			local ab = unit:FindAbilityByName("tiny_toss")
+			if ab then
+				if unit:HasModifier("modifier_tiny_toss_charge_counter") then
+					unit:RemoveModifierByName("modifier_tiny_toss_charge_counter")
+				else
+					unit:AddNewModifier(unit, ab, "modifier_tiny_toss_charge_counter", {})
+				end
+			end
+		end
+
 		return instance
 	end,
 
@@ -306,7 +318,6 @@ BaseAi = {
 			if GetSpellToCast(self.unit) then
 				print("","", "spell can be cast on enemy!")
 				self.protect = {self.unit}
-				self.waypoints = nil
 				self.state = PROTECTIVE
 
 				print("", "back to protective..")
@@ -357,7 +368,7 @@ BaseAi = {
 		print("protective_think")
 
 		--check if theres actually something to protect
-		if not self.protect or self.protect and #self.protect <= 0 then
+		if not self.protect or #self.protect <= 0 then
 			print("", "nothing to protect", self.protect)
 			self.state = WANDER_IDLE
 			return
@@ -399,6 +410,14 @@ BaseAi = {
 					break
 				else
 					print("","", "FAILED in attacking enemy")
+				end
+			end
+
+			if ab:GetName() == "tiny_toss" then
+				local range = ab:GetSpecialValueFor("grab_radius")
+				if (self.unit:GetAbsOrigin() - unit:GetAbsOrigin()):Length2D() > range then
+					self.unit:MoveToNPC(unit)
+					return 1.0
 				end
 			end
 		end

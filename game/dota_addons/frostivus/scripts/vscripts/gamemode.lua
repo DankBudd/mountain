@@ -5,6 +5,7 @@ end
 
 --require stuff
 require('ai/base_ai')
+require('thinkers')
 
 --link global modifiers
 --LinkLuaModifier(className,fileName,LuaModifierType)
@@ -18,10 +19,11 @@ function GameMode:InitGameMode()
 	GameRules:SetSameHeroSelectionEnabled( false )
 
 	GameRules:SetHeroSelectionTime( 30 )
-	GameRules:SetPreGameTime( 0 )
+	GameRules:SetStrategyTime( 1 )
 	GameRules:SetShowcaseTime( 0 )
-	GameRules:SetStrategyTime( 0 )
+	GameRules:SetPreGameTime( 15 )
 	GameRules:SetPostGameTime( 30 )
+
 	GameRules:SetTreeRegrowTime( 60 )
 	GameRules:SetRuneSpawnTime( 30 )
 
@@ -57,7 +59,6 @@ function GameMode:InitGameMode()
 	ListenToGameEvent('player_connect', Dynamic_Wrap(GameMode, 'PlayerConnect'), self)
 	ListenToGameEvent('player_connect_full', Dynamic_Wrap(GameMode, 'PlayerConnectFull'), self)
 	ListenToGameEvent('dota_player_pick_hero', Dynamic_Wrap(GameMode, 'OnPlayerPickHero'), self)
-	ListenToGameEvent('dota_item_picked_up', Dynamic_Wrap(GameMode, 'OnItemPickedUp'), self)
 	ListenToGameEvent('dota_illusions_created', Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
 	ListenToGameEvent('npc_spawned', Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
 
@@ -76,8 +77,11 @@ function GameMode:StartGameMode()
 
 	mode = GameRules:GetGameModeEntity()
 
+
+	--mode:SetCameraDistanceOverride( 2250 )
+	CustomGameEventManager:Send_ServerToAllClients("camera_zoom", {distance = 2250})
+
 	-- Set GameMode parameters
-	mode:SetCameraDistanceOverride( 2250 )
 	mode:SetTopBarTeamValuesOverride ( false )
 	mode:SetTopBarTeamValuesVisible( true )
 
@@ -110,9 +114,27 @@ end
 
 -- Evaluate the state of the game
 function GameMode:OnThink()
-	if GameRules:State_Get() == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
-	elseif GameRules:State_Get() >= DOTA_GAMERULES_STATE_POST_GAME then
-		return
+	local state = GameRules:State_Get()
+
+	if state == DOTA_GAMERULES_STATE_INIT then
+	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_PLAYERS_TO_LOAD then
+	elseif state == DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP then
+	elseif state == DOTA_GAMERULES_STATE_HERO_SELECTION then
+	elseif state == DOTA_GAMERULES_STATE_STRATEGY_TIME then		
+
+		for pid = 0,DOTA_MAX_TEAM_PLAYERS-1 do
+			local player = PlayerResource:GetPlayer(pid)
+			if player and not PlayerResource:HasSelectedHero(pid) then
+				player:MakeRandomHeroSelection()
+			end
+		end
+
+	elseif state == DOTA_GAMERULES_STATE_TEAM_SHOWCASE then
+	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD then
+	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
+	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+	elseif state == DOTA_GAMERULES_STATE_POST_GAME then
+	elseif state == DOTA_GAMERULES_STATE_DISCONNECT then
 	end
 	return 1
 end
@@ -133,10 +155,18 @@ function GameMode:OrderManager( keys )
 
 	if abilityIndex then
 		local ability = EntIndexToHScript(abilityIndex)
-		if ability.IsItem then
-			if ability:GetName() == "item_ancient_janggo" and orderType == DOTA_UNIT_ORDER_CAST_NO_TARGET and not GameRules:IsCheatMode() then
-				--set to 2 because its going to use a charge immeditetly after we set it
-				ability:SetCurrentCharges(2)
+		if ability then
+			if ability.IsItem then
+				if ability:GetName() == "item_ancient_janggo" and orderType == DOTA_UNIT_ORDER_CAST_NO_TARGET and not GameRules:IsCheatMode() then
+					--set to 2 because its going to use a charge immeditetly after we set it
+					ability:SetCurrentCharges(2)
+				end
+				local hero = units[1]
+
+				if orderType == DOTA_UNIT_ORDER_PICKUP_ITEM then
+					ability:SetOwner(hero)
+					ability:SetPurchaser(hero)
+				end
 			end
 		end
 --		print("Filter | ability cast: "..ability:GetName())
@@ -228,6 +258,16 @@ function GameMode:OnNpcSpawn(keys)
 		self.lastSpawnedHero = npc
 		GameMode:GiveMount(npc)
 	end
+
+
+	local i = 0
+	Timers(0.5, function() 
+		i = i+1
+		print(npc:GetAbsOrigin()) 
+		if i < 10 then
+			return 0.4
+		end
+	end)
 end
 
 function GameMode:OnPlayerReconnect( keys )
@@ -253,10 +293,6 @@ function GameMode:OnPlayerPickHero( keys )
 	for k,v in pairs(keys) do
 		print("",k,v)
 	end
-end
-
-function GameMode:OnItemPickedUp( keys )
-	print("grab item")
 end
 
 function GameMode:OnIllusionsCreated( keys )
@@ -292,9 +328,41 @@ function GameMode:OnPlayerChat( keys )
 		return false 
 	end
 
+	--///////////////////////
+	-- public chat commands
+	--///////////////////////
+
 	if IsCommand("-view", 1) then
-		local distance = arguments[1]
+		local args = tonumber(arguments[1]) * 0.01
+		if not args then return end
+
+		local min = 1200
+		local max = 3000
+		local distance = math.floor(min + (max - min) * args)
 		CustomGameEventManager:Send_ServerToPlayer(player, "camera_zoom", {distance = distance})
+	end
+
+
+
+	--//////////////////////
+	-- debug chat commands
+	--//////////////////////
+
+	local devs = {
+		["DankBot"] = 76561198157673452,
+		["Pro§ aren'T☣xic"] = 0,
+	}
+
+	local steamid = PlayerResource:GetSteamID(playerID)
+	print(PlayerResource:GetSelectedHeroEntity(playerID):GetName(), steamid)
+	if not GameRules:IsCheatMode() then
+		local c = false
+		for k,v in pairs(devs) do
+			if steamid == v then
+				c = true
+			end
+		end
+		if not c then return end
 	end
 
 	if IsCommand("-newhero", 1) then
@@ -366,7 +434,18 @@ function GameMode:OnPlayerChat( keys )
 			["ww_the_curser"] = true,
 		}
 
+		--autocomplete for our units
+		for k,v in pairs(exceptions) do
+			if string.len(name) >= 3 then
+				if string.match(name, k) then
+					name = k
+				end
+			end
+		end
+
+		--dont add npc_dota_ to our units
 		if not exceptions[name] then
+			--add it to any other unit
 			if not string.match(name, "npc_dota_") then
 				name = "npc_dota_"..name
 			end
@@ -379,7 +458,7 @@ function GameMode:OnPlayerChat( keys )
 				teamNumber = DOTA_TEAM_NEUTRALS
 			elseif team == string.match(team, "goodguy") then
 				teamNumber = DOTA_TEAM_GOODGUYS
-			elseif team == string.match(team, "badguy") then
+			elseif team == string.match(team, "badguy") or team == string.match(team, "enemy") then
 				teamNumber = DOTA_TEAM_BADGUYS
 			end
 		end
@@ -389,15 +468,16 @@ function GameMode:OnPlayerChat( keys )
 			unit:SetOwner(hero)
 			FindClearSpaceForUnit(unit, unit:GetAbsOrigin(), true)
 
-			unit.instance = BaseAi:MakeInstance(unit, {
-				state = WANDER_IDLE,
-				--patrolPoints = {hero:GetAbsOrigin(), hero:GetAbsOrigin()+hero:GetForwardVector()*500, hero:GetAbsOrigin()+hero:GetRightVector()*500},
-				aggroRange = 600,
-				leash = 800,
-				buffer = 200,
-				spawn = unit:GetAbsOrigin(),
-				override = true,
-			})
+			--[[
+				unit.instance = BaseAi:MakeInstance(unit, {
+					state = WANDER_IDLE,
+					aggroRange = 600,
+					leash = 800,
+					buffer = 200,
+					spawn = unit:GetAbsOrigin(),
+					override = true,
+				})
+			]]
 
 			for i = 0,6 do
 				local ab = unit:GetAbilityByIndex(i)
@@ -411,45 +491,12 @@ function GameMode:OnPlayerChat( keys )
 		end)
 	end
 
-	if IsCommand("-displayerror", 0) then
-		local msg = arguments[1]
-		DisplayError(playerID, msg)
-	end
-
 	if IsCommand("-debugremove", 0) then
 		for _,ID in pairs(self.debugEntities) do
 			local debug = EntIndexToHScript(ID)
 			if debug then
 				UTIL_Remove(debug)
 				self.debugEntities[ID] = nil
-			end
-		end
-	end
-
-	if IsCommand("-test", 0) then
-		local ents = {}
-		local ent = Entities:First()
-		--index all entities in a sorted table
-		while ent do
-			local className = ent:GetClassname()
-			local tName 
-			if className == "" then
-				tName = ent:GetDebugName()
-			end
-			if not tName or tName:IsNull() then
-				tName = className
-			end
-
-			ents[tName] = ents[tName] or 0
-			ents[tName] = ents[tName] +1
-
-			ent = Entities:Next(ent)
-		end
-		--print entity table
-		if arguments[1] == "print" then
-			table.sort( ents )
-			for k,v in pairs(ents) do
-				print(v,k)
 			end
 		end
 	end
