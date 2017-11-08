@@ -133,6 +133,14 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD then
 	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
 	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+
+		local items = Entities:FindAllByClassname("dota_item_drop")
+		for _,item in pairs(items) do
+			if #FindItemsAtPoint(item:GetAbsOrigin(), 20) > 1 then
+				FindClearSpaceForItem(item, item:GetAbsOrigin())
+			end
+		end
+
 	elseif state == DOTA_GAMERULES_STATE_POST_GAME then
 	elseif state == DOTA_GAMERULES_STATE_DISCONNECT then
 	end
@@ -350,11 +358,11 @@ function GameMode:OnPlayerChat( keys )
 
 	local devs = {
 		["DankBot"] = 76561198157673452,
-		["Pro§ aren'T☣xic"] = 0,
+		["Pro§ aren'T☣xic"] = 76561198109346328,
 	}
 
 	local steamid = PlayerResource:GetSteamID(playerID)
-	print(PlayerResource:GetSelectedHeroEntity(playerID):GetName(), steamid)
+	--print(PlayerResource:GetSelectedHeroEntity(playerID):GetName(), steamid)
 	if not GameRules:IsCheatMode() then
 		local c = false
 		for k,v in pairs(devs) do
@@ -531,7 +539,21 @@ function GameMode:OnPlayerChat( keys )
 			hero:HeroLevelUp(false)
 		end
 	end
+
+	if IsCommand("-test", 0) then
+		local t = {}
+		local ent = Entities:First()
+		while ent do
+			local this = ent
+			ent = Entities:Next(ent)
+
+			t[ent:GetClassname()] = (t[ent:GetClassname()] ~= nil and t[ent:GetClassname()] + 1) or 1
+		end
+		PrintTable(t)
+	end
 end
+
+
 
 function GameMode:RemovePet(index)
 	if type(index) ~= "number" then

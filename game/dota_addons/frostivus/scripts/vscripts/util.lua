@@ -1,3 +1,40 @@
+function FindItemsAtPoint( point, radius )
+	local t = {}
+	local items = Entities:FindAllInSphere(point, radius)
+	for k,v in pairs(items) do
+		if v.GetContainedItem then
+			table.insert(t, v)
+		end
+	end
+	return t
+end
+
+function FindClearSpaceForItem( item, point )
+	local width = 40 -- width of an item container
+	local spacing = 60
+
+	local direction = Vector(0,0,0)
+
+	while #FindItemsAtPoint(point+direction*spacing, spacing-width) > 1 do
+		local function nextDir(d)
+			local x = d.x
+			local y = d.y
+
+			print("FindClearSpaceForItem | X: "..x..", Y: "..y)
+			if x == 0 and y == 0 then x,y = 0,1
+			elseif x == -1 and y > 0 then x,y = 1,1
+			elseif y > x and y >= x * -1 then x,y = 1,0
+			elseif y <= x and y > x * -1 then x,y = 0,-1
+			elseif y < x and y <= x * -1 then x,y = -1,0
+			elseif y >= x and y < x * -1 then x,y = 0,1
+			end
+			return Vector(x,y,0)
+		end
+		direction = nextDir(direction)
+	end
+	item:SetAbsOrigin(point + direction * spacing)
+end
+
 function split(pString, pPattern)
 	local Table = {}
 	local fpat = '(.-)' .. pPattern
