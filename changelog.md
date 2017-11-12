@@ -1,20 +1,42 @@
 # changelog 
 
-### v0.1
-### mounts
-+ reworked mount movement to work with forced motion
-+ fixed penguin spawning
-+ short delay before mount movement, double turn rate before movement starts
-+ trees now get destroyed upon crashing into them
-+ added various checks to improve mounting/dismounting
-+ each player is assigned their own mount, you cant use someone else's mount
-+ half-implemented support for different mounts
+## v0.2
+	
+	### mounts
+	+ mount movement now uses movespeed bonuses
 
-### chat commands
-+ fixed newhero
-+ fixed debugremove
-+ added item and lvlup commands
+	### panorama
+	+ added overthrow ui
 
-### known bugs
-+ not picking a hero during hero pick screen will not random your hero, resulting in having no hero at all
-+ scrolling in will mess up the camera, making the majority of the screen not rendered
+	### ai
+	+ added custom ai for all units
+
+	### bug fixes
+	+ toss requires charges
+	+ not picking a hero during hero pick screen will not random your hero, resulting in having no hero at all	
+	+ scrolling in will mess up the camera, making the majority of the screen not rendered
+
+
+	### known bugs
+	+ 7.07 stat bonuses. movespeed, status resistance, and magic resistance are being applied. (possibly will be a feature)
+
+
+## v0.1
+
+	### mounts
+	+ reworked mount movement to work with forced motion
+	+ fixed penguin spawning
+	+ short delay before mount movement, double turn rate before movement starts
+	+ trees now get destroyed upon crashing into them
+	+ added various checks to improve mounting/dismounting
+	+ each player is assigned their own mount, you cant use someone else's mount
+	+ half-implemented support for different mounts
+
+	### chat commands
+	+ fixed newhero
+	+ fixed debugremove
+	+ added item and lvlup commands
+
+	### known bugs
+	+ not picking a hero during hero pick screen will not random your hero, resulting in having no hero at all
+	+ scrolling in will mess up the camera, making the majority of the screen not rendered
