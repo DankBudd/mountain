@@ -725,4 +725,14 @@
         	}
 		}
 	}
+
+	"basim"
+	{
+		"Model"		"models/items/courier/basim/basim.vmdl"
+		"BaseClass"	"npc_dota_creature"
+
+		"Ability1"		"generic_invulnerablity"
+
+		"AttackCapabilities" "DOTA_UNIT_CAP_NO_ATTACK"
+	}
 }

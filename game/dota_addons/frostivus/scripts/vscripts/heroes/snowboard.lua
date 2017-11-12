@@ -72,7 +72,6 @@ modifier_mount_movement = class({
 		return {
 			MODIFIER_PROPERTY_OVERRIDE_ANIMATION,
 			MODIFIER_PROPERTY_DISABLE_TURNING,
-			MODIFIER_EVENT_ON_ORDER,
 			MODIFIER_EVENT_ON_ABILITY_FULLY_CAST,
 			MODIFIER_PROPERTY_MOVESPEED_MAX,
 			MODIFIER_PROPERTY_MOVESPEED_LIMIT,
@@ -91,9 +90,7 @@ modifier_mount_movement = class({
 	GetModifierMoveSpeedBonus_Constant = function(self)
 		if IsClient() then
 			local spd = self:GetStackCount() - self.baseSpeed
-			if spd < 0 then
-				spd = 0
-			end
+			if spd < 0 then spd = 0 end
 			return spd 
 		end
 	end,
@@ -128,36 +125,19 @@ modifier_mount_movement = class({
 				EmitSoundOn( "Hero_Tusk.IceShards.Penguin", self:GetParent() )
 				self:GetCaster():RemoveGesture( ACT_DOTA_SLIDE_LOOP )
 				self.player:RemoveModifierByName("modifier_mount_movement")
+
+				if self.particle then
+					ParticleManager:DestroyParticle(self.particle, true)
+					ParticleManager:ReleaseParticleIndex(self.particle)
+				end
 				return
 			end
 			--when destroy on player do
-			self:GetCaster():RemoveModifierByName("modifier_mount_movement")
-
+			if not self:GetCaster():IsNull() then
+				self:GetCaster():RemoveModifierByName("modifier_mount_movement")
+			end
 			--TODO: spiritbreaker-like knockback away from crash location (respects gridNav)
 		end
-	end,
-
-	OnOrder = function(self, params)
-		if IsServer() then
-			local hOrderedUnit = params.unit 
-			local hTargetUnit = params.target
-			local nOrderType = params.order_type
-			if nOrderType == DOTA_UNIT_ORDER_MOVE_TO_POSITION
-			or nOrderType == DOTA_UNIT_ORDER_CAST_POSITION
-			or nOrderType == DOTA_UNIT_ORDER_CAST_TARGET
-			or nOrderType == DOTA_UNIT_ORDER_CAST_TARGET_TREE then
-				if hOrderedUnit == self:GetParent() then
-					if self:GetParent() ~= self:GetCaster() then
-						local dir = params.new_pos - self:GetParent():GetAbsOrigin()
-						dir.z = 0
-						dir = dir:Normalized()
-						local angles = VectorAngles( dir )
-						self.desiredYaw = angles.y
-					end	
-				end
-			end
-		end
-		return 0
 	end,
 
 	OnIntervalThink = function(self)
@@ -169,9 +149,10 @@ modifier_mount_movement = class({
 			--if parent is player
 			if self:GetCaster() ~= self:GetParent() then
 
-				if player:IsMoving() then
-					player:Interrupt()
-				end
+				--if player:IsMoving() then
+				--	player:Stop()
+				--end
+
 				if player:IsHexed() or player:IsRooted() or player:IsStunned() then
 					self.curSpeed = self.baseSpeed
 					return
@@ -184,6 +165,7 @@ modifier_mount_movement = class({
 					"modifier_tusk_walrus_punch_air_time",
 					"modifier_tusk_walrus_kick_air_time",
 					"modifier_invoker_tornado",
+					"modifier_jump",
 				}
 				
 				--skip this tick if the player is affected by an exception
@@ -203,6 +185,10 @@ modifier_mount_movement = class({
 				else
 					turnRate = self.turnRate*2
 				end
+				local turnMod = player:FindModifierByName("modifier_turn")
+				if turnMod then
+					turnRate = turnRate + (360 * turnMod.turnRate)
+				end
 
 				turnAmount = math.min( turnRate * (1/30), math.abs( angleDiff ) )
 			
@@ -220,29 +206,47 @@ modifier_mount_movement = class({
 					local newPos = player:GetAbsOrigin() + player:GetForwardVector() * ( (1/30) * self.curSpeed )
 					newPos.z = GetGroundHeight(newPos, player) + 10
 
-					--end slide if unpathable, and destroy any trees at unpathable position
-					if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) then
-						GridNav:DestroyTreesAroundPoint( newPos, 25, true)
-						ResolveNPCPositions( newPos, 25 )
-						self:Destroy()
-						return
+
+					local pass = true
+					if not jumpMod then
+						--end slide if unpathable, and destroy any trees at unpathable position
+						if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) then
+							GridNav:DestroyTreesAroundPoint( newPos, 25, true)
+							ResolveNPCPositions( player:GetAbsOrigin(), 25 )
+							self:Destroy()
+							return
+						end
+
+						_G.test = _G.test or 20
+						--check if theres a hero in front of us before moving
+						local units = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, _G.test, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+						if #units > 0 then
+							for k,v in pairs(units) do
+								if v ~= player then
+									pass = false
+									break
+								end
+							end
+						end
 					end
+					if pass then
+						--continue slide
+						player:SetAbsOrigin( newPos )
+
+						--reset the boost before calculations
+						self.curSpeed = self.curSpeed - self.boost
+
+						--calculate bonus movespeed
+						self.boost = (self:GetParent():GetMoveSpeedModifier(self.baseSpeed)) * (1/30)
+
+						--update mount speed
+						self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep) + self.boost, self.maxSpeed + self.boost )
 
 
-					--continue slide
-					player:SetAbsOrigin( newPos )
-
-					--reset the boost before calculations
-					self.curSpeed = self.curSpeed - self.boost
-
-					--calculate bonus movespeed from items
-					self.boost = (self:GetParent():GetMoveSpeedModifier(self.baseSpeed) - self.baseSpeed) * (1/30)
-
-					--update mount speed
-					self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep) + self.boost, self.maxSpeed + self.boost )
-
-					--display mount speed as player movement speed
-					self:SetStackCount(math.floor(self.curSpeed))
+						print("speed: "..tostring(self.curSpeed-self.boost).."\n", "boost: "..tostring(self.boost).."\n", "post calc: "..self.curSpeed)
+						--display mount speed as player movement speed
+						self:SetStackCount(math.floor(self.curSpeed))
+					end
 				else
 					self.delay = self.delay - (1/30)
 				end
@@ -260,6 +264,14 @@ modifier_mount_movement = class({
 				if not player:IsAlive() or not player:HasModifier("modifier_mount_movement") then
 					self:Destroy()
 					return
+				end
+
+				if self.curSpeed >= 400 and not self.particle then
+					self.particle = ParticleManager:CreateParticle("particles/econ/courier/courier_trail_winter_2012/courier_trail_winter_2012_body_c.vpcf", PATTACH_ABSORIGIN_FOLLOW, mount)
+				elseif self.curSpeed < 400 and self.particle then
+					ParticleManager:DestroyParticle(self.particle, false)
+					ParticleManager:ReleaseParticleIndex(self.particle)
+					self.particle = nil
 				end
 
 				--move mount to player

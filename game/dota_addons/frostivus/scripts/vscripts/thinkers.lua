@@ -37,7 +37,12 @@ Thinkers = {
 Thinkers:Init()
 
 function Timers(delay, args, context)
+	if type(delay) == "function" then
+		context = args
+		args = delay
+		delay = 0
+	end
 	local name = DoUniqueString("thinker")
-	Thinkers.thinkers[name] = {nextThink = delay, callback = args, context = context}
+	Thinkers.thinkers[name] = {nextThink = GameRules:GetGameTime()+delay, callback = args, context = context}
 	return name
 end

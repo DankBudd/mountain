@@ -66,5 +66,13 @@ function base_ai:OnUpgrade()
 		end
 	end
 
+	if self:GetCaster():GetUnitName() == "tiny_the_tosser" then
+		if Entities:FindByName(nil, "End_Tiny") == self:GetCaster() then
+			info.state = SENTRY
+		end
+	end
+
+	if true then return end
+
 	self.instance = BaseAi:MakeInstance(self:GetCaster(), info)
 end

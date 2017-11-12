@@ -1753,7 +1753,7 @@
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"grab_radius"			"275"
+				"grab_radius"			"325"
 			}
 			"03"
 			{
@@ -1891,6 +1891,7 @@
 			{
 				"var_type"			"FIELD_FLOAT"
 				"silence_duration"	"6"
+				"LinkedSpecialBonus"	"special_bonus_unique_drow_ranger_4"
 			}
 			"05"
 			{
@@ -2788,6 +2789,7 @@
 			{
 				"var_type"				"FIELD_FLOAT"
 				"lift_duration"			"2.5"
+				"LinkedSpecialBonus"		"special_bonus_unique_invoker_8"
 				"levelkey"				"quaslevel"
 			}
 			"07"

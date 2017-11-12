@@ -65,7 +65,7 @@ function DisplayError( pid, message )
 end
 
 function CDOTA_BaseNPC:GetItemSlot(item)
-  if item then
+  if item and not item:IsNull() then
     if item:IsItem() then
       for i = 0,DOTA_ITEM_MAX-1 do
         local itemInSlot = self:GetItemInSlot(i)
@@ -192,6 +192,7 @@ function PrintRelevent(t)
 			if t["order_type"] == o then
 				print("order_type: "..n)
 				printed = true
+				break
 			end
 		end
 	end

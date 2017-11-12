@@ -10,9 +10,9 @@
 	{
 		"override_hero"				"npc_dota_hero_doom_bringer"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -20,6 +20,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_STRENGTH"
+		"AttributeBaseStrength"		"50"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"0"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -31,9 +39,9 @@
 	{
 		"override_hero"				"npc_dota_hero_chaos_knight"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -41,6 +49,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_STRENGTH"
+		"AttributeBaseStrength"		"50"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"0"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -52,9 +68,9 @@
 	{
 		"override_hero"				"npc_dota_hero_huskar"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -63,6 +79,13 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"AttributePrimary"		"DOTA_ATTRIBUTE_STRENGTH"
+		"AttributeBaseStrength"		"50"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"0"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -73,9 +96,9 @@
 	{
 		"override_hero"				"npc_dota_hero_phoenix"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -83,6 +106,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_STRENGTH"
+		"AttributeBaseStrength"		"50"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"0"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -93,9 +124,9 @@
 	{
 		"override_hero"				"npc_dota_hero_clinkz"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -103,6 +134,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_AGILITY"
+		"AttributeBaseStrength"		"0"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"0"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"100"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -113,9 +152,9 @@
 	{
 		"override_hero"				"npc_dota_hero_lina"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -123,6 +162,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_INTELLECT"
+		"AttributeBaseStrength"		"0"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"50"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -133,9 +180,9 @@
 	{
 		"override_hero"				"npc_dota_hero_batrider"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -143,6 +190,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_INTELLECT"
+		"AttributeBaseStrength"		"0"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"50"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -153,9 +208,9 @@
 	{
 		"override_hero"				"npc_dota_hero_ogre_magi"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -163,6 +218,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_INTELLECT"
+		"AttributeBaseStrength"		"0"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"50"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -173,9 +236,9 @@
 	{
 		"override_hero"				"npc_dota_hero_warlock"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -183,6 +246,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_INTELLECT"
+		"AttributeBaseStrength"		"0"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"50"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"0"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}
@@ -193,9 +264,9 @@
 	{
 		"override_hero"				"npc_dota_hero_ember_spirit"			// Hero to override
 		"AbilityLayout"				"6"
-		"Ability1"					""											
-		"Ability2"					""
-		"Ability3"					""
+		"Ability1"					"jump_ability"											
+		"Ability2"					"dash_ability"
+		"Ability3"					"turn_ability"
 		"Ability4"					""
 		"Ability5"					"hero_invulnerablity"
 		"Ability6"					""
@@ -203,6 +274,14 @@
 
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
+
+		"AttributePrimary"		"DOTA_ATTRIBUTE_AGILITY"
+		"AttributeBaseStrength"		"0"
+		"AttributeStrengthGain"		"0"
+		"AttributeBaseIntelligence"	"0"
+		"AttributeIntelligenceGain"	"0"
+		"AttributeBaseAgility"		"100"
+		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
 	}

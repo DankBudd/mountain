@@ -5,6 +5,7 @@ end
 
 --require stuff
 require('ai/base_ai')
+require('modifiers/global_modifiers')
 require('thinkers')
 
 --link global modifiers
@@ -44,6 +45,27 @@ function GameMode:InitGameMode()
 	GameRules:LockCustomGameSetupTeamAssignment( true )
 	GameRules:EnableCustomGameSetupAutoLaunch( true )
 
+	local teams = {
+		DOTA_TEAM_GOODGUYS,
+		DOTA_TEAM_BADGUYS,
+		DOTA_TEAM_CUSTOM_1,
+		DOTA_TEAM_CUSTOM_2,
+		DOTA_TEAM_CUSTOM_3,
+	--	DOTA_TEAM_CUSTOM_4,
+	--	DOTA_TEAM_CUSTOM_5,
+	--	DOTA_TEAM_CUSTOM_6,
+	--	DOTA_TEAM_CUSTOM_7,
+	--	DOTA_TEAM_CUSTOM_8,
+	}
+
+	local maxPlayers = 10
+	local playerCount = PlayerResource:GetPlayerCount()
+	local playersPerTeam = math.floor(maxPlayers / #teams)
+
+	for _,team in pairs(teams) do
+		GameRules:SetCustomGameTeamMaxPlayers(team, playersPerTeam)
+	end
+
 	--Setup Tables
 	self.trackedEntities = {}
 	self.debugEntities = {}
@@ -65,6 +87,29 @@ function GameMode:InitGameMode()
 	--Setup Filters
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, 'OrderManager'), self)
 	GameRules:GetGameModeEntity():SetModifierGainedFilter(Dynamic_Wrap(GameMode, 'ModifierManager'), self)
+
+	--stat attributes
+	_G.DOTA_ATTRIBUTE_INTELLIGENCE_COOLDOWN_REDUCTION = 0.01
+	local sv = {
+		[DOTA_ATTRIBUTE_STRENGTH_DAMAGE] = 0,
+		[DOTA_ATTRIBUTE_STRENGTH_HP] = 0,
+		[DOTA_ATTRIBUTE_STRENGTH_HP_REGEN_PERCENT] = 0,
+		[DOTA_ATTRIBUTE_STRENGTH_STATUS_RESISTANCE_PERCENT] = 0.01,
+
+		[DOTA_ATTRIBUTE_AGILITY_DAMAGE] = 0,
+		[DOTA_ATTRIBUTE_AGILITY_ARMOR] = 0,
+		[DOTA_ATTRIBUTE_AGILITY_ATTACK_SPEED] = 0,
+		[DOTA_ATTRIBUTE_AGILITY_MOVE_SPEED_PERCENT] = 0.01,
+
+		[DOTA_ATTRIBUTE_INTELLIGENCE_DAMAGE] = 0,
+		[DOTA_ATTRIBUTE_INTELLIGENCE_MANA] = 0,
+		[DOTA_ATTRIBUTE_INTELLIGENCE_MANA_REGEN_PERCENT] = 0,
+		[DOTA_ATTRIBUTE_INTELLIGENCE_SPELL_AMP_PERCENT] = 0,
+		[DOTA_ATTRIBUTE_INTELLIGENCE_MAGIC_RESISTANCE_PERCENT] = 0,
+	}
+	for s,v in pairs(sv) do
+		GameRules:GetGameModeEntity():SetCustomAttributeDerivedStatValue(s, v)
+	end
 end
 
 --this function will only run once, when the first player is fully loaded.
@@ -110,6 +155,70 @@ function GameMode:StartGameMode()
 	mode:SetUnseenFogOfWarEnabled( false )
 
 	mode:SetDaynightCycleDisabled( false )
+
+
+	local c = {
+		"basim"
+	}
+	--populate the map
+	for k,v in pairs(Entities:FindAllByName("cosmetic_cour") ) do
+		CreateUnitByNameAsync(c[RandomInt(1, #c)], v:GetAbsOrigin(), true, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
+			unit:SetMoveCapability(DOTA_UNIT_CAP_MOVE_GROUND)
+			unit:SetBaseMoveSpeed(200)
+
+			BaseAi:MakeInstance(unit, {state = BASIM, spawn = unit:GetAbsOrigin()})
+		end) 
+	end
+	for k,v in pairs(Entities:FindAllByName("cosmetic_snow") ) do
+		CreateUnitByNameAsync("npc_dota_base", v:GetAbsOrigin()+RandomVector(250), false, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
+			unit:AddNewModifier(unit, nil, "modifier_dummy", {})
+			local p = ParticleManager:CreateParticle("particles/econ/courier/courier_trail_winter_2012/courier_trail_winter_2012.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
+			ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
+
+		end)
+	end
+	for k,v in pairs(Entities:FindAllByName("cosmetic_cyclone")) do
+		CreateUnitByNameAsync("npc_dota_base", v:GetAbsOrigin(), false, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
+			unit:AddNewModifier(unit, nil, "modifier_dummy", {})
+			unit:SetMoveCapability(DOTA_UNIT_CAP_MOVE_FLY)
+			unit:SetBaseMoveSpeed(405)
+
+			BaseAi:MakeInstance(unit, {state = CYCLONE, spawn = unit:GetAbsOrigin()})
+
+
+			Timers(1, function()
+				if not unit or unit:IsNull() then return end
+
+				local p = ParticleManager:CreateParticle("particles/econ/events/winter_major_2016/cyclone_wm16.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
+				ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
+
+				local units = FindUnitsInRadius(unit:GetTeamNumber(), unit:GetAbsOrigin(), nil, 300, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+				if #units > 0 then
+					for _,hero in pairs(units) do
+						hero:AddNewModifier(unit, nil, "modifier_stunned", {duration = 2.5})
+
+						--emitsoundon("", hero)
+						local liftTime = 0
+						Timers(0, function()
+							if not hero or hero:IsNull() then return end
+							local timesToSpin = 2
+							local newFoward = RotatePosition(Vector(0,0,0), timesToSpin*360 * 0.03, hero:GetForwardVector())
+							hero:SetForwardVector(newFoward)
+							hero:SetAbsOrigin(hero:GetAbsOrigin()+Vector(0,0,550*0.03))
+
+							liftTime = liftTime + 0.03
+							if liftTime >= 2.5 then
+								return
+							end
+							return 0.03
+						end)
+					
+					end
+				end
+				return 1
+			end)
+		end)
+	end
 end 
 
 -- Evaluate the state of the game
@@ -134,11 +243,12 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
 	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
 
+		--this is causing lag, needs to be put into the item creation script instead
 		local items = Entities:FindAllByClassname("dota_item_drop")
 		for _,item in pairs(items) do
-			if #FindItemsAtPoint(item:GetAbsOrigin(), 20) > 1 then
-				FindClearSpaceForItem(item, item:GetAbsOrigin())
-			end
+		--	if #FindItemsAtPoint(item:GetAbsOrigin(), 20) > 1 then
+		--		FindClearSpaceForItem(item, item:GetAbsOrigin())
+		--	end
 		end
 
 	elseif state == DOTA_GAMERULES_STATE_POST_GAME then
@@ -169,7 +279,7 @@ function GameMode:OrderManager( keys )
 					--set to 2 because its going to use a charge immeditetly after we set it
 					ability:SetCurrentCharges(2)
 				end
-				local hero = units[1]
+				local hero = units["0"]
 
 				if orderType == DOTA_UNIT_ORDER_PICKUP_ITEM then
 					ability:SetOwner(hero)
@@ -190,7 +300,34 @@ function GameMode:OrderManager( keys )
 	if pos ~= Vector(0,0,0) then
 --		print("Filter | world position: "..tostring(pos))
 	end
+	if units and units["0"] then
+		local hero = EntIndexToHScript(units["0"])
 
+		if hero:HasModifier("modifier_mount_movement") then
+			local mod = hero:FindModifierByName("modifier_mount_movement")
+
+			if orderType == DOTA_UNIT_ORDER_MOVE_TO_POSITION
+			or orderType == DOTA_UNIT_ORDER_CAST_POSITION
+			or orderType == DOTA_UNIT_ORDER_CAST_TARGET
+			or orderType == DOTA_UNIT_ORDER_CAST_TARGET_TREE
+			or orderType == DOTA_UNIT_ORDER_DROP_ITEM 
+			or orderType == DOTA_UNIT_ORDER_PICKUP_ITEM then
+				if mod:GetParent() ~= mod:GetCaster() then
+					local dir = pos - mod:GetParent():GetAbsOrigin()
+					dir.z = 0
+					dir = dir:Normalized()
+					local angles = VectorAngles( dir )
+					mod.desiredYaw = angles.y
+				end	
+			end
+			if orderType == DOTA_UNIT_ORDER_MOVE_TO_POSITION 
+			or orderType == DOTA_UNIT_ORDER_MOVE_TO_TARGET
+			or orderType == DOTA_UNIT_ORDER_MOVE_TO_DIRECTION
+			or orderType == DOTA_UNIT_ORDER_PATROL then
+				return false
+			end
+		end
+	end
 	--return true by default to keep all other orders unchanged
 	return true
 end
@@ -230,6 +367,7 @@ function GameMode:ModifierManager( keys )
 end
 
 function GameMode:GiveMount(hero, mountName)
+	if not hero or hero:IsNull() then return end
 	--remove old mount if they have one
 	if self.mounts[hero:GetPlayerID()] then
 		UTIL_Remove(EntIndexToHScript(self.mounts[hero:GetPlayerID()]))
@@ -265,17 +403,18 @@ function GameMode:OnNpcSpawn(keys)
 	if npc:IsRealHero() then
 		self.lastSpawnedHero = npc
 		GameMode:GiveMount(npc)
-	end
 
-
-	local i = 0
-	Timers(0.5, function() 
-		i = i+1
-		print(npc:GetAbsOrigin()) 
-		if i < 10 then
-			return 0.4
+		for i = 0,6 do
+			local ab = npc:GetAbilityByIndex(i)
+			if ab then
+				ab:SetLevel(1)
+			end
 		end
-	end)
+
+		if npc:GetPrimaryAttribute() == DOTA_ATTRIBUTE_INTELLECT then
+			npc:AddNewModifier(npc, nil, "modifier_intelligence_cdr", {})
+		end
+	end
 end
 
 function GameMode:OnPlayerReconnect( keys )
@@ -298,9 +437,6 @@ end
 
 function GameMode:OnPlayerPickHero( keys )
 	print("pick hero")
-	for k,v in pairs(keys) do
-		print("",k,v)
-	end
 end
 
 function GameMode:OnIllusionsCreated( keys )
@@ -389,7 +525,8 @@ function GameMode:OnPlayerChat( keys )
 			self.mounts[playerID] = nil
 		end
 
-		--grab old heroes items
+		--this is broken i guess? thanks volvo
+--[[	--grab old heroes items
 		local items = {}
 		for i = 0,DOTA_ITEM_MAX-1 do
 			local item = oldHero:GetItemInSlot(i)
@@ -398,7 +535,7 @@ function GameMode:OnPlayerChat( keys )
 				oldHero:DropItemAtPositionImmediate(item, Vector(0,0,0))
 				item:GetContainer():Destroy()
 			end
-		end
+		end]]
 
 		--precache new hero, and swap their hero
 		PrecacheUnitByNameAsync(name, function()
@@ -414,14 +551,15 @@ function GameMode:OnPlayerChat( keys )
 				hero = oldhero
 				GameMode:GiveMount(hero)
 			end
-			--give them their items back, regardless of success
+
+--[[		--give them their items back, regardless of success
 			for pos,item in pairs(items) do
 				if item then
 					item:SetPurchaser(hero)
 					hero:AddItem(item)
 					hero:SwapItems(hero:GetItemSlot(item), pos)
 				end
-			end
+			end]]
 		end, playerID)
 	end
 
@@ -440,6 +578,7 @@ function GameMode:OnPlayerChat( keys )
 			["jakiro_the_icepather"] = true,
 			["lich_the_froster"] = true,
 			["ww_the_curser"] = true,
+			["basim"] = true,
 		}
 
 		--autocomplete for our units
@@ -534,7 +673,7 @@ function GameMode:OnPlayerChat( keys )
 	if IsCommand("-lvlup", 1) then
 		if GameRules:IsCheatMode() then return end
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
-		local num = arguments[1] or 1
+		local num = tonumber(arguments[1]) or 1
 		for i=1,num do
 			hero:HeroLevelUp(false)
 		end
@@ -550,6 +689,13 @@ function GameMode:OnPlayerChat( keys )
 			t[ent:GetClassname()] = (t[ent:GetClassname()] ~= nil and t[ent:GetClassname()] + 1) or 1
 		end
 		PrintTable(t)
+	end
+
+	if IsCommand("-ss", 1) then
+		local num = tonumber(arguments[1])
+		if not num then return end
+
+		_G.test = num
 	end
 end
 

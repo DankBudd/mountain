@@ -6,6 +6,8 @@ PROTECTIVE = 4
 PATROL = 5
 PATROL_AGGRO = 6
 SENTRY = 7
+BASIM = 8
+CYCLONE = 9
 
 THINK_STATES = {
 	---------------------------------
@@ -27,6 +29,9 @@ THINK_STATES = {
 
 	[PATROL_AGGRO] = "PatrolAggroThink", -- aggroTarget (unit)
 	[SENTRY] = "SentryThink",			 -- spawn (vector)
+
+	[BASIM] = "BasimThink",
+	[CYCLONE] = "CycloneThink",
 }
 
 local function HasBehavior(ability, behavior)
@@ -136,8 +141,7 @@ BaseAi = {
 		instance.state = info.state or IDLE
 
 		local ar = unit:GetAcquisitionRange()
-		local var = info.aggroRange or info.aggrorange
-		instance.aggroRange = var or (ar ~= 0 and ar) or 1200
+		instance.aggroRange = info.aggroRange or (ar ~= 0 and ar) or 1200
 		instance.leash = info.leash or (ar ~= 0 and ar+250) or 1750
 		instance.spawn = info.spawn or unit:GetAbsOrigin()
 		instance.buffer = info.buffer or 500
@@ -512,6 +516,22 @@ BaseAi = {
 		local ab,behav = GetSpellToCast(self.unit)
 		if not ab then print("", "no valid ability to cast") return end
 
+		if self.unit:GetUnitName() == "tiny_the_tosser" then
+			ab = FindAbilityByName("tiny_toss")
+			behav = DOTA_ABILITY_BEHAVIOR_UNIT_TARGET
+
+			local vec = Vector(-500,0,1024)
+
+			self.unit.tinyTarget = self.unit.tinyTarget or CreateUnitByNameAsync("npc_dota_base", vec, false, nil, nil, 0, function(dummy)
+				print("making tiny dummy")
+				dummy:AddNewModifier(nil, nil, "modifier_dummy", {})
+			end)
+			print("tiny casting on dummy")
+			self.unit:CastAbilityOnTarget(self.unit.tinyTarget, ab, self.unit:GetPlayerOwnerID())
+			ab:EndCooldown()
+			return 0.1
+		end
+
 		local range = ab:GetCastRange() or self.aggroRange
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, range,
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
@@ -530,4 +550,45 @@ BaseAi = {
 		self.unit:MoveToPosition(self.spawn)
 		return
 	end,
+
+	BasimThink = function(self)
+		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, 800, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+		self.lastSnowball = self.lastSnowball or GameRules:GetGameTime()
+		if self.lastSnowball+10 < GameRules:GetGameTime() then
+			if units then
+				if not self.snowballing then
+					self.unit:FaceTowards(units[1]:GetAbsOrigin())
+					self.unit:StartGesture(ACT_DOTA_IDLE_RARE)
+					self.snowballing = 0
+				end
+			end
+		else
+			if not self.snowballing then
+				self.unit:StartGesture(ACT_DOTA_IDLE)
+			end
+		end
+		if self.snowballing and self.snowballing >= 5 then self.snowballing = nil end 
+		local int = RandomInt(1.5, 2.5)
+		if self.snowballing then self.snowballing = self.snowballing + int end
+		return int
+	end,
+
+	CycloneThink = function(self)
+		print("cyclone_think")
+		self.waypoints = self.waypoints or {}
+		while self.waypoints < 5 do 
+			print("", "generating waypoints...")
+			self.waypoints[#waypoints+1] = self.unit:GetAbsOrigin()+RandomVector(700)
+		end
+
+		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 then
+			print("","", "reached a patrol point!")
+			--cycle way points
+			table.insert(self.waypoints, table.remove(self.waypoints, 1))
+		end
+		print("", "moving to patrol point... Vector("..tostring(math.ceil(self.waypoints[1].x))..", "..tostring(math.ceil(self.waypoints[1].y))..", "..tostring(math.ceil(self.waypoints[1].z))..")" )
+		--move towards next patrol point 
+		self.unit:MoveToPosition(self.waypoints[1])
+	end,
+
 }

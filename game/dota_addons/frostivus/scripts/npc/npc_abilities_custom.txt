@@ -97,4 +97,93 @@
 		"AbilityTextureName"			"disruptor_thunder_strike"
 		"MaxLevel" 						"1"
 	}
+
+	"jump_ability"
+	{
+		"BaseClass"             		"ability_lua"
+		"ScriptFile"					"heroes/base_abilities.lua"
+		"AbilityTextureName"			"mirana_leap"
+
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"MaxLevel" 						"1"
+
+		"AbilityCooldown"				"10.0"
+		"AbilityManaCost"				"0"
+
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"distance"			"550"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"speed"				"1600"
+			}
+		}
+	}
+
+	"dash_ability"
+	{
+		"BaseClass"             		"ability_lua"
+		"ScriptFile"					"heroes/base_abilities.lua"
+		"AbilityTextureName"			"spirit_breaker_charge_of_darkness"
+
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"MaxLevel" 						"1"
+
+		"AbilityCooldown"				"10.0"
+		"AbilityManaCost"				"0"
+
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"speed_boost"		"25"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"duration"			"3.0"
+			}
+		}
+	}
+
+	"turn_ability"
+	{
+		"BaseClass"             		"ability_lua"
+		"ScriptFile"					"heroes/base_abilities.lua"
+		"AbilityTextureName"			"axe_counter_helix"
+
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_TOGGLE"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"MaxLevel" 						"1"
+
+		"AbilityCooldown"				"10.0"
+		"AbilityManaCost"				"0"
+
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"turn_rate"			"120"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"duration"			"3.0"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"speed_cost"		"-75"
+			}
+		}
+	}
 }
