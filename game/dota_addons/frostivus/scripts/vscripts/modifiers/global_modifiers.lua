@@ -45,7 +45,7 @@ modifier_intelligence_cdr = class({
 	IsHidden = function(self) return true end,
 	IsPurgeable = function(self) return false end,
 	DeclareFunctions = function(self) return {MODIFIER_PROPERTY_COOLDOWN_PERCENTAGE_STACKING} end,
-	GetModifierPercentageCooldownStacking = function(self) self:GetStackCount() * _G.DOTA_ATTRIBUTE_INTELLIGENCE_COOLDOWN_REDUCTION end,
+	GetModifierPercentageCooldownStacking = function(self) return self:GetStackCount() * _G.DOTA_ATTRIBUTE_INTELLIGENCE_COOLDOWN_REDUCTION end,
 
 	--stack count bullshit to transfer Intellect value to client
 	OnCreated = function(self, kv) self:StartIntervalThink(1) end,

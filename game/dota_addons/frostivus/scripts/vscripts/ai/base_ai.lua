@@ -551,6 +551,7 @@ BaseAi = {
 		return
 	end,
 
+	--this needs work
 	BasimThink = function(self)
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, 800, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 		self.lastSnowball = self.lastSnowball or GameRules:GetGameTime()
@@ -567,8 +568,9 @@ BaseAi = {
 				self.unit:StartGesture(ACT_DOTA_IDLE)
 			end
 		end
-		if self.snowballing and self.snowballing >= 5 then self.snowballing = nil end 
+
 		local int = RandomInt(1.5, 2.5)
+		if self.snowballing and self.snowballing >= 5 then self.snowballing = nil end 
 		if self.snowballing then self.snowballing = self.snowballing + int end
 		return int
 	end,
@@ -582,11 +584,11 @@ BaseAi = {
 		end
 
 		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 then
-			print("","", "reached a patrol point!")
+			print("","", "reached a waypoint!")
 			--cycle way points
 			table.insert(self.waypoints, table.remove(self.waypoints, 1))
 		end
-		print("", "moving to patrol point... Vector("..tostring(math.ceil(self.waypoints[1].x))..", "..tostring(math.ceil(self.waypoints[1].y))..", "..tostring(math.ceil(self.waypoints[1].z))..")" )
+		print("", "moving to waypoint... Vector("..tostring(math.ceil(self.waypoints[1].x))..", "..tostring(math.ceil(self.waypoints[1].y))..", "..tostring(math.ceil(self.waypoints[1].z))..")" )
 		--move towards next patrol point 
 		self.unit:MoveToPosition(self.waypoints[1])
 	end,

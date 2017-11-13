@@ -72,7 +72,5 @@ function base_ai:OnUpgrade()
 		end
 	end
 
-	if true then return end
-
 	self.instance = BaseAi:MakeInstance(self:GetCaster(), info)
 end

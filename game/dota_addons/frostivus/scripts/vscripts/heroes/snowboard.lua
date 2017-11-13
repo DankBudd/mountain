@@ -89,9 +89,7 @@ modifier_mount_movement = class({
 
 	GetModifierMoveSpeedBonus_Constant = function(self)
 		if IsClient() then
-			local spd = self:GetStackCount() - self.baseSpeed
-			if spd < 0 then spd = 0 end
-			return spd 
+			return math.max(self:GetStackCount() - self.baseSpeed, 0)
 		end
 	end,
 
@@ -107,10 +105,10 @@ modifier_mount_movement = class({
 
 		if IsServer() then
 
-			self.desiredYaw = self:GetCaster():GetAnglesAsVector().y
-
 			if self:GetParent() == self:GetCaster() then
 				self:GetParent():StartGesture( ACT_DOTA_SLIDE )
+			else
+				self.desiredYaw = self:GetParent():GetAnglesAsVector().y
 			end
 
 			--think every server tick
@@ -206,7 +204,6 @@ modifier_mount_movement = class({
 					local newPos = player:GetAbsOrigin() + player:GetForwardVector() * ( (1/30) * self.curSpeed )
 					newPos.z = GetGroundHeight(newPos, player) + 10
 
-
 					local pass = true
 					if not jumpMod then
 						--end slide if unpathable, and destroy any trees at unpathable position
@@ -217,17 +214,19 @@ modifier_mount_movement = class({
 							return
 						end
 
-						_G.test = _G.test or 20
-						--check if theres a hero in front of us before moving
-						local units = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, _G.test, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
-						if #units > 0 then
-							for k,v in pairs(units) do
-								if v ~= player then
-									pass = false
-									break
+						--check if theres a hero in front of the player before moving
+						if not player:IsPhased() then --player:NoUnitCollision()
+							local units = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, 40, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+							if #units > 0 then
+								for k,v in pairs(units) do
+									if v ~= player then
+										pass = false
+										break
+									end
 								end
 							end
 						end
+
 					end
 					if pass then
 						--continue slide
@@ -237,15 +236,15 @@ modifier_mount_movement = class({
 						self.curSpeed = self.curSpeed - self.boost
 
 						--calculate bonus movespeed
-						self.boost = (self:GetParent():GetMoveSpeedModifier(self.baseSpeed)) * (1/30)
+						self.boost = (self:GetParent():GetMoveSpeedModifier(self.baseSpeed) - self.baseSpeed) * (1/30)
 
 						--update mount speed
 						self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep) + self.boost, self.maxSpeed + self.boost )
 
 
-						print("speed: "..tostring(self.curSpeed-self.boost).."\n", "boost: "..tostring(self.boost).."\n", "post calc: "..self.curSpeed)
+						print("Mount stats \n", "current speed: "..tostring(self.curSpeed-self.boost).."\n", "boost: "..tostring(self.boost).."\n", "post calc: "..self.curSpeed)
 						--display mount speed as player movement speed
-						self:SetStackCount(math.floor(self.curSpeed))
+						self:SetStackCount(math.ceil(self.curSpeed))
 					end
 				else
 					self.delay = self.delay - (1/30)

@@ -2,6 +2,10 @@
 
 ## v0.2
 	
+	### heroes
+	+ all heroes now have fixed stats depending on their primary attribute
+	+ all heroes now have 3 base abilities: jump, dash, pivot (can only be used while mounted)
+
 	### mounts
 	+ mount movement now uses movespeed bonuses
 
@@ -12,13 +16,10 @@
 	+ added custom ai for all units
 
 	### bug fixes
-	+ toss requires charges
-	+ not picking a hero during hero pick screen will not random your hero, resulting in having no hero at all	
-	+ scrolling in will mess up the camera, making the majority of the screen not rendered
-
-
-	### known bugs
-	+ 7.07 stat bonuses. movespeed, status resistance, and magic resistance are being applied. (possibly will be a feature)
+	+ toss requiring charges
+	+ not picking a hero during hero pick screen will no longer not random your hero, resulting in having no hero at all	
+	+ scrolling in will no longer mess up the camera, making the majority of the screen not rendered
+	+ 7.07 stat bonuses have been properly adjusted, and added cooldown reduction for int heroes instead of magic resistance.
 
 
 ## v0.1

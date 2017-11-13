@@ -73,6 +73,9 @@ modifier_dash = class({
 	CheckState = function(self) return {[MODIFIER_STATE_NO_UNIT_COLLISION] = true,} end,
 	DeclareFunctions = function(self) return {MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE,} end,
 	GetModifierMoveSpeedBonus_Percentage = function(self) return self:GetAbility():GetSpecialValueFor("speed_boost") end,
+
+	OnCreated = function(self, kv)
+	end,
 })
 
 
@@ -107,8 +110,7 @@ modifier_turn = class({
 
 	OnCreated = function(self, kv)
 		self.turnRate = self:GetAbility():GetSpecialValueFor("turn_rate")
-
-		--EmitSoundOn("", self:GetParent())
+		EmitSoundOn("DOTA_Item.Butterfly", self:GetParent())
 	end,
 
 	OnDestroy = function(self)
