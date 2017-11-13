@@ -7,11 +7,11 @@ function AutoSpawnItems()
 		for i=1,39 do
 			local ent = Entities:FindByName(nil, "itemspawnlocation_"..i)
 			_G.tItemSpawnLocation[i] = ent:GetAbsOrigin()
-			print "grabbing locations"
+			--print "grabbing locations"
 		end
 	end
-  	print "finish first table"
-  	PrintTable(_G.tItemSpawnLocation)
+  	--print "finish first table"
+  	--PrintTable(_G.tItemSpawnLocation)
    	--list out all items to be spawned in a table
 	if not _G.tItemList then
 		_G.tItemList = {}
@@ -23,23 +23,27 @@ function AutoSpawnItems()
 			end
 		end
 	end
-	print "finish second table"
-	PrintTable(_G.tItemList)
+	--print "finish second table"
+	--PrintTable(_G.tItemList)
    	--change time value to alter spawn frequency
-    local repeat_interval = 15 -- Rerun this timer every *repeat_interval* game-time seconds
-    local start_after = 1 -- Start this timer *start_after* game-time seconds later
-	    
+    local repeat_interval = 60 -- Rerun this timer every *repeat_interval* game-time seconds
+    local start_after = 0 -- Start this timer *start_after* game-time seconds later
+	local num = PlayerResource:GetPlayerCount()
 	Timers(start_after, function()
         --code to spawn item at all locations specified from table
         for i=1,#_G.tItemSpawnLocation do
-            local rand = RandomInt(0, #_G.tItemList)
-        	if rand ~= 0 then
-                local item = CreateItem(_G.tItemList[rand], nil, nil)
-                CreateItemOnPositionSync(_G.tItemSpawnLocation[i], item)
-                print ("item spawned: "..item:GetName())
-           	end
+            local itemnum = 1
+            while(itemnum<=num) do
+            	local rand = RandomInt(0, #_G.tItemList)
+        		if rand ~= 0 then
+                	local item = CreateItem(_G.tItemList[rand], nil, nil)
+                	CreateItemOnPositionSync(_G.tItemSpawnLocation[i], item)
+                    --print ("item spawned: "..item:GetName())
+                    FindClearSpaceForItem(item, item:GetAbsOrigin())
+           		end
+           		itemnum = itemnum + 1
+        	end
         end 
         return repeat_interval
     end)
 end
---AutoSpawnItems()
