@@ -569,7 +569,7 @@ BaseAi = {
 			end
 		end
 
-		local int = RandomInt(1.5, 2.5)
+		local int = RandomFloat(1.5, 2.5)
 		if self.snowballing and self.snowballing >= 5 then self.snowballing = nil end 
 		if self.snowballing then self.snowballing = self.snowballing + int end
 		return int

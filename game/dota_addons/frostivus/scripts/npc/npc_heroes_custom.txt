@@ -21,6 +21,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_STRENGTH"
 		"AttributeBaseStrength"		"50"
 		"AttributeStrengthGain"		"0"
@@ -30,6 +38,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 
 	//=================================================================================================================
@@ -50,6 +60,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_STRENGTH"
 		"AttributeBaseStrength"		"50"
 		"AttributeStrengthGain"		"0"
@@ -59,6 +77,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 
 	//=================================================================================================================
@@ -79,6 +99,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_STRENGTH"
 		"AttributeBaseStrength"		"50"
 		"AttributeStrengthGain"		"0"
@@ -88,6 +116,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 	//=================================================================================================================
 	// HERO: Phoenix
@@ -107,6 +137,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_STRENGTH"
 		"AttributeBaseStrength"		"50"
 		"AttributeStrengthGain"		"0"
@@ -116,6 +154,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 	//=================================================================================================================
 	// HERO: Clinkz
@@ -135,6 +175,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_AGILITY"
 		"AttributeBaseStrength"		"0"
 		"AttributeStrengthGain"		"0"
@@ -144,6 +192,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 	//=================================================================================================================
 	// HERO: Lina
@@ -163,6 +213,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_INTELLECT"
 		"AttributeBaseStrength"		"0"
 		"AttributeStrengthGain"		"0"
@@ -172,6 +230,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 	//=================================================================================================================
 	// HERO: Batrider
@@ -191,6 +251,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_INTELLECT"
 		"AttributeBaseStrength"		"0"
 		"AttributeStrengthGain"		"0"
@@ -200,6 +268,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 	//=================================================================================================================
 	// HERO: Ogre Magi
@@ -219,6 +289,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_INTELLECT"
 		"AttributeBaseStrength"		"0"
 		"AttributeStrengthGain"		"0"
@@ -228,6 +306,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 	//=================================================================================================================
 	// HERO: Warlock
@@ -247,6 +327,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_INTELLECT"
 		"AttributeBaseStrength"		"0"
 		"AttributeStrengthGain"		"0"
@@ -256,6 +344,8 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 	//=================================================================================================================
 	// HERO: Ember Spirit
@@ -275,6 +365,14 @@
 		"MovementSpeed"				"360"
 		"MovementTurnRate"			"2.500000"
 
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+
+		"StatusHealth"				"500"
+		"StatusHealthRegen"			"0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"
+
 		"AttributePrimary"		"DOTA_ATTRIBUTE_AGILITY"
 		"AttributeBaseStrength"		"0"
 		"AttributeStrengthGain"		"0"
@@ -284,5 +382,7 @@
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"1"
+		"AttackDamageMax"			"1"
 	}
 }

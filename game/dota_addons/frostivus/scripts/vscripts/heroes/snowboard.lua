@@ -215,7 +215,7 @@ modifier_mount_movement = class({
 						end
 
 						--check if theres a hero in front of the player before moving
-						if not player:IsPhased() then --player:NoUnitCollision()
+						if not player:NoUnitCollision() then --player:IsPhased()
 							local units = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, 40, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
 							if #units > 0 then
 								for k,v in pairs(units) do
@@ -239,16 +239,18 @@ modifier_mount_movement = class({
 						self.boost = (self:GetParent():GetMoveSpeedModifier(self.baseSpeed) - self.baseSpeed) * (1/30)
 
 						--update mount speed
-						self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep) + self.boost, self.maxSpeed + self.boost )
-
-
-						print("Mount stats \n", "current speed: "..tostring(self.curSpeed-self.boost).."\n", "boost: "..tostring(self.boost).."\n", "post calc: "..self.curSpeed)
-						--display mount speed as player movement speed
-						self:SetStackCount(math.ceil(self.curSpeed))
+						self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep ) + self.boost, self.maxSpeed + self.boost )
+					else
+						--start decaying speed
+						self.curSpeed = math.max( self.curSpeed - ( (1/30) * self.speedStep ), self.baseSpeed)
 					end
 				else
 					self.delay = self.delay - (1/30)
 				end
+
+				print("Mount stats \n", "current speed: "..tostring(self.curSpeed-self.boost).."\n", "boost: "..tostring(self.boost).."\n", "post calc: "..self.curSpeed)
+				--display mount speed as player movement speed
+				self:SetStackCount(math.ceil(self.curSpeed))
 
 			--if parent is mount
 			else

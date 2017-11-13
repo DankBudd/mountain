@@ -730,6 +730,7 @@
 	{
 		"Model"		"models/items/courier/basim/basim.vmdl"
 		"BaseClass"	"npc_dota_creature"
+		"Level"		"1"
 
 		"Ability1"		"generic_invulnerablity"
 

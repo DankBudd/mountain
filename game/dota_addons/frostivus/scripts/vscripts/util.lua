@@ -1,3 +1,7 @@
+function PanoramaPrint(msg)
+	CustomGameEventManager:Send_ServerToAllClients("print", {msg = msg})
+end
+
 function FindItemsAtPoint( point, radius )
 	local t = {}
 	local items = Entities:FindAllInSphere(point, radius)

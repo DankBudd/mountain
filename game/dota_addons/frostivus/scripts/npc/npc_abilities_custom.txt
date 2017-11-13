@@ -172,7 +172,7 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"turn_rate"			"120"
+				"turn_rate"			"1.0"
 			}
 			"02"
 			{
