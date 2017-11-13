@@ -157,7 +157,7 @@ function GameMode:StartGameMode()
 	mode:SetDaynightCycleDisabled( false )
 
 
-	local c = {
+	--[[local c = {
 		"basim"
 	}
 	--populate the map
@@ -168,11 +168,11 @@ function GameMode:StartGameMode()
 
 			BaseAi:MakeInstance(unit, {state = BASIM, spawn = unit:GetAbsOrigin()})
 		end) 
-	end
+	end]]
 	for k,v in pairs(Entities:FindAllByName("cosmetic_snow") ) do
 		CreateUnitByNameAsync("npc_dota_base", v:GetAbsOrigin()+RandomVector(250), false, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
 			unit:AddNewModifier(unit, nil, "modifier_dummy", {})
-			local p = ParticleManager:CreateParticle("particles/econ/courier/courier_trail_winter_2012/courier_trail_winter_2012.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
+			local p = ParticleManager:CreateParticle("particles/econ/courier/courier_trail_winter_2012/courier_trail_winter_2012_drifts.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
 			ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
 
 		end)
