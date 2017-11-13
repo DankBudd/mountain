@@ -578,7 +578,7 @@ BaseAi = {
 	CycloneThink = function(self)
 		print("cyclone_think")
 		self.waypoints = self.waypoints or {}
-		while self.waypoints < 5 do 
+		while #self.waypoints < 5 do 
 			print("", "generating waypoints...")
 			self.waypoints[#waypoints+1] = self.unit:GetAbsOrigin()+RandomVector(700)
 		end
