@@ -191,27 +191,34 @@ function GameMode:StartGameMode()
 
 				local p = ParticleManager:CreateParticle("particles/econ/events/winter_major_2016/cyclone_wm16.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
 				ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
+				ParticleManager:ReleaseParticleIndex(p)
 
 				local units = FindUnitsInRadius(unit:GetTeamNumber(), unit:GetAbsOrigin(), nil, 300, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
 				if #units > 0 then
 					for _,hero in pairs(units) do
 						hero:AddNewModifier(unit, nil, "modifier_stunned", {duration = 2.5})
+						hero:AddNewModifier(unit, nil, "modifier_invulnerable", {duration = 2.5})
 
 						--emitsoundon("", hero)
+						hero.cycloned = true
 						local liftTime = 0
-						Timers(0, function()
-							if not hero or hero:IsNull() then return end
-							local timesToSpin = 2
-							local newFoward = RotatePosition(Vector(0,0,0), timesToSpin*360 * 0.03, hero:GetForwardVector())
-							hero:SetForwardVector(newFoward)
-							hero:SetAbsOrigin(hero:GetAbsOrigin()+Vector(0,0,550*0.03))
+						if not hero.cycloned then
+							Timers(0, function()
+								if not hero or hero:IsNull() then return end
+								local timesToSpin = 4
 
-							liftTime = liftTime + 0.03
-							if liftTime >= 2.5 then
-								return
-							end
-							return 0.03
-						end)
+								local newFoward = RotatePosition(Vector(0,0,0), QAngle(0,timesToSpin*360*0.03,0), hero:GetForwardVector())
+								hero:SetForwardVector(newFoward)
+								hero:SetAbsOrigin(hero:GetAbsOrigin()+Vector(0,0,550*0.03))
+
+								liftTime = liftTime + 0.03
+								if liftTime >= 2.5 then
+									Timers(3.0, function() if not hero or hero:IsNull() then return end hero.cycloned = nil end)
+									return
+								end
+								return 0.03
+							end)
+						end
 					
 					end
 				end
@@ -689,13 +696,6 @@ function GameMode:OnPlayerChat( keys )
 			t[ent:GetClassname()] = (t[ent:GetClassname()] ~= nil and t[ent:GetClassname()] + 1) or 1
 		end
 		PrintTable(t)
-	end
-
-	if IsCommand("-ss", 1) then
-		local num = tonumber(arguments[1])
-		if not num then return end
-
-		_G.test = num
 	end
 end
 
