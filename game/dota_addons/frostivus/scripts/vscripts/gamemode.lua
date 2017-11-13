@@ -249,15 +249,15 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD then
 	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
 	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
-
-		--this is causing lag, needs to be put into the item creation script instead
+		local time = GameRules:GetGameTime()
+		local expireTime = 60.0
 		local items = Entities:FindAllByClassname("dota_item_drop")
 		for _,item in pairs(items) do
-		--	if #FindItemsAtPoint(item:GetAbsOrigin(), 20) > 1 then
-		--		FindClearSpaceForItem(item, item:GetAbsOrigin())
-		--	end
+			local timeCreated = item:GetCreationTime()
+    		if timeCreated+expireTime < time then
+        		item:RemoveSelf()
+    		end
 		end
-
 	elseif state == DOTA_GAMERULES_STATE_POST_GAME then
 	elseif state == DOTA_GAMERULES_STATE_DISCONNECT then
 	end
