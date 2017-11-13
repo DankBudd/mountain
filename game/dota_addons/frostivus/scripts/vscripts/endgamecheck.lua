@@ -15,7 +15,7 @@ function Ending_Check( trigger )
 	---local TeamPoints = GameRules.GameMode.TeamPoints
 	-------------------------
 	--20(short) 35(medium) 50(long) team points to win
-
+	tPointsRecord[hHero:GetPlayerOwnerID()] = tPointsRecord[hHero:GetPlayerOwnerID()] or {}
 	--check checkpoint for cheating
 	if string.match(GameRules.GameMode.tCPRecord[hHero:GetPlayerOwnerID()],"CP_1,CP_2,CP_3,CP_4,CP_5,CP_6,CP_7") then
 		print "player passed all checkpoints"
@@ -45,19 +45,27 @@ function Ending_Check( trigger )
 
 	--countdown
 	if triggerflag == 2 then
-		local timeend = Time() + 30.00
-		print(timeend-Time().."seconds left!!!")
-		repeat
-			Timers(1,function()
-				print(timeend-Time().."seconds left!!!")
-				return 0
-			end)
-		until(Time()>= timeend)
+		local timeEnd = GameRules:GetGameTime() + 30
+		Timers(0, function()
+     		if GameRules:GetGameTime() >= timeEnd then
+        		return
+    		end
+    		print(timeEnd - GameRules:GetGameTime().." seconds left!")
+    		return 1
+		end)
+    		--[[local timeend = Time() + 30.00
+ +		print(timeend-Time().."seconds left!!!")
+ +		repeat
+ +			Timers(1,function()
+ +				print(timeend-Time().."seconds left!!!")
+ +				return 0
+ +			end)
+ +		until(Time()>= timeend)]]
 		--restart round if first place team points not greater than voted end point
 		--function or code to sum team points up
 		if TeamPoints[currentbest] < tVoteRecord[Selected] then
 			--function call or code to send all players back to starting point
-			--reset points placeholder
+			--reset placeholder to nil
 			tPointsRecord[10] = nil
 			tPointsRecord[8] = nil
 			tPointsRecord[6] = nil
