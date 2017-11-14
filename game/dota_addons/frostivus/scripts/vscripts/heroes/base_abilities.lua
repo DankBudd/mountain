@@ -75,6 +75,7 @@ modifier_dash = class({
 	GetModifierMoveSpeedBonus_Percentage = function(self) return self:GetAbility():GetSpecialValueFor("speed_boost") end,
 
 	OnCreated = function(self, kv)
+		EmitSoundOn("Hero_Slardar.Sprint", self:GetParent())
 	end,
 })
 

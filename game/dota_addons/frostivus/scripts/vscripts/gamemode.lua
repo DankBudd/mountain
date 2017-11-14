@@ -177,52 +177,77 @@ function GameMode:StartGameMode()
 
 		end)
 	end
-	for k,v in pairs(Entities:FindAllByName("cosmetic_cyclone")) do
-		CreateUnitByNameAsync("npc_dota_base", v:GetAbsOrigin(), false, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
+	for _,cyclone in pairs(Entities:FindAllByName("cosmetic_cyclone")) do
+
+		--unit to represent the cyclone particle
+		CreateUnitByNameAsync("npc_dota_base", cyclone:GetAbsOrigin(), false, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
 			unit:AddNewModifier(unit, nil, "modifier_dummy", {})
 			unit:SetMoveCapability(DOTA_UNIT_CAP_MOVE_FLY)
 			unit:SetBaseMoveSpeed(405)
+			unit.particle = cyclone
 
+			--ai for the cylone to move around
 			BaseAi:MakeInstance(unit, {state = CYCLONE, spawn = unit:GetAbsOrigin()})
 
+			Timers(0, function()
+				if not unit or unit:IsNull() then return end
+				unit.particle:SetAbsOrigin(unit:GetAbsOrigin())
+				return 0.03
+			end)
 
 			Timers(1, function()
 				if not unit or unit:IsNull() then return end
 
-				local p = ParticleManager:CreateParticle("particles/econ/events/winter_major_2016/cyclone_wm16.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
-				ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
-				ParticleManager:ReleaseParticleIndex(p)
 
-				local units = FindUnitsInRadius(unit:GetTeamNumber(), unit:GetAbsOrigin(), nil, 300, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
-				if #units > 0 then
-					for _,hero in pairs(units) do
+				local units = FindUnitsInRadius(unit:GetTeamNumber(), unit:GetAbsOrigin(), nil, 125, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+				for _,hero in pairs(units) do
+					local liftTime = 0
+					local origin = hero:GetAbsOrigin()
+					if not hero.cycloned then
+						hero.cycloned = true
+
 						hero:AddNewModifier(unit, nil, "modifier_stunned", {duration = 2.5})
 						hero:AddNewModifier(unit, nil, "modifier_invulnerable", {duration = 2.5})
 
-						--emitsoundon("", hero)
-						hero.cycloned = true
-						local liftTime = 0
-						if not hero.cycloned then
-							Timers(0, function()
-								if not hero or hero:IsNull() then return end
-								local timesToSpin = 4
+						EmitSoundOn("DOTA_Item.Cyclone.Activate", hero)
 
-								local newFoward = RotatePosition(Vector(0,0,0), QAngle(0,timesToSpin*360*0.03,0), hero:GetForwardVector())
-								hero:SetForwardVector(newFoward)
-								hero:SetAbsOrigin(hero:GetAbsOrigin()+Vector(0,0,550*0.03))
+						local p = ParticleManager:CreateParticle("particles/econ/events/winter_major_2016/cyclone_wm16.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
+						ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
 
-								liftTime = liftTime + 0.03
-								if liftTime >= 2.5 then
-									Timers(3.0, function() if not hero or hero:IsNull() then return end hero.cycloned = nil end)
-									return
-								end
-								return 0.03
-							end)
-						end
-					
+						--start hero cyclone timer
+						Timers(0, function()
+							if not hero or hero:IsNull() then return end
+							local timesToSpin = 2
+
+							--calculate their next facing position
+							local newFoward = RotatePosition(Vector(0,0,0), QAngle(0,timesToSpin*360*0.03,0), hero:GetForwardVector())
+							hero:SetForwardVector(newFoward)
+
+							--gradually increase their height
+							hero:SetAbsOrigin( Vector(origin.x, origin.y, math.min(hero:GetAbsOrigin().z + (500 * 0.03), GetGroundHeight(hero:GetAbsOrigin(), hero)+400)) )
+
+							liftTime = liftTime + 0.03
+							--end cyclone
+							if liftTime >= 2.4 then
+								--ground the unit
+								hero:SetAbsOrigin(GetGroundPosition(hero:GetAbsOrigin(), hero))
+
+								--destroy the heroes cyclone
+								ParticleManager:DestroyParticle(p, false)
+								ParticleManager:ReleaseParticleIndex(p)
+
+								--delay before they can be cycloned again
+								Timers(3.0, function() if not hero or hero:IsNull() then return end hero.cycloned = nil end)
+
+								--end timer
+								return
+							end
+							--continue timer
+							return 0.03
+						end)
 					end
 				end
-				return 1
+				return 0.5
 			end)
 		end)
 	end
@@ -254,9 +279,9 @@ function GameMode:OnThink()
 		local items = Entities:FindAllByClassname("dota_item_drop")
 		for _,item in pairs(items) do
 			local timeCreated = item:GetCreationTime()
-    		if timeCreated+expireTime < time then
-        		item:RemoveSelf()
-    		end
+			if timeCreated+expireTime < time then
+				item:RemoveSelf()
+			end
 		end
 	elseif state == DOTA_GAMERULES_STATE_POST_GAME then
 	elseif state == DOTA_GAMERULES_STATE_DISCONNECT then
@@ -304,8 +329,10 @@ function GameMode:OrderManager( keys )
 --		print("Filter | target position: "..tostring(target:GetAbsOrigin()))
 	end
 
-	if pos ~= Vector(0,0,0) then
---		print("Filter | world position: "..tostring(pos))
+	if pos == Vector(0,0,0) then
+		if target then
+			pos = target:GetAbsOrigin()
+		end
 	end
 	if units and units["0"] then
 		local hero = EntIndexToHScript(units["0"])
@@ -693,7 +720,7 @@ function GameMode:OnPlayerChat( keys )
 			local this = ent
 			ent = Entities:Next(ent)
 
-			t[ent:GetClassname()] = (t[ent:GetClassname()] ~= nil and t[ent:GetClassname()] + 1) or 1
+			t[this:GetClassname()] = (t[this:GetClassname()] ~= nil and t[this:GetClassname()] + 1) or 1
 		end
 		PrintTable(t)
 	end

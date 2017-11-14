@@ -63,7 +63,7 @@ local function GetSpellToCast(unit, optStart)
 	local max = 5
 	if min > max then return end
 
-	print("","searching for spell...")
+	--print("","searching for spell...")
 
 	local behav
 	local ab
@@ -80,7 +80,7 @@ local function GetSpellToCast(unit, optStart)
 	end
 
 	if ab then
-		print("","current spell: ", ab:GetName())
+		--print("","current spell: ", ab:GetName())
 		if HasBehavior(ab, DOTA_ABILITY_BEHAVIOR_PASSIVE) then
 			return GetSpellToCast(unit, min+1)
 
@@ -240,7 +240,7 @@ BaseAi = {
 	end,
 
 	IdleThink = function(self)
-		print("idle_think")
+		--print("idle_think")
 
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, self.aggroRange,
 		DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
@@ -260,7 +260,7 @@ BaseAi = {
 	end,
 
 	AggresiveThink = function(self)
-		print("aggro_think")
+		--print("aggro_think")
 
 		--check if we have moved too far away from spawn
 		if (self.spawn - self.unit:GetAbsOrigin()):Length2D() > self.leash then
@@ -283,7 +283,7 @@ BaseAi = {
 	end,
 
 	ReturningThink = function(self)
-		print("return_think")
+		--print("return_think")
 
 		local range = self.aggroRange * 0.5
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, range,
@@ -310,21 +310,21 @@ BaseAi = {
 	end,
 
 	WanderIdleThink = function(self)
-		print("wander_think")
+		--print("wander_think")
 
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, self.aggroRange,
 		DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 
-		print("", "found "..tostring(#units).." enemy heroes")
+		--print("", "found "..tostring(#units).." enemy heroes")
 		--check if state should change
 		if #units > 0 then
-			print("","", "enemy is in range!")
+			--print("","", "enemy is in range!")
 			if GetSpellToCast(self.unit) then
-				print("","", "spell can be cast on enemy!")
+				--print("","", "spell can be cast on enemy!")
 				self.protect = {self.unit}
 				self.state = PROTECTIVE
 
-				print("", "back to protective..")
+				--print("", "back to protective..")
 				return
 			end
 		end
@@ -339,18 +339,18 @@ BaseAi = {
 		self.waypoints = self.waypoints or {}
 		self.wpTimes = self.wpTimes or {}
 
-		print("", "we have "..tostring(#self.waypoints).." waypoints")
+		--print("", "we have "..tostring(#self.waypoints).." waypoints")
 
 		local attempts = 0
 		while #self.waypoints < 3 do
 			attempts = attempts+1
-			print("", "generating waypoints for "..self.unit:GetUnitName().."...")
+			--print("", "generating waypoints for "..self.unit:GetUnitName().."...")
 			local wp = self.unit:GetAbsOrigin() + RandomVector(500)
 			if GridNav:CanFindPath(self.unit:GetAbsOrigin(), wp) or attempts > 2 then
 				if GridNav:FindPathLength(self.unit:GetAbsOrigin(), wp) < self.leash + self.buffer or attempts > 2 then
 					table.insert(self.waypoints, wp)
 					self.wpTimes[wp] = self.lastThink
-					print("","", "making new waypoint["..tostring(#self.waypoints).."] at: Vector("..tostring(math.ceil(wp.x))..", "..tostring(math.ceil(wp.y))..", "..tostring(math.ceil(wp.z))..") after "..tostring(attempts).." attempts")
+					--print("","", "making new waypoint["..tostring(#self.waypoints).."] at: Vector("..tostring(math.ceil(wp.x))..", "..tostring(math.ceil(wp.y))..", "..tostring(math.ceil(wp.z))..") after "..tostring(attempts).." attempts")
 					attempts = 0
 				end
 			end 
@@ -358,46 +358,46 @@ BaseAi = {
 
 		--check if waypoint reached
 		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 or GameRules:GetGameTime()-10 > self.wpTimes[self.waypoints[1]] then
-			print("","", "reached a waypoint! removing it..")
+			--print("","", "reached a waypoint! removing it..")
 			table.remove(self.waypoints, 1)
 		end
 
-		print("", "moving to next waypoint")
+		--print("", "moving to next waypoint")
 		--move towards next waypoint 
 		self.unit:MoveToPosition(self.waypoints[1])
 		return
 	end,
 
 	ProtectiveThink = function(self)
-		print("protective_think")
+		--print("protective_think")
 
 		--check if theres actually something to protect
 		if not self.protect or #self.protect <= 0 then
-			print("", "nothing to protect", self.protect)
+			--print("", "nothing to protect", self.protect)
 			self.state = WANDER_IDLE
 			return
 		end
 
 		--iterate thru areas/units to protect
 		for i = 1,#self.protect do
-			print("", "currently protecting:", self.protect[i])
+			--print("", "currently protecting:", self.protect[i])
 			--grab a spell
 			local ab,behav = GetSpellToCast(self.unit)
 			if not ab then
-				print("","", "nothing to cast, stop protecting for this think")
+				--print("","", "nothing to cast, stop protecting for this think")
 				break
 			end
 			--grab an instance of thing we are protecting
 			local protect = self.protect[i]
 			if type(protect) ~= "vector" then
-				print("", "protecting a unit")
+				--print("", "protecting a unit")
 				--try to buff thing if its a unit
 				if CanTargetUnit(ab, protect) then
-					print("", "our unit can be buffed")
+					--print("", "our unit can be buffed")
 					if CastSpell(self.unit, protect, ab, behav) then
-						print("", "SUCCEEDED in buffing ally")
+						--print("", "SUCCEEDED in buffing ally")
 					else
-						print("", "FAILED in buffing ally")
+						--print("", "FAILED in buffing ally")
 					end
 				end
 				protect = protect:GetAbsOrigin()
@@ -407,13 +407,13 @@ BaseAi = {
 			local units = FindUnitsInRadius(self.unit:GetTeam(), protect, nil, self.aggroRange,
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 
-			print("", "found "..tostring(#units).." enemy heroes")
+			--print("", "found "..tostring(#units).." enemy heroes")
 			for _,unit in pairs(units) do
 				if CastSpell(self.unit, unit, ab, behav) then
-					print("","", "SUCCEEDED in attacking enemy")
+					--print("","", "SUCCEEDED in attacking enemy")
 					break
 				else
-					print("","", "FAILED in attacking enemy")
+					--print("","", "FAILED in attacking enemy")
 				end
 			end
 
@@ -426,20 +426,20 @@ BaseAi = {
 			end
 		end
 
-		print("", "back to wandering..")
+		--print("", "back to wandering..")
 		self.state = WANDER_IDLE
 		return
 	end,
 
 	--take preset waypoints and patrol between them
 	PatrolThink = function(self)
-		print("patrol_think")
+		--print("patrol_think")
 		if not self.patrolPoints or #self.patrolPoints < 2 then
-			print("", ((self.patrolPoints ~= nil and "we only have "..tostring(#self.patrolPoints)) or "no") .. " points to patrol.. killing thinker")
+			--print("", ((self.patrolPoints ~= nil and "we only have "..tostring(#self.patrolPoints)) or "no") .. " points to patrol.. killing thinker")
 			BaseAi.thinkers[self.id] = nil
 			return
 		end
-		print("", "we have "..tostring(#self.patrolPoints).." patrol points to traverse")
+		--print("", "we have "..tostring(#self.patrolPoints).." patrol points to traverse")
 
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, self.aggroRange,
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
@@ -454,21 +454,21 @@ BaseAi = {
 		local toPatrol = self.lastPos or self.patrolPoints[1]
 		--check if waypoint reached
 		if (toPatrol - self.unit:GetAbsOrigin()):Length2D() <= 10 then
-			print("","", "reached a patrol point!")
+			--print("","", "reached a patrol point!")
 			self.lastPos = nil
 			--cycle patrol points
 			table.insert(self.patrolPoints, table.remove(self.patrolPoints, 1))
 		end
-		print("", "moving to patrol point... Vector("..tostring(math.ceil(self.patrolPoints[1].x))..", "..tostring(math.ceil(self.patrolPoints[1].y))..", "..tostring(math.ceil(self.patrolPoints[1].z))..")" )
+		--print("", "moving to patrol point... Vector("..tostring(math.ceil(self.patrolPoints[1].x))..", "..tostring(math.ceil(self.patrolPoints[1].y))..", "..tostring(math.ceil(self.patrolPoints[1].z))..")" )
 		--move towards next patrol point 
 		self.unit:MoveToPosition(self.patrolPoints[1])
 	end,
 
 	PatrolAggroThink = function(self)
-		print("patrol_aggro")
+		--print("patrol_aggro")
 		--check if we have moved too far away from patrol point
 		if (self.lastPos - self.unit:GetAbsOrigin()):Length2D() > self.leash then
-			print("", "too far from waypoints, return to patrol")
+			--print("", "too far from waypoints, return to patrol")
 			self.unit:MoveToPosition( self.lastPos )
 			self.aggroTarget = nil
 			self.state = PATROL
@@ -480,39 +480,39 @@ BaseAi = {
 
 		--if current enemy is still in range
 		if (self.unit:GetAbsOrigin() - self.aggroTarget:GetAbsOrigin()):Length2D() < self.aggroRange then
-			print("", "enemy still in range")
+			--print("", "enemy still in range")
 			--cast on enemy
 			local ab,behav = GetSpellToCast(self.unit)
 			if ab then
-				print("", "valid ability found, casting..")
+				--print("", "valid ability found, casting..")
 				if CastSpell(self.unit, self.aggroTarget, ab, behav) then
-					print("","", "cast on target success")
+					--print("","", "cast on target success")
 					return
 				else
-					print("","", "cast on target failed")
+					--print("","", "cast on target failed")
 				end
 			else
-				print("", "no valid ability to cast")
+				--print("", "no valid ability to cast")
 			end
 		else
-			print("", "target is out of range..")
+			--print("", "target is out of range..")
 			--find new target
 			if #units > 0 then
 				print("","", "found a new target, continue think")
 				self.aggroTarget = units[1]
 				return
 			end
-			print("","", "no targets in range")
+			--print("","", "no targets in range")
 		end
 
-		print("", "returning to patrol...")
+		--print("", "returning to patrol...")
 		self.aggroTarget = nil
 		self.state = PATROL
 		return
 	end,
 
 	SentryThink = function(self)
-		print("sentry_think")
+		--print("sentry_think")
 		local ab,behav = GetSpellToCast(self.unit)
 		if not ab then print("", "no valid ability to cast") return end
 
@@ -526,7 +526,7 @@ BaseAi = {
 				print("making tiny dummy")
 				dummy:AddNewModifier(nil, nil, "modifier_dummy", {})
 			end)
-			print("tiny casting on dummy")
+			--print("tiny casting on dummy")
 			self.unit:CastAbilityOnTarget(self.unit.tinyTarget, ab, self.unit:GetPlayerOwnerID())
 			ab:EndCooldown()
 			return 0.1
@@ -536,17 +536,17 @@ BaseAi = {
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, range,
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 
-		print("", "ability cast range: "..tostring(range))
+		--print("", "ability cast range: "..tostring(range))
 		if #units>0 then
 			if CastSpell(self.unit, units[1], ab, behav) then
-				print("","cast success")
+				--print("","cast success")
 				return
 			else
-				print("","cast fail")
+				--print("","cast fail")
 			end
 		end
 
-		print("","no units to act on")
+		--print("","no units to act on")
 		self.unit:MoveToPosition(self.spawn)
 		return
 	end,
@@ -576,19 +576,19 @@ BaseAi = {
 	end,
 
 	CycloneThink = function(self)
-		print("cyclone_think")
+		--print("cyclone_think")
 		self.waypoints = self.waypoints or {}
 		while #self.waypoints < 5 do 
-			print("", "generating waypoints...")
-			self.waypoints[#waypoints+1] = self.unit:GetAbsOrigin()+RandomVector(700)
+			--print("", "generating waypoints...")
+			self.waypoints[#self.waypoints+1] = self.unit:GetAbsOrigin()+RandomVector(700)
 		end
 
 		if (self.waypoints[1] - self.unit:GetAbsOrigin()):Length2D() <= 10 then
-			print("","", "reached a waypoint!")
+			--print("","", "reached a waypoint!")
 			--cycle way points
 			table.insert(self.waypoints, table.remove(self.waypoints, 1))
 		end
-		print("", "moving to waypoint... Vector("..tostring(math.ceil(self.waypoints[1].x))..", "..tostring(math.ceil(self.waypoints[1].y))..", "..tostring(math.ceil(self.waypoints[1].z))..")" )
+		--print("", "moving to waypoint... Vector("..tostring(math.ceil(self.waypoints[1].x))..", "..tostring(math.ceil(self.waypoints[1].y))..", "..tostring(math.ceil(self.waypoints[1].z))..")" )
 		--move towards next patrol point 
 		self.unit:MoveToPosition(self.waypoints[1])
 	end,

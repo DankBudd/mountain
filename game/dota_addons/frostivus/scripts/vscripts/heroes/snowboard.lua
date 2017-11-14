@@ -1,5 +1,6 @@
 LinkLuaModifier("modifier_mount_movement", "heroes/snowboard", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_penguin_thinker", "heroes/snowboard", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_mimic_casters_states", "heroes/snowboard", LUA_MODIFIER_MOTION_NONE)
 
 penguin_ability = class({})
 
@@ -49,6 +50,9 @@ modifier_penguin_thinker = class({
 						if not unit:IsHexed() and not unit:IsRooted() and not unit:IsStunned() then
 							self:GetParent():AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_movement", {}).player = unit
 							unit:AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_movement", {})
+
+							--mimic states. e.g invisibility
+							self:GetParent():AddNewModifier(unit, self:GetAbility(), "modifier_mimic_casters_states", {})
 						end
 						break
 					else
@@ -57,6 +61,28 @@ modifier_penguin_thinker = class({
 				end
 			end
 		end
+	end,
+})
+
+modifier_mimic_casters_states = class({
+	IsHidden = function(self) return true end,
+	IsPurgable = function(self) return false end,
+
+	CheckState = function(self)
+	--[[print("\n","IsInvisible: "..tostring(self:GetCaster():IsInvisible() ) .."\n",
+		"IsStunned: "..tostring(self:GetCaster():IsStunned() ) .."\n",
+		"IsHexed: "..tostring(self:GetCaster():IsHexed() ) .."\n",
+		"IsFrozen: "..tostring(self:GetCaster():IsFrozen() ) .."\n",
+		"IsRooted: "..tostring(self:GetCaster():IsRooted() ) .."\n",
+		"NoUnitCollision: "..tostring(self:GetCaster():NoUnitCollision() ))]]
+		return {
+			[MODIFIER_STATE_INVISIBLE] = self:GetCaster():IsInvisible(),
+			[MODIFIER_STATE_STUNNED] = self:GetCaster():IsStunned(),
+			[MODIFIER_STATE_HEXED] = self:GetCaster():IsHexed(),
+			[MODIFIER_STATE_FROZEN] = self:GetCaster():IsFrozen(),
+			[MODIFIER_STATE_ROOTED] = self:GetCaster():IsRooted(),
+			[MODIFIER_STATE_NO_UNIT_COLLISION] = self:GetCaster():NoUnitCollision(),
+		}
 	end,
 })
 
@@ -123,7 +149,7 @@ modifier_mount_movement = class({
 				EmitSoundOn( "Hero_Tusk.IceShards.Penguin", self:GetParent() )
 				self:GetCaster():RemoveGesture( ACT_DOTA_SLIDE_LOOP )
 				self.player:RemoveModifierByName("modifier_mount_movement")
-
+				self:GetCaster():RemoveModifierByName("modifier_mimic_casters_states")
 				if self.particle then
 					ParticleManager:DestroyParticle(self.particle, true)
 					ParticleManager:ReleaseParticleIndex(self.particle)
@@ -248,7 +274,7 @@ modifier_mount_movement = class({
 					self.delay = self.delay - (1/30)
 				end
 
-				print("Mount stats \n", "current speed: "..tostring(self.curSpeed-self.boost).."\n", "boost: "..tostring(self.boost).."\n", "post calc: "..self.curSpeed)
+				--print("Mount stats \n", "current speed: "..tostring(self.curSpeed-self.boost).."\n", "boost: "..tostring(self.boost).."\n", "post calc: "..self.curSpeed)
 				--display mount speed as player movement speed
 				self:SetStackCount(math.ceil(self.curSpeed))
 
