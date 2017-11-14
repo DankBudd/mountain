@@ -232,7 +232,8 @@ modifier_mount_movement = class({
 
 					local pass = true
 					if not jumpMod then
-						local trees = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, 25, DOTA_UNIT_TARGET_TEAM_CUSTOM, DOTA_UNIT_TARGET_TREE, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+						
+						local trees = Entities:FindAllByClassnameWithin("dota_temp_tree", newPos, 25)
 						--end slide if unpathable, and destroy any trees at unpathable position
 						if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) or #trees > 0 then
 							GridNav:DestroyTreesAroundPoint( newPos, 25, true)
