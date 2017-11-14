@@ -419,8 +419,8 @@ BaseAi = {
 
 			if ab:GetName() == "tiny_toss" then
 				local range = ab:GetSpecialValueFor("grab_radius")
-				if (self.unit:GetAbsOrigin() - unit:GetAbsOrigin()):Length2D() > range then
-					self.unit:MoveToNPC(unit)
+				if (self.unit:GetAbsOrigin() - units[1]:GetAbsOrigin()):Length2D() > range then
+					self.unit:MoveToNPC(unit[1])
 					return 1.0
 				end
 			end

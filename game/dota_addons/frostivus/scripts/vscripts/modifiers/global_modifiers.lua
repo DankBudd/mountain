@@ -55,3 +55,4 @@ modifier_intelligence_cdr = class({
 	OnCreated = function(self, kv) self:StartIntervalThink(1) end,
 	OnIntervalThink = function(self) if IsServer() then self:SetStackCount(self:GetParent():GetIntellect()) end end,
 })
+

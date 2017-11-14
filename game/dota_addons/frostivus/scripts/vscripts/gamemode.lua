@@ -112,7 +112,6 @@ function GameMode:InitGameMode()
 	end
 end
 
---this function will only run once, when the first player is fully loaded.
 function GameMode:StartGameMode()
 	if mode then
 		return
@@ -157,10 +156,11 @@ function GameMode:StartGameMode()
 	mode:SetDaynightCycleDisabled( false )
 
 
+	ParticleManager:CreateParticle("particles/rain_fx/econ_snow.vpcf", PATTACH_EYES_FOLLOW, GameRules:GetGameModeEntity())
+
 	--[[local c = {
 		"basim"
 	}
-	--populate the map
 	for k,v in pairs(Entities:FindAllByName("cosmetic_cour") ) do
 		CreateUnitByNameAsync(c[RandomInt(1, #c)], v:GetAbsOrigin(), true, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
 			unit:SetMoveCapability(DOTA_UNIT_CAP_MOVE_GROUND)
@@ -169,13 +169,11 @@ function GameMode:StartGameMode()
 			BaseAi:MakeInstance(unit, {state = BASIM, spawn = unit:GetAbsOrigin()})
 		end) 
 	end]]
-	for k,v in pairs(Entities:FindAllByName("cosmetic_snow") ) do
-		CreateUnitByNameAsync("npc_dota_base", v:GetAbsOrigin()+RandomVector(250), false, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
-			unit:AddNewModifier(unit, nil, "modifier_dummy", {})
-			local p = ParticleManager:CreateParticle("particles/econ/courier/courier_trail_winter_2012/courier_trail_winter_2012_drifts.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
-			ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
 
-		end)
+
+	--populate the map
+	for k,v in pairs(Entities:FindAllByName("cosmetic_snow") ) do
+		v:SetAbsOrigin(v:GetAbsOrigin()+RandomVector(500))
 	end
 	for _,cyclone in pairs(Entities:FindAllByName("cosmetic_cyclone")) do
 
@@ -198,11 +196,8 @@ function GameMode:StartGameMode()
 			Timers(1, function()
 				if not unit or unit:IsNull() then return end
 
-
 				local units = FindUnitsInRadius(unit:GetTeamNumber(), unit:GetAbsOrigin(), nil, 125, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
 				for _,hero in pairs(units) do
-					local liftTime = 0
-					local origin = hero:GetAbsOrigin()
 					if not hero.cycloned then
 						hero.cycloned = true
 
@@ -210,10 +205,18 @@ function GameMode:StartGameMode()
 						hero:AddNewModifier(unit, nil, "modifier_invulnerable", {duration = 2.5})
 
 						EmitSoundOn("DOTA_Item.Cyclone.Activate", hero)
+						EmitSoundOn("Hero_Winter_Wyvern.SplinterBlast.Target", hero)
 
-						local p = ParticleManager:CreateParticle("particles/econ/events/winter_major_2016/cyclone_wm16.vpcf", PATTACH_ABSORIGIN_FOLLOW, unit)
+						local p = ParticleManager:CreateParticle("particles/econ/events/winter_major_2016/cyclone_wm16.vpcf", PATTACH_POINT_FOLLOW, unit)
+						ParticleManager:SetParticleControl(p, 0, unit:GetAbsOrigin())
 						ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
+						ParticleManager:SetParticleControl(p, 3, unit:GetAbsOrigin())
+						ParticleManager:SetParticleControl(p, 5, Vector(1,1,1))
 
+
+						local liftTime = 0
+						local origin = hero:GetAbsOrigin()
+						local forward = hero:GetForwardVector()
 						--start hero cyclone timer
 						Timers(0, function()
 							if not hero or hero:IsNull() then return end
@@ -231,6 +234,7 @@ function GameMode:StartGameMode()
 							if liftTime >= 2.4 then
 								--ground the unit
 								hero:SetAbsOrigin(GetGroundPosition(hero:GetAbsOrigin(), hero))
+								hero:SetForwardVector(forward)
 
 								--destroy the heroes cyclone
 								ParticleManager:DestroyParticle(p, false)
@@ -238,7 +242,8 @@ function GameMode:StartGameMode()
 
 								--delay before they can be cycloned again
 								Timers(3.0, function() if not hero or hero:IsNull() then return end hero.cycloned = nil end)
-
+								
+								EmitSoundOn("Hero_Winter_Wyvern.SplinterBlast.Splinter", hero)
 								--end timer
 								return
 							end

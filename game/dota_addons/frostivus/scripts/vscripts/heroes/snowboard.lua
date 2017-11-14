@@ -232,17 +232,17 @@ modifier_mount_movement = class({
 
 					local pass = true
 					if not jumpMod then
+						local trees = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, 25, DOTA_UNIT_TARGET_TEAM_CUSTOM, DOTA_UNIT_TARGET_TREE, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
 						--end slide if unpathable, and destroy any trees at unpathable position
-						if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) then
+						if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) or #trees > 0 then
 							GridNav:DestroyTreesAroundPoint( newPos, 25, true)
 							ResolveNPCPositions( player:GetAbsOrigin(), 25 )
 							self:Destroy()
 							return
 						end
-
 						--check if theres a hero in front of the player before moving
 						if not player:NoUnitCollision() then --player:IsPhased()
-							local units = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, 40, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+							local units = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, 50, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
 							if #units > 0 then
 								for k,v in pairs(units) do
 									if v ~= player then
