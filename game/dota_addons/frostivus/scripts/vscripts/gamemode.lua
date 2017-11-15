@@ -22,7 +22,7 @@ function GameMode:InitGameMode()
 	GameRules:SetHeroSelectionTime( 30 )
 	GameRules:SetStrategyTime( 1 )
 	GameRules:SetShowcaseTime( 0 )
-	GameRules:SetPreGameTime( 15 )
+	GameRules:SetPreGameTime( 30 )
 	GameRules:SetPostGameTime( 30 )
 
 	GameRules:SetTreeRegrowTime( 60 )
@@ -71,6 +71,7 @@ function GameMode:InitGameMode()
 	self.debugEntities = {}
 	self.mounts = {}
 	self.tCPRecord = {}
+	self.tVoteRecord = {}
 	print("set tables")
 
 	GameMode = self
@@ -83,6 +84,7 @@ function GameMode:InitGameMode()
 	ListenToGameEvent('dota_player_pick_hero', Dynamic_Wrap(GameMode, 'OnPlayerPickHero'), self)
 	ListenToGameEvent('dota_illusions_created', Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
 	ListenToGameEvent('npc_spawned', Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
+	CustomGameEventManager:RegisterListener("player_vote", Dynamic_Wrap(GameMode, "OnPlayerVote"))
 
 	--Setup Filters
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, 'OrderManager'), self)
@@ -278,6 +280,62 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_TEAM_SHOWCASE then
 	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD then
 	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
+		self.tVoteRecord[] = self.tVoteRecord[] or 0
+		self.tVoteRecord[12] = self.tVoteRecord[12] or 0 --short
+		self.tVoteRecord[24] = self.tVoteRecord[24] or 0 --medium
+		self.tVoteRecord[36] = self.tVoteRecord[36] or 0 --long
+		self.tVoteRecord["Selected"] = self.tVoteRecord["Selected"] or 0 --Choice Selected
+		local i = 0
+		Timers(0,function()
+			i = i + 1
+			--voting process code
+			--GameMode:OnPlayerVote()
+			if tVoteRecord[] == 10 then
+				self.tVoteRecord[12] = self.tVoteRecord[12] + 1
+				print "short + 1"
+			elseif tVoteRecord[] == 20 then
+				self.tVoteRecord[24] = self.tVoteRecord[24] + 1
+				print "medium + 1"
+			elseif tVoteRecord[] == 30 then
+				self.tVoteRecord[36] = self.tVoteRecord[36] + 1
+				print "long + 1"
+			end
+			if i >= 30 then
+				local maxvalue = math.max(self.tVoteRecord[12],self.tVoteRecord[24],self.tVoteRecord[36])
+				--allsame 
+				if self.tVoteRecord[12] == self.tVoteRecord[24] and self.tVoteRecord[24] == self.tVoteRecord[36] and self.tVoteRecord[36] == self.tVoteRecord[12] then
+					self.tVoteRecord["Selected"] = 24 --default to medium
+				elseif self.tVoteRecord[12] == self.tVoteRecord[24] and self.tVoteRecord[12] == maxvalue then --short & medium same
+					if RollPercentage(50) then
+						self.tVoteRecord["Selected"] = 12
+					else
+						self.tVoteRecord["Selected"] = 24
+					end
+				elseif self.tVoteRecord[24] == self.tVoteRecord[36] and self.tVoteRecord[24] == maxvalue then --medium & long same
+					if RollPercentage(50) then
+						self.tVoteRecord["Selected"] = 24
+					else
+						self.tVoteRecord["Selected"] = 36
+					end
+				elseif self.tVoteRecord[36] == self.tVoteRecord[12] and self.tVoteRecord[36] == maxvalue then --long & short same
+					if RollPercentage(50) then
+						self.tVoteRecord["Selected"] = 36
+					else
+						self.tVoteRecord["Selected"] = 12
+					end
+				else --anything else
+					if self.tVoteRecord[12] == maxvalue then
+						self.tVoteRecord["Selected"] = 12
+					elseif self.tVoteRecord[24] == maxvalue then
+						self.tVoteRecord["Selected"] = 24
+					elseif self.tVoteRecord[36] == maxvalue then
+						self.tVoteRecord["Selected"] = 36
+					end
+				end
+				return
+			end
+			return 0
+		end)
 	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
 		local time = GameRules:GetGameTime()
 		local expireTime = 60.0
@@ -480,6 +538,9 @@ end
 
 function GameMode:OnIllusionsCreated( keys )
 	print("illusion")
+end
+function GameMode:OnPlayerVote( keys )
+	tVoteRecord[keys.playerID] = keys.vote
 end
 
 function GameMode:OnPlayerChat( keys )
