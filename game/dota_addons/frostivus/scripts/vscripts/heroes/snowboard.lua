@@ -201,7 +201,7 @@ modifier_mount_movement = class({
 
 				local turnAmount = 0.0
 				local curAngles = mount:GetAngles()
-				local angleDiff = UTIL_AngleDiff( self.desiredYaw, curAngles.y )
+				local angleDiff = AngleDiff( self.desiredYaw, curAngles.y )
 
 				local turnRate
 				if self.delay <= 0 then
@@ -232,7 +232,7 @@ modifier_mount_movement = class({
 
 					local pass = true
 					if not jumpMod then
-						
+
 						local trees = Entities:FindAllByClassnameWithin("dota_temp_tree", newPos, 25)
 						--end slide if unpathable, and destroy any trees at unpathable position
 						if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) or #trees > 0 then

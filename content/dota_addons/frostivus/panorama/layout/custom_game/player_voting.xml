@@ -3,23 +3,50 @@
 		<include src="file://{resources}/styles/custom_game/player_voting.css" />
 	</styles>
 	<script>
-		function CastVote(num) { GameEvents.SendCustomGameEventToServer("player_vote", {playerID: Game.GetLocalPlayerID(), vote: num}); }
+		var votes = []
+		function CastVote(vote) {
+			votes[Game.GetLocalPlayerID()] = vote;
+			
+			//could be improved
+			var panel1 = $("#Vote1")
+			var panel2 = $("#Vote2")
+			var panel3 = $("#Vote3")
+			if (vote == 12) { panel1.AddClass("selected"); panel2.RemoveClass("selected"); panel3.RemoveClass("selected"); }
+			if (vote == 24) { panel1.RemoveClass("selected"); panel2.AddClass("selected"); panel3.RemoveClass("selected"); }
+			if (vote == 36) { panel1.RemoveClass("selected"); panel2.RemoveClass("selected"); panel3.AddClass("selected"); }
+		}
+		function ConfirmVote() {
+			var pid = Game.GetLocalPlayerID()
+			if (votes[pid] != undefined) {
+				$.GetContextPanel().RemoveAndDeleteChildren()
+				GameEvents.SendCustomGameEventToServer("player_vote", {playerID: Game.GetLocalPlayerID(), vote: votes[pid]});
+			}
+		}
+		
+		(function(){
+			GameEvents.Subscribe("remove_voting_screen", function(args) { $.GetContextPanel().RemoveAndDeleteChildren() })
+		})()
 	</script>
 	<Panel class="PlayerVoting" hittest="false" >
-		<Panel id="Title" hittest="false" >
-			<Label id="TitleName" text="#difficulty_vote" hittest="false" />
+		<Panel id ="MainPanel" hittest="false" >
+			<Panel id="Title" hittest="false" >
+				<Label id="TitleName" text="#difficulty_vote" hittest="false" />
+			</Panel>
+			<Panel id="VotePanel" >
+				<Button id="Vote1" onactivate="CastVote(12)" >
+					<Label id="VoteText1" text="#difficulty_vote_1" hittest="false" />
+				</Button>
+				<Button id="Vote2" onactivate="CastVote(24)" >
+					<Label id="VoteText2" text="#difficulty_vote_2" hittest="false" />
+				</Button>
+				 <Button id="Vote3" onactivate="CastVote(36)" >
+					<Label id="VoteText3" text="#difficulty_vote_3" hittest="false" />
+				</Button>
+			</Panel>
 		</Panel>
-		<Panel id="VotePanel" >
-			<Button id="Vote1" onactivate="CastVote(12)" >
-				<Label id="VoteText1" text="#difficulty_vote_1" hittest="false" />
-			</Button>
-			<Button id="Vote2" onactivate="CastVote(24)" >
-				<Label id="VoteText2" text="#difficulty_vote_2" hittest="false" />
-			</Button>
-			 <Button id="Vote3" onactivate="CastVote(36)" >
-				<Label id="VoteText3" text="#difficulty_vote_3" hittest="false" />
-			</Button>
-		</Panel>
+		<Button id="ConfirmButton" onactivate="ConfirmVote()" >
+			<Label id="ConfirmText" text="#confirm_vote" hittest="false"/>
+		</Button>
 	</Panel>
 </root>
 

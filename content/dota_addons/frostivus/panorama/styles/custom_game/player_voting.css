@@ -1,9 +1,17 @@
-.PlayerVoting {
+.PlayerVoting{
 	margin: 30%;
 	width: 100%;
-	height: 20%;
+	height: 30%;
 	flow-children: down;
+}
+
+#MainPanel {
+	width: 100%;
+	height: 66%;
+	
+	border-radius: 25px 25px;
 	background-color: #0d1c22ff, gradient( radial, 100% -0%, 100px -90px, 320% 400%, from( #3a464bff ), color-stop( 0.30, #0d1c22ff ), to( #0d1c22ff ) );
+	flow-children: down;
 }
 
 Label {
@@ -36,22 +44,64 @@ Label {
 #Vote1 ,
 #Vote2 ,
 #Vote3 {
-	margin: 5px;
+	margin-left: 10px;
 	width: 200px;
-	height: 100px;
+	height: 90px;
+}
+
+#ConfirmButton {
+	width: 200px;
+	height: 50px;
+	border: 1px solid #0d1c22ff, gradient( radial, 100% -0%, 100px -90px, 320% 400%, from( #3a464bff ), color-stop( 0.30, #0d1c22ff ), to( #0d1c22ff ) );
+	horizontal-align: center;
+}
+
+.selected {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	
+	//background-image: url("s2r://panorama/images/hud/learnspell_png.vtex");
+	background-size: 100% 100%;
+	background-position: right 0%;
+	background-repeat: no-repeat;
+	
+	animation-duration: 0.6s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+    animation-name: select;
+}
+
+Button {
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #fbfbfbff ), color-stop( 0.3, #ebebebff ), to( #c0c0c0c0 ) );
+	border-radius: 15px 15px;
 }
-
-#Vote1:hover  ,
-#Vote2:hover  ,
-#Vote3:hover   {
+Button:hover   {
 	brightness: 1.2;
+	
+	animation-duration: 3.1s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+    animation-name: hover;
 }
 
-#Vote1:active  ,
-#Vote2:active  ,
-#Vote3:active   {
+Button:active	{
 	brightness: 0.7;
+}
+
+@keyframes 'select'
+{
+	//:}
+	0% { transform: rotateZ( -1.5deg ); }
+	50% { transform: rotateZ( 1.5deg ); }
+	100% { transform: rotateZ( -1.5deg ); }
+}
+
+@keyframes 'hover'
+{
+	//:}
+	0% { background-color: gradient( linear, 0% 0%, 0% 100%, from( #fbfbfbff ), color-stop( 0.3, #ebebebff ), to( #c0c0c0c0 ) ); }
+	50% { background-color: gradient( linear, 100% 0%, 0% 100%, from( #fbfbfbff ), color-stop( 0.3, #ebebebff ), to( #c0c0c0c0 ) ); }
+	100% { background-color: gradient( linear, 0% 0%, 0% 100%, from( #fbfbfbff ), color-stop( 0.3, #ebebebff ), to( #c0c0c0c0 ) ); }
 }
 
  
