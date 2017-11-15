@@ -1,0 +1,25 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/player_voting.css" />
+	</styles>
+	<script>
+		function CastVote(num) { GameEvents.SendCustomGameEventToServer("player_vote", {playerID: Game.GetLocalPlayerID(), vote: num}); }
+	</script>
+	<Panel class="PlayerVoting" hittest="false" >
+		<Panel id="Title" hittest="false" >
+			<Label id="TitleName" text="#difficulty_vote" hittest="false" />
+		</Panel>
+		<Panel id="VotePanel" >
+			<Button id="Vote1" onactivate="CastVote(12)" >
+				<Label id="VoteText1" text="#difficulty_vote_1" hittest="false" />
+			</Button>
+			<Button id="Vote2" onactivate="CastVote(24)" >
+				<Label id="VoteText2" text="#difficulty_vote_2" hittest="false" />
+			</Button>
+			 <Button id="Vote3" onactivate="CastVote(36)" >
+				<Label id="VoteText3" text="#difficulty_vote_3" hittest="false" />
+			</Button>
+		</Panel>
+	</Panel>
+</root>
+
