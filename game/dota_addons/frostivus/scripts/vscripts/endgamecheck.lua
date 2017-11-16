@@ -11,10 +11,9 @@ function Ending_Check( trigger )
 	local hHero = trigger.activator --this holds info on checkpoint trigger hero
 	print(hHero:GetName())
 	local triggerflag = 1 --Assume triggered when function called
-	--check game rounds objective vote record
+	GameRules.GameMode.tVoteRecord = GameRules.GameMode.tVoteRecord or {}
+	local tVoteRecord = GameRules.GameMode.tVoteRecord
 	------------------------- not sure but i think code should be somewhere else (different file)
-	---GameRules.GameMode.tVoteRecord = GameRules.GameMode.tVoteRecord or {}
-	---local tVoteRecord = GameRules.GameMode.tVoteRecord
 	--12(short) 24(medium) 36(long) team points to win
 	-------------------------
 	
@@ -97,7 +96,10 @@ function Ending_Check( trigger )
     	--PrintTable(TeamPoints)
 		--restart round if first place team points not greater than voted end point
 		--function or code to sum team points up
-		if TeamPoints["currentbest"] < tVoteRecord["Selected"] then
+		print(TeamPoints["currentbest"])
+		print(GameRules.GameMode.tVoteRecord["Selected"])
+		--check game rounds objective vote record
+		if TeamPoints["currentbest"] < GameRules.GameMode.tVoteRecord["Selected"] then
 			--function call or code to send all players back to starting point
 			--reset placeholder to nil
 			tPointsRecord[7] = nil

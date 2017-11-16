@@ -85,7 +85,7 @@ function GameMode:InitGameMode()
 	ListenToGameEvent('dota_illusions_created', Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
 	ListenToGameEvent('npc_spawned', Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
 
-	CustomGameEventManager:RegisterListener("player_vote", Dynamic_Wrap(GameMode, "OnPlayerVote") )
+	CustomGameEventManager:RegisterListener("player_vote", Dynamic_Wrap(GameMode, 'OnPlayerVote'))
 
 	--Setup Filters
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, 'OrderManager'), self)
@@ -119,8 +119,8 @@ function GameMode:StartGameMode()
 	if mode then
 		return
 	end
+
 	local time = string.gsub(string.gsub(GetSystemTime(), ':', ''), '^0+','')
-	--print(time, type(time), tonumber(time))
 	math.randomseed(time)
 
 	mode = GameRules:GetGameModeEntity()
@@ -295,7 +295,7 @@ function GameMode:StartGameMode()
 			end
 		end
 
-		--CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
+		CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
 	end)
 end 
 
@@ -337,7 +337,7 @@ end
 
 function GameMode:OnPlayerVote( keys )
 	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote] or 0
-	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote]+1
+	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote] + 1
 end
 --------------------------------------------------------------
 
