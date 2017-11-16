@@ -7,13 +7,18 @@
 		function CastVote(vote) {
 			votes[Game.GetLocalPlayerID()] = vote;
 			
-			//could be improved
-			var panel1 = $("#Vote1")
-			var panel2 = $("#Vote2")
-			var panel3 = $("#Vote3")
-			if (vote == 12) { panel1.AddClass("selected"); panel2.RemoveClass("selected"); panel3.RemoveClass("selected"); }
-			if (vote == 24) { panel1.RemoveClass("selected"); panel2.AddClass("selected"); panel3.RemoveClass("selected"); }
-			if (vote == 36) { panel1.RemoveClass("selected"); panel2.RemoveClass("selected"); panel3.AddClass("selected"); }
+			var panel;
+			var panels = []; panels[12] = "Vote1"; panels[24] = "Vote2"; panels[36] = "Vote3";
+			for (panel in panels) {
+				if (panel != undefined) {
+					panel = $("#"+panels[panel]);
+					if ($("#"+panels[vote]) == panel) {
+						panel.AddClass("selected");
+					}else{
+						panel.RemoveClass("selected");
+					}
+				}
+			}
 		}
 		function ConfirmVote() {
 			var pid = Game.GetLocalPlayerID()
