@@ -85,7 +85,7 @@ function GameMode:InitGameMode()
 	ListenToGameEvent('dota_illusions_created', Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
 	ListenToGameEvent('npc_spawned', Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
 
-	CustomGameEventManager:RegisterListener("player_vote", "OnPlayerVote")
+	CustomGameEventManager:RegisterListener("player_vote", Dynamic_Wrap(GameMode, "OnPlayerVote") )
 
 	--Setup Filters
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, 'OrderManager'), self)
@@ -119,8 +119,9 @@ function GameMode:StartGameMode()
 	if mode then
 		return
 	end
-
-	math.randomseed(tonumber(string.gsub(string.gsub(GetSystemTime(), ':', ''), '^0+','')))
+	local time = string.gsub(string.gsub(GetSystemTime(), ':', ''), '^0+','')
+	--print(time, type(time), tonumber(time))
+	math.randomseed(time)
 
 	mode = GameRules:GetGameModeEntity()
 
@@ -132,7 +133,7 @@ function GameMode:StartGameMode()
 	mode:SetTopBarTeamValuesVisible( true )
 
 	mode:SetBuybackEnabled( false )
-	mode:SetCustomBuybackCostEnabled( false )
+	mode:SetCustomBuybackCostEnabled( false  )
 	mode:SetCustomBuybackCooldownEnabled( false )
 	mode:SetGoldSoundDisabled( false )
 
@@ -260,7 +261,7 @@ function GameMode:StartGameMode()
 	end
 
 	Timers(30,function()
-		local maxvalue = math.max(self.tVoteRecord[12],self.tVoteRecord[24],self.tVoteRecord[36])
+		local maxvalue = math.max(self.tVoteRecord[12] or 0, self.tVoteRecord[24] or 0, self.tVoteRecord[36] or 0)
 		--allsame 
 		if self.tVoteRecord[12] == self.tVoteRecord[24] and self.tVoteRecord[24] == self.tVoteRecord[36] and self.tVoteRecord[36] == self.tVoteRecord[12] then
 			self.tVoteRecord["Selected"] = 24 --default to medium
@@ -294,7 +295,7 @@ function GameMode:StartGameMode()
 			end
 		end
 
-		CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
+		--CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
 	end)
 end 
 
@@ -334,7 +335,7 @@ function GameMode:OnThink()
 	return 1
 end
 
-function OnPlayerVote( keys )
+function GameMode:OnPlayerVote( keys )
 	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote] or 0
 	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote]+1
 end

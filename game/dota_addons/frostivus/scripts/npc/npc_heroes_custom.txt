@@ -188,7 +188,7 @@
 		"AttributeStrengthGain"		"0"
 		"AttributeBaseIntelligence"	"0"
 		"AttributeIntelligenceGain"	"0"
-		"AttributeBaseAgility"		"100"
+		"AttributeBaseAgility"		"50"
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
@@ -378,7 +378,7 @@
 		"AttributeStrengthGain"		"0"
 		"AttributeBaseIntelligence"	"0"
 		"AttributeIntelligenceGain"	"0"
-		"AttributeBaseAgility"		"100"
+		"AttributeBaseAgility"		"50"
 		"AttributeAgilityGain"		"0"
 
 		"AttackCapabilities"    	"DOTA_UNIT_CAP_NO_ATTACK"
