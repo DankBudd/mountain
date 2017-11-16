@@ -84,8 +84,8 @@ function GameMode:InitGameMode()
 	ListenToGameEvent('dota_player_pick_hero', Dynamic_Wrap(GameMode, 'OnPlayerPickHero'), self)
 	ListenToGameEvent('dota_illusions_created', Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
 	ListenToGameEvent('npc_spawned', Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
-
-	CustomGameEventManager:RegisterListener("player_vote", "OnPlayerVote")
+	CustomGameEventManager:RegisterListener("player_vote", Dynamic_Wrap(GameMode, 'OnPlayerVote'))
+	--CustomGameEventManager:RegisterListener("player_vote", "OnPlayerVote")
 
 	--Setup Filters
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, 'OrderManager'), self)
@@ -119,8 +119,8 @@ function GameMode:StartGameMode()
 	if mode then
 		return
 	end
-
-	math.randomseed(tonumber(string.gsub(string.gsub(GetSystemTime(), ':', ''), '^0+','')))
+	math.randomseed(Time())
+	--math.randomseed(tonumber(string.gsub(string.gsub(GetSystemTime(), ':', ''), '^0+','')))
 
 	mode = GameRules:GetGameModeEntity()
 
@@ -259,43 +259,6 @@ function GameMode:StartGameMode()
 		end)
 	end
 
-	Timers(30,function()
-		local maxvalue = math.max(self.tVoteRecord[12],self.tVoteRecord[24],self.tVoteRecord[36])
-		--allsame 
-		if self.tVoteRecord[12] == self.tVoteRecord[24] and self.tVoteRecord[24] == self.tVoteRecord[36] and self.tVoteRecord[36] == self.tVoteRecord[12] then
-			self.tVoteRecord["Selected"] = 24 --default to medium
-		elseif self.tVoteRecord[12] == self.tVoteRecord[24] and self.tVoteRecord[12] == maxvalue then --short & medium same
-			if RollPercentage(50) then
-				self.tVoteRecord["Selected"] = 12
-			else
-				self.tVoteRecord["Selected"] = 24
-			end
-		elseif self.tVoteRecord[24] == self.tVoteRecord[36] and self.tVoteRecord[24] == maxvalue then --medium & long same
-			if RollPercentage(50) then
-				self.tVoteRecord["Selected"] = 24
-			else
-				self.tVoteRecord["Selected"] = 36
-			end
-		elseif self.tVoteRecord[36] == self.tVoteRecord[12] and self.tVoteRecord[36] == maxvalue then --long & short same
-			if RollPercentage(50) then
-				self.tVoteRecord["Selected"] = 36
-			else
-				self.tVoteRecord["Selected"] = 12
-			end
-		else --anything else
-			if self.tVoteRecord[12] == maxvalue then
-				self.tVoteRecord["Selected"] = 12
-			elseif self.tVoteRecord[24] == maxvalue then
-				self.tVoteRecord["Selected"] = 24
-			elseif self.tVoteRecord[36] == maxvalue then
-				self.tVoteRecord["Selected"] = 36
-			else
-				self.tVoteRecord["Selected"] = 24
-			end
-		end
-
-		CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
-	end)
 end 
 
 -- Evaluate the state of the game
@@ -318,7 +281,49 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_TEAM_SHOWCASE then
 	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD then
 	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
+		GameRules.GameMode.tVoteRecord[12] = GameRules.GameMode.tVoteRecord[12] or 0
+		GameRules.GameMode.tVoteRecord[24] = GameRules.GameMode.tVoteRecord[24] or 0
+		GameRules.GameMode.tVoteRecord[36] = GameRules.GameMode.tVoteRecord[36] or 0
+		Timers(0,function()
+			print(GameRules.GameMode.tVoteRecord[12],GameRules.GameMode.tVoteRecord[24],GameRules.GameMode.tVoteRecord[36])
+			local maxvalue = math.max(GameRules.GameMode.tVoteRecord[12],GameRules.GameMode.tVoteRecord[24],GameRules.GameMode.tVoteRecord[36])
+			--allsame 
+			if GameRules.GameMode.tVoteRecord[12] == GameRules.GameMode.tVoteRecord[24] and GameRules.GameMode.tVoteRecord[24] == GameRules.GameMode.tVoteRecord[36] and GameRules.GameMode.tVoteRecord[36] == GameRules.GameMode.tVoteRecord[12] then
+				GameRules.GameMode.tVoteRecord["Selected"] = 24 --default to medium
+			elseif GameRules.GameMode.tVoteRecord[12] == GameRules.GameMode.tVoteRecord[24] and GameRules.GameMode.tVoteRecord[12] == maxvalue then --short & medium same
+				if RollPercentage(50) then
+					GameRules.GameMode.tVoteRecord["Selected"] = 12
+				else
+					GameRules.GameMode.tVoteRecord["Selected"] = 24
+				end
+			elseif GameRules.GameMode.tVoteRecord[24] == GameRules.GameMode.tVoteRecord[36] and GameRules.GameMode.tVoteRecord[24] == maxvalue then --medium & long same
+				if RollPercentage(50) then
+					GameRules.GameMode.tVoteRecord["Selected"] = 24
+				else
+					GameRules.GameMode.tVoteRecord["Selected"] = 36
+				end
+			elseif GameRules.GameMode.tVoteRecord[36] == GameRules.GameMode.tVoteRecord[12] and GameRules.GameMode.tVoteRecord[36] == maxvalue then --long & short same
+				if RollPercentage(50) then
+					GameRules.GameMode.tVoteRecord["Selected"] = 36
+				else
+					GameRules.GameMode.tVoteRecord["Selected"] = 12
+				end
+			else --anything else
+				if GameRules.GameMode.tVoteRecord[12] == maxvalue then
+					GameRules.GameMode.tVoteRecord["Selected"] = 12
+				elseif GameRules.GameMode.tVoteRecord[24] == maxvalue then
+					GameRules.GameMode.tVoteRecord["Selected"] = 24
+				elseif GameRules.GameMode.tVoteRecord[36] == maxvalue then
+					GameRules.GameMode.tVoteRecord["Selected"] = 36
+				else
+					GameRules.GameMode.tVoteRecord["Selected"] = 24
+				end
+			end
+			print(GameRules.GameMode.tVoteRecord["Selected"])
+			return
+		end)
 	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+		CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
 		local time = GameRules:GetGameTime()
 		local expireTime = 60.0
 		local items = Entities:FindAllByClassname("dota_item_drop")
@@ -334,9 +339,13 @@ function GameMode:OnThink()
 	return 1
 end
 
-function OnPlayerVote( keys )
+function GameMode:OnPlayerVote( keys )
 	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote] or 0
-	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote]+1
+	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote] + 1
+	print("findme")
+	print(GameRules.GameMode.tVoteRecord[keys.vote])
+	print(type(keys.vote))
+	print(keys.vote)
 end
 --------------------------------------------------------------
 
