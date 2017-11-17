@@ -1,0 +1,58 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/checkpoint_triggered.css" />
+	</styles>
+	<script>
+		var CP_T =[]
+		function UpdateDisplay(sCP_Tname) {
+			CP_T[Game.GetLocalPlayerID()] = sCP_Tname;
+			if(CP_T[Game.GetLocalPlayerID()]=="CP_1"){
+				CPLabel1 = TLabel1;
+			}elseif(CP_T[Game.GetLocalPlayerID()]=="CP_2"){
+				CPLabel2 = TLabel2;
+			}elseif(CP_T[Game.GetLocalPlayerID()]=="CP_3"){
+				CPLabel3 = TLabel3;
+			}elseif(CP_T[Game.GetLocalPlayerID()]=="CP_4"){
+				CPLabel4 = TLabel4;
+			}elseif(CP_T[Game.GetLocalPlayerID()]=="CP_5"){
+				CPLabel5 = TLabel5;
+			}elseif(CP_T[Game.GetLocalPlayerID()]=="CP_6"){
+				CPLabel6 = TLabel6;
+			}elseif(CP_T[Game.GetLocalPlayerID()]=="CP_7"){
+				CPLabel7 = TLabel7;
+			}else{
+				TLabel1 = CPLabel1;
+				TLabel2 = CPLabel2;
+				TLabel3 = CPLabel3;
+				TLabel4 = CPLabel4;
+				TLabel5 = CPLabel5;
+				TLabel6 = CPLabel6;
+				TLabel7 = CPLabel7;
+			}
+
+		}
+	</script>
+	<Panel class="CheckPointTriggered" hittest="false" >
+		<Panel id ="MainPanel" hittest="false" >
+			<Panel id="Title" hittest="false" >
+				<Label id="TitleName" text="#CheckPoints:" hittest="false" />
+			</Panel>
+			<Panel id="DisplayPanel" >
+				<Label id="CPLabel1" text="#CP 1" hittest="false" />
+				<Label id="CPLabel2" text="#CP 2" hittest="false" />
+				<Label id="CPLabel3" text="#CP 3" hittest="false" />
+				<Label id="CPLabel4" text="#CP 4" hittest="false" />
+				<Label id="CPLabel5" text="#CP 5" hittest="false" />
+				<Label id="CPLabel6" text="#CP 6" hittest="false" />
+				<Label id="CPLabel7" text="#CP 7" hittest="false" />
+			</Panel>
+		</Panel>
+	</Panel>
+</root>
+
+
+
+
+
+
+
