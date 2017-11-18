@@ -48,6 +48,8 @@ function Ending_Check( trigger )
 	--perform countdown operation
 	if triggerflag == 2 then
 		local timeEnd = GameRules:GetGameTime() + 30
+		--GameEvents.Subscribe("countdown", CountDown);
+		CustomGameEventManager:Send_ServerToAllClients( "countdown", {0,0})
 		Timers(0, function()
      		if GameRules:GetGameTime() >= timeEnd then
         		return
@@ -97,7 +99,7 @@ function Ending_Check( trigger )
 		--restart round if first place team points not greater than voted end point
 		--function or code to sum team points up
 		print(TeamPoints["currentbest"])
-		print(GameRules.GameMode.tVoteRecord["Selected"])
+		--print(GameRules.GameMode.tVoteRecord["Selected"])
 		--check game rounds objective vote record
 		if TeamPoints["currentbest"] < GameRules.GameMode.tVoteRecord["Selected"] then
 			--function call or code to send all players back to starting point
