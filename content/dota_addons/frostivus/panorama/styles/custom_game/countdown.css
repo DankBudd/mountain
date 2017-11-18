@@ -1,0 +1,36 @@
+.RootPanel{
+	margin-top: 12%;
+	margin-left: 46%;
+}
+
+.CountDown{
+	opacity: 1;
+	transition-property: opacity;
+	transition-duration: 0.12s;
+	transition-timing-function: ease-in-out;
+	padding-left: 10px;
+	padding-right: 10px;
+	flow-children: down;
+}
+
+#Name {
+	margin: 5px;
+	color: red;
+	font-size: 18px;
+	font-weight: bold;
+	horizontal-align: center;
+	vertical-align: center;
+	padding-bottom: 3px;
+}
+
+#Count {
+	color: red;
+	font-size: 72px;
+	horizontal-align: center;
+	vertical-align: bottom;
+}
+
+Label {
+	text-shadow: 1px 1px 1px 2 #00000099;
+	font-family: RadianceM;
+}
