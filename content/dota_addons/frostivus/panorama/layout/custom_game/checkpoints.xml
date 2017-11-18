@@ -1,0 +1,31 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/checkpoints.css" />
+	</styles>
+	<script>
+		(function(){
+			GameEvents.Subscribe( "increment_checkpoint", function(args){
+				if (args.reset != undefined){
+					var increase = args.increase || 1
+					var count = $.FindChildInContext("#Count");
+					count.text = toString( Number(count.text) + increase );
+				} else {
+					count.text = toString( 0 );
+				}
+			});
+		})()
+	</script>
+	<Panel class="RootPanel" hittest="false" >
+		<Panel id="Counter" hittest="false" >
+			<Label id="Name" text="#check_point_counter" hittest="false" />
+			<Label id="Count" text="0" hittest="false" />
+		</Panel>
+	</Panel>
+</root>
+
+
+
+
+
+
+

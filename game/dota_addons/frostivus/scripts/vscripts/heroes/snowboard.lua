@@ -89,7 +89,7 @@ modifier_mimic_casters_states = class({
 modifier_mount_movement = class({
 	IsHidden = function(self) return true end,
 	IsPurgable = function(self) return false end,
-	GetModifierDisableTurning = function(self, params) return 1 end,
+	GetModifierDisableTurning = function(self, keys) return 1 end,
 	GetModifierMoveSpeed_Max = function(self) return self.maxSpeed*2 end,
 	GetModifierMoveSpeed_Limit = function(self) return self.maxSpeed*2 end,
 	GetModifierMoveSpeedOverride = function(self) return self.baseSpeed end,
@@ -106,7 +106,7 @@ modifier_mount_movement = class({
 		}
 	end,
 
-	GetOverrideAnimation = function(self, params)
+	GetOverrideAnimation = function(self, keys)
 		if self:GetParent() ~= self:GetCaster() then
 			return ACT_DOTA_FLAIL
 		end
@@ -130,7 +130,6 @@ modifier_mount_movement = class({
 		self.delay = self:GetAbility():GetSpecialValueFor("delay")
 
 		if IsServer() then
-
 			if self:GetParent() == self:GetCaster() then
 				self:GetParent():StartGesture( ACT_DOTA_SLIDE )
 			else
@@ -169,13 +168,8 @@ modifier_mount_movement = class({
 			local player = self:GetParent()
 			local mount = self:GetCaster()
 
-
 			--if parent is player
 			if self:GetCaster() ~= self:GetParent() then
-
-				--if player:IsMoving() then
-				--	player:Stop()
-				--end
 
 				if player:IsHexed() or player:IsRooted() or player:IsStunned() then
 					self.curSpeed = self.baseSpeed
@@ -230,30 +224,26 @@ modifier_mount_movement = class({
 					local newPos = player:GetAbsOrigin() + player:GetForwardVector() * ( (1/30) * self.curSpeed )
 					newPos.z = GetGroundHeight(newPos, player) + 10
 
-					local pass = true
-					if not jumpMod then
+					--end slide if unpathable, and destroy any trees at unpathable position
+					if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) or #Entities:FindAllByClassnameWithin("dota_temp_tree", newPos, 25) > 0 then
+						GridNav:DestroyTreesAroundPoint( newPos, 25, true)
+						ResolveNPCPositions( player:GetAbsOrigin(), 25 )
+						self:Destroy()
+						return
+					end
 
-						local trees = Entities:FindAllByClassnameWithin("dota_temp_tree", newPos, 25)
-						--end slide if unpathable, and destroy any trees at unpathable position
-						if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) or #trees > 0 then
-							GridNav:DestroyTreesAroundPoint( newPos, 25, true)
-							ResolveNPCPositions( player:GetAbsOrigin(), 25 )
-							self:Destroy()
-							return
-						end
-						--check if theres a hero in front of the player before moving
-						if not player:NoUnitCollision() then --player:IsPhased()
-							local units = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, 50, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
-							if #units > 0 then
-								for k,v in pairs(units) do
-									if v ~= player then
-										pass = false
-										break
-									end
+					--check if theres a hero in front of the player before moving
+					local pass = true
+					if not player:NoUnitCollision() then --player:IsPhased()
+						local units = FindUnitsInRadius(player:GetTeamNumber(), newPos, nil, 50, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+						if #units > 0 then
+							for k,v in pairs(units) do
+								if v ~= player and not v:NoUnitCollision() then
+									pass = false
+									break
 								end
 							end
 						end
-
 					end
 					if pass then
 						--continue slide
@@ -263,10 +253,14 @@ modifier_mount_movement = class({
 						self.curSpeed = self.curSpeed - self.boost
 
 						--calculate bonus movespeed
-						self.boost = (self:GetParent():GetMoveSpeedModifier(self.baseSpeed) - self.baseSpeed) * (1/30)
+						self.boost = (self:GetParent():GetMoveSpeedModifier(self.baseSpeed) - self.baseSpeed)
 
 						--update mount speed
 						self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep ) + self.boost, self.maxSpeed + self.boost )
+
+						print("","GetIdealSpeed: "..player:GetIdealSpeed() .. "\n",
+						"GetMoveSpeedModifier: "..player:GetMoveSpeedModifier(player:GetBaseMoveSpeed())-player:GetBaseMoveSpeed() .. "\n",
+						"CurrentSpeed: "..math.ceil(self.curSpeed).."\n")
 					else
 						--start decaying speed
 						self.curSpeed = math.max( self.curSpeed - ( (1/30) * self.speedStep ), self.baseSpeed)
@@ -276,6 +270,7 @@ modifier_mount_movement = class({
 				end
 
 				--print("Mount stats \n", "current speed: "..tostring(self.curSpeed-self.boost).."\n", "boost: "..tostring(self.boost).."\n", "post calc: "..self.curSpeed)
+
 				--display mount speed as player movement speed
 				self:SetStackCount(math.ceil(self.curSpeed))
 
@@ -295,7 +290,8 @@ modifier_mount_movement = class({
 				end
 
 				if self.curSpeed >= 400 and not self.particle then
-					self.particle = ParticleManager:CreateParticle("particles/econ/courier/courier_trail_winter_2012/courier_trail_winter_2012_body_c.vpcf", PATTACH_ABSORIGIN_FOLLOW, mount)
+					self.particle = ParticleManager:CreateParticle("particles/econ/courier/courier_trail_winter_2012/courier_trail_winter_2012.vpcf", PATTACH_ABSORIGIN_FOLLOW, mount)
+					ParticleManager:SetParticleControlEnt(self.particle, 1, mount, PATTACH_ABSORIGIN_FOLLOW, "attach_hitloc", mount:GetAbsOrigin(), false)
 				elseif self.curSpeed < 400 and self.particle then
 					ParticleManager:DestroyParticle(self.particle, false)
 					ParticleManager:ReleaseParticleIndex(self.particle)

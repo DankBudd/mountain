@@ -34,6 +34,8 @@ Label {
     text-transform: uppercase;
     vertical-align: center;
 	
+	text-shadow: 1px 1px 1px 2 #00000099;
+	
 	animation-duration: 3.0s;
 	animation-timing-function: ease-in-out;
 	animation-iteration-count: infinite;

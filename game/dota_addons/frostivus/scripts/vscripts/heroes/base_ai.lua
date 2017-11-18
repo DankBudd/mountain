@@ -8,6 +8,9 @@ local states = {
 	["PATROL"] = 5,
 	["PATROL_AGGRO"] = 6,
 	["SENTRY"] = 7,
+	["BASIM"] = 8,
+	["CYCLONE"] = 9,
+	["END_TINY"] = 10,
 }
 
 base_ai = class({})
@@ -29,8 +32,10 @@ function base_ai:OnUpgrade()
 	if kv then
 		for k,v in pairs(kv) do
 			if k == self:GetCaster():GetUnitName() then
+				print("\n loading kv for unit: "..k)
 				for l,m in pairs(v) do
 					if info[l] then
+						print( "", "setting "..tostring(l)..": ".. info[l].. " to " .. (tonumber(m) or m.."("..states[m]..")").."\n" )
 						info[l] = tonumber(m) or m
 					end
 				end
@@ -68,7 +73,7 @@ function base_ai:OnUpgrade()
 
 	if self:GetCaster():GetUnitName() == "tiny_the_tosser" then
 		if Entities:FindByName(nil, "End_Tiny") == self:GetCaster() then
-			info.state = SENTRY
+			info.state = END_TINY
 		end
 	end
 

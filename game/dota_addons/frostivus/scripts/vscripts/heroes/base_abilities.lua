@@ -11,7 +11,7 @@ function jump_ability:OnSpellStart()
 		return
 	end
 	ProjectileManager:ProjectileDodge(self:GetCaster())
-	self:GetCaster():AddNewModifier(self:GetCaster(), self, "modifier_jump", {})
+	self:GetCaster():AddNewModifier(self:GetCaster(), self, "modifier_jump", {duration = 0.5}) --safety duration in case something goes wrong
 end
 
 modifier_jump = class({

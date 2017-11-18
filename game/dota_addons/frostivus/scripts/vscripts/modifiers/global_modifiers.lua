@@ -1,5 +1,6 @@
 LinkLuaModifier("modifier_dummy", "modifiers/global_modifiers", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_intelligence_cdr", "modifiers/global_modifiers", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_ice_cyclone", "modifiers/global_modifiers", LUA_MODIFIER_MOTION_NONE)
 
 modifier_dummy = class({
 	IsHidden = function(self) return true end,
@@ -12,13 +13,18 @@ modifier_dummy = class({
 
 	OnCreated = function(self, kv)
 		if IsServer() then
-			self:GetParent():AddNoDraw()
+			self.nodraw = kv.nodraw
+			if self.nodraw then
+				self:GetParent():AddNoDraw()
+			end
 		end
 	end,
 
 	OnDestroy = function(self)
 		if IsServer() then
-			self:GetParent():RemoveNoDraw()
+			if self.nodraw then
+				self:GetParent():RemoveNoDraw()
+			end
 		end
 	end,
 
@@ -49,10 +55,29 @@ modifier_intelligence_cdr = class({
 	IsHidden = function(self) return true end,
 	IsPurgeable = function(self) return false end,
 	DeclareFunctions = function(self) return {MODIFIER_PROPERTY_COOLDOWN_PERCENTAGE_STACKING} end,
-	GetModifierPercentageCooldownStacking = function(self) return self:GetStackCount() * 0.01 end,
+	GetModifierPercentageCooldownStacking = function(self) return self:GetStackCount() * (_G.DOTA_ATTRIBUTE_INTELLIGENCE_COOLDOWN_REDUCTION or 0.5) end,
 
 	--stack count bullshit to transfer Intellect value to client
 	OnCreated = function(self, kv) self:StartIntervalThink(1) end,
 	OnIntervalThink = function(self) if IsServer() then self:SetStackCount(self:GetParent():GetIntellect()) end end,
 })
 
+modifier_ice_cyclone = class({
+	IsHidden = function(self) return self:GetDuration() == self.start end,
+	IsPurgable = function(self) return true end,
+	IsStunDebuff = function(self) return self:GetDuration() == self.start end,
+
+	OnDestroy = function(self) if self:GetDuration() == self.start then self:SetDuration( (self.slowDuration or self.start*1.5), true ) end end,
+	OnCreated = function(self, kv)
+		self.slowDuration = kv.slowDuration
+		self.slow = kv.slow
+		self.start = self:GetDuration()
+	end,
+
+	DeclareFunctions = function(self) return { MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE, } end,
+	CheckState = function(self) return { [MODIFIER_STATE_STUNNED] = self:GetDuration() == self.start, [MODIFIER_STATE_INVULNERABLE] = self:GetDuration() == self.start, } end,
+
+	GetModifierMoveSpeedBonus_Percentage = function(self) return (self.slow or 25) end,
+	GetStatusEffectName = function(self) if self:GetDuration() ~= self.start then return "particles/status_fx/status_effect_frost.vpcf" end end,
+	HeroEffectPriority = function(self) if self:GetDuration() ~= self.start then return 100 end end,
+})

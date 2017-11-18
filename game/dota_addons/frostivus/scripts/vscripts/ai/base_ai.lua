@@ -8,6 +8,7 @@ PATROL_AGGRO = 6
 SENTRY = 7
 BASIM = 8
 CYCLONE = 9
+END_TINY = 10
 
 THINK_STATES = {
 	---------------------------------
@@ -32,6 +33,7 @@ THINK_STATES = {
 
 	[BASIM] = "BasimThink",
 	[CYCLONE] = "CycloneThink",
+	[END_TINY] = "EndTinyThink",
 }
 
 local function HasBehavior(ability, behavior)
@@ -118,7 +120,7 @@ local function CastSpell(unit, target, ability, behavior)
 	end
 	if behavior == DOTA_ABILITY_BEHAVIOR_POINT then
 		if type(target) ~= "vector" then
-			target = target:GetAbsOrigin()
+			target = target:GetAbsOrigin() + target:GetForwardVector() * target:GetMoveSpeedModifier(target:GetBaseMoveSpeed())
 		end
 		unit:CastAbilityOnPosition(target, ability, unit:GetPlayerOwnerID())
 		return true
@@ -203,8 +205,8 @@ BaseAi = {
 			--check if its time to think
 			local time = GameRules:GetGameTime()
 			if time >= instance.nextThink then
-				--make sure unit is able to think right now
 
+				--make sure unit is able to think right now
 				local success,int
 				if instance.unit and not instance.unit:IsNull() then
 					--print("unit can think: "..instance.unit:GetUnitName())
@@ -222,7 +224,7 @@ BaseAi = {
 				--set next think
 				if success then
 					--print("think succeeded", id)
-					local nextThink = RandomFloat(1.0, 3.0)
+					local nextThink = RandomFloat(0.5, 1.0)
 					if int then nextThink = int end
 					if self.thinkers[id] then
 						self.thinkers[id].lastThink = time
@@ -408,20 +410,23 @@ BaseAi = {
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 
 			--print("", "found "..tostring(#units).." enemy heroes")
-			for _,unit in pairs(units) do
-				if CastSpell(self.unit, unit, ab, behav) then
-					--print("","", "SUCCEEDED in attacking enemy")
-					break
-				else
-					--print("","", "FAILED in attacking enemy")
+			if #units > 0 then
+				for _,unit in pairs(units) do
+					if CastSpell(self.unit, unit, ab, behav) then
+						--print("","", "SUCCEEDED in attacking enemy")
+						break
+					else
+						--print("","", "FAILED in attacking enemy")
+					end
 				end
-			end
 
-			if ab:GetName() == "tiny_toss" then
-				local range = ab:GetSpecialValueFor("grab_radius")
-				if (self.unit:GetAbsOrigin() - units[1]:GetAbsOrigin()):Length2D() > range then
-					self.unit:MoveToNPC(unit[1])
-					return 1.0
+				--run towards the target to toss them and think again
+				if ab:GetName() == "tiny_toss" then
+					local range = ab:GetSpecialValueFor("grab_radius")
+					if (self.unit:GetAbsOrigin() - units[1]:GetAbsOrigin()):Length2D() >= range then
+						self.unit:MoveToNPC(unit[1])
+						return 0.5
+					end
 				end
 			end
 		end
@@ -451,9 +456,8 @@ BaseAi = {
 			return
 		end
 
-		local toPatrol = self.lastPos or self.patrolPoints[1]
 		--check if waypoint reached
-		if (toPatrol - self.unit:GetAbsOrigin()):Length2D() <= 10 then
+		if ( (self.lastPos or self.patrolPoints[1]) - self.unit:GetAbsOrigin() ):Length2D() <= 10 then
 			--print("","", "reached a patrol point!")
 			self.lastPos = nil
 			--cycle patrol points
@@ -516,22 +520,6 @@ BaseAi = {
 		local ab,behav = GetSpellToCast(self.unit)
 		if not ab then print("", "no valid ability to cast") return end
 
-		if self.unit:GetUnitName() == "tiny_the_tosser" then
-			ab = FindAbilityByName("tiny_toss")
-			behav = DOTA_ABILITY_BEHAVIOR_UNIT_TARGET
-
-			local vec = Vector(-500,0,1024)
-
-			self.unit.tinyTarget = self.unit.tinyTarget or CreateUnitByNameAsync("npc_dota_base", vec, false, nil, nil, 0, function(dummy)
-				print("making tiny dummy")
-				dummy:AddNewModifier(nil, nil, "modifier_dummy", {})
-			end)
-			--print("tiny casting on dummy")
-			self.unit:CastAbilityOnTarget(self.unit.tinyTarget, ab, self.unit:GetPlayerOwnerID())
-			ab:EndCooldown()
-			return 0.1
-		end
-
 		local range = ab:GetCastRange() or self.aggroRange
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, range,
 			DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
@@ -591,6 +579,35 @@ BaseAi = {
 		--print("", "moving to waypoint... Vector("..tostring(math.ceil(self.waypoints[1].x))..", "..tostring(math.ceil(self.waypoints[1].y))..", "..tostring(math.ceil(self.waypoints[1].z))..")" )
 		--move towards next patrol point 
 		self.unit:MoveToPosition(self.waypoints[1])
+	end,
+
+	EndTinyThink = function(self)
+		local ab = self.unit:FindAbilityByName("tiny_toss")
+		local behav = DOTA_ABILITY_BEHAVIOR_UNIT_TARGET
+		local talent = self.unit:FindAbilityByName("special_bonus_unique_tiny_5")
+		if talent then
+			if talent:GetLevel() <= 0 then 
+				talent:SetLevel(1)
+			end
+		end
+
+		local spawn = Entities:FindNamedEntity("player_spawn")
+		local home = Entities:FindNamedEntity("End_Trigger")
+		if home then
+			if (home:GetAbsOrigin() - self.unit:GetAbsOrigin()):Length2D() > 10 then
+				self.unit:MoveToPosition( home:GetAbsOrigin() )
+			else
+				if spawn then
+					self.unit:FaceTowards( (spawn:GetAbsOrigin()-self.unit:GetAbsOrigin()):Normalized() )
+				end
+			end
+		end
+
+		if spawn then
+			self.unit:CastAbilityOnPosition( spawn:GetAbsOrigin(), ab, self.unit:GetPlayerOwnerID() )
+			ab:EndCooldown()
+		end
+		return 0.1
 	end,
 
 }

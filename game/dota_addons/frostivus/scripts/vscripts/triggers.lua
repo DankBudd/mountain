@@ -37,7 +37,7 @@ function Checkpoint_OnStartTouch( trigger )
 					place = place + 1
 				end
 			end
-			if place == totalplayer then
+			if place == totalplayer and totalplayer ~= 1 then
 				--function call to give last player tusk summoning skill
 				print ("give tusk summon to"..hHero:GetPlayerOwnerID())
 				--reset all placeholder to nil for the next round if there is one
@@ -46,11 +46,7 @@ function Checkpoint_OnStartTouch( trigger )
 				end
 
 			end
-			--[[call Panorama Ui Code Here
-			if sCheckpointTriggerName ~= "checkpoint00" then
-				BroadcastMessage( "Activated " .. sCheckpointTriggerName, 3 )
-				EmitGlobalSound( "DOTA_Item.Refresher.Activate" ) -- Checkpoint.Activate
-			end]]
+			CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(hHero:GetPlayerID()), "increment_checkpoint", {})
 		elseif triggerflag == 0 then
 			--notify player checkpoint already triggered
 		end

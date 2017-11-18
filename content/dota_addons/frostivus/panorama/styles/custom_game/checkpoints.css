@@ -1,0 +1,39 @@
+.RootPanel{
+	margin-top: 12%;
+}
+
+#Counter {
+	opacity: 1;
+	transition-property: opacity;
+	transition-duration: 0.12s;
+	transition-timing-function: ease-in-out;
+	padding-left: 10px;
+	padding-right: 10px;
+	flow-children: right;
+	
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #425663cc ), color-stop( .5, #42566355 ), to( #0000 ) );
+//	border: 1px solid black;
+//	border-radius: 12px;
+}
+
+#Name {
+	margin: 5px;
+	color: #A3B5D0cc;
+	font-size: 18px;
+	font-weight: bold;
+	horizontal-align: center;
+	vertical-align: center;
+	padding-bottom: 3px;
+}
+
+#Count {
+	color: white;
+	font-size: 24px;
+	horizontal-align: center;
+	vertical-align: bottom;
+}
+
+Label {
+	text-shadow: 1px 1px 1px 2 #00000099;
+	font-family: RadianceM;
+}

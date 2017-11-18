@@ -85,24 +85,24 @@ function GameMode:InitGameMode()
 	ListenToGameEvent('dota_illusions_created', Dynamic_Wrap(GameMode, 'OnIllusionsCreated'), self)
 	ListenToGameEvent('npc_spawned', Dynamic_Wrap(GameMode, 'OnNpcSpawn'), self)
 
-	CustomGameEventManager:RegisterListener("player_vote", Dynamic_Wrap(GameMode, 'OnPlayerVote'))
+	CustomGameEventManager:RegisterListener("player_vote", Dynamic_Wrap(GameMode, "OnPlayerVote") )
 
 	--Setup Filters
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(GameMode, 'OrderManager'), self)
 	GameRules:GetGameModeEntity():SetModifierGainedFilter(Dynamic_Wrap(GameMode, 'ModifierManager'), self)
 
 	--stat attributes
-	_G.DOTA_ATTRIBUTE_INTELLIGENCE_COOLDOWN_REDUCTION = 0.01
+	_G.DOTA_ATTRIBUTE_INTELLIGENCE_COOLDOWN_REDUCTION = 0.5 --0.5%
 	local sv = {
 		[DOTA_ATTRIBUTE_STRENGTH_DAMAGE] = 0,
 		[DOTA_ATTRIBUTE_STRENGTH_HP] = 0,
 		[DOTA_ATTRIBUTE_STRENGTH_HP_REGEN_PERCENT] = 0,
-		[DOTA_ATTRIBUTE_STRENGTH_STATUS_RESISTANCE_PERCENT] = 0.01,
+		[DOTA_ATTRIBUTE_STRENGTH_STATUS_RESISTANCE_PERCENT] = 0.01, --1%
 
 		[DOTA_ATTRIBUTE_AGILITY_DAMAGE] = 0,
 		[DOTA_ATTRIBUTE_AGILITY_ARMOR] = 0,
 		[DOTA_ATTRIBUTE_AGILITY_ATTACK_SPEED] = 0,
-		[DOTA_ATTRIBUTE_AGILITY_MOVE_SPEED_PERCENT] = 0.01,
+		[DOTA_ATTRIBUTE_AGILITY_MOVE_SPEED_PERCENT] = 0.01, --1%
 
 		[DOTA_ATTRIBUTE_INTELLIGENCE_DAMAGE] = 0,
 		[DOTA_ATTRIBUTE_INTELLIGENCE_MANA] = 0,
@@ -119,8 +119,8 @@ function GameMode:StartGameMode()
 	if mode then
 		return
 	end
-
 	local time = string.gsub(string.gsub(GetSystemTime(), ':', ''), '^0+','')
+	--print(time, type(time), tonumber(time))
 	math.randomseed(time)
 
 	mode = GameRules:GetGameModeEntity()
@@ -178,8 +178,10 @@ function GameMode:StartGameMode()
 	for k,v in pairs(Entities:FindAllByName("cosmetic_snow") ) do
 		v:SetAbsOrigin(v:GetAbsOrigin()+RandomVector(500))
 	end
-	for _,cyclone in pairs(Entities:FindAllByName("cosmetic_cyclone")) do
 
+	local cyclones = Entities:FindAllByName("cosmetic_cyclone")
+	for k,v in pairs(Entities:FindAllByName("cosmetic_cyclone_stop")) do table.insert(cyclones, v) end
+	for _,cyclone in pairs(cyclones) do
 		--unit to represent the cyclone particle
 		CreateUnitByNameAsync("npc_dota_base", cyclone:GetAbsOrigin(), false, nil, nil, DOTA_TEAM_NEUTRALS, function(unit)
 			unit:AddNewModifier(unit, nil, "modifier_dummy", {})
@@ -187,14 +189,16 @@ function GameMode:StartGameMode()
 			unit:SetBaseMoveSpeed(405)
 			unit.particle = cyclone
 
-			--ai for the cylone to move around
-			BaseAi:MakeInstance(unit, {state = CYCLONE, spawn = unit:GetAbsOrigin()})
+			if cyclone:GetName() == "cosmetic_cyclone" then
+				--ai for the cylone to move around
+				BaseAi:MakeInstance(unit, {state = CYCLONE, spawn = unit:GetAbsOrigin()})
 
-			Timers(0, function()
-				if not unit or unit:IsNull() then return end
-				unit.particle:SetAbsOrigin(unit:GetAbsOrigin())
-				return 0.03
-			end)
+				Timers(0, function()
+					if not unit or unit:IsNull() then return end
+					unit.particle:SetAbsOrigin(unit:GetAbsOrigin())
+					return 0.03
+				end)
+			end
 
 			Timers(1, function()
 				if not unit or unit:IsNull() then return end
@@ -204,18 +208,16 @@ function GameMode:StartGameMode()
 					if not hero.cycloned then
 						hero.cycloned = true
 
-						hero:AddNewModifier(unit, nil, "modifier_stunned", {duration = 2.5})
-						hero:AddNewModifier(unit, nil, "modifier_invulnerable", {duration = 2.5})
+						hero:AddNewModifier(unit, nil, "modifier_ice_cyclone", {duration = 2.5}) --applys a slow effect ondestroy
 
 						EmitSoundOn("DOTA_Item.Cyclone.Activate", hero)
 						EmitSoundOn("Hero_Winter_Wyvern.SplinterBlast.Target", hero)
 
-						local p = ParticleManager:CreateParticle("particles/econ/events/winter_major_2016/cyclone_wm16.vpcf", PATTACH_POINT_FOLLOW, unit)
-						ParticleManager:SetParticleControl(p, 0, unit:GetAbsOrigin())
-						ParticleManager:SetParticleControl(p, 1, unit:GetAbsOrigin())
-						ParticleManager:SetParticleControl(p, 3, unit:GetAbsOrigin())
+						local p = ParticleManager:CreateParticle("particles/econ/events/winter_major_2016/cyclone_wm16.vpcf", PATTACH_WORLDORIGIN, hero)
+						ParticleManager:SetParticleControl(p, 0, hero:GetAbsOrigin())
+						ParticleManager:SetParticleControl(p, 1, hero:GetAbsOrigin())
+						ParticleManager:SetParticleControl(p, 3, hero:GetAbsOrigin())
 						ParticleManager:SetParticleControl(p, 5, Vector(1,1,1))
-
 
 						local liftTime = 0
 						local origin = hero:GetAbsOrigin()
@@ -297,7 +299,7 @@ function GameMode:StartGameMode()
 
 		CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
 	end)
-end 
+end
 
 -- Evaluate the state of the game
 function GameMode:OnThink()
@@ -337,7 +339,7 @@ end
 
 function GameMode:OnPlayerVote( keys )
 	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote] or 0
-	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote] + 1
+	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote]+1
 end
 --------------------------------------------------------------
 
