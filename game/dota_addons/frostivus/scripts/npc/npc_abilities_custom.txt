@@ -182,7 +182,7 @@
 			"03"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"speed_cost"		"-75"
+				"speed_cost"		"-50"
 			}
 		}
 	}

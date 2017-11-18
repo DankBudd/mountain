@@ -32,10 +32,10 @@ function base_ai:OnUpgrade()
 	if kv then
 		for k,v in pairs(kv) do
 			if k == self:GetCaster():GetUnitName() then
-				print("\n loading kv for unit: "..k)
+			--	print("\n loading kv for unit: "..k)
 				for l,m in pairs(v) do
 					if info[l] then
-						print( "", "setting "..tostring(l)..": ".. info[l].. " to " .. (tonumber(m) or m.."("..states[m]..")").."\n" )
+					--	print( "", "setting "..tostring(l)..": ".. info[l].. " to " .. (tonumber(m) or m.."("..states[m]..")").."\n" )
 						info[l] = tonumber(m) or m
 					end
 				end
@@ -72,10 +72,24 @@ function base_ai:OnUpgrade()
 	end
 
 	if self:GetCaster():GetUnitName() == "tiny_the_tosser" then
-		if Entities:FindByName(nil, "End_Tiny") == self:GetCaster() then
+		if Entities:FindByName(nil, "End_Tiny") == self:GetCaster() then -- Tiny_End
 			info.state = END_TINY
 		end
 	end
+
+	for i=0,6 do
+		local ab = self:GetCaster():GetAbilityByIndex(i)
+		if ab then
+			if ab:GetLevel() > 0 then
+				if bit.band(ab:GetBehavior(), DOTA_ABILITY_BEHAVIOR_AUTOCAST) == DOTA_ABILITY_BEHAVIOR_AUTOCAST then
+					if not ab:GetAutoCastState() then
+						ab:ToggleAutoCast()
+					end
+				end
+			end
+		end
+	end
+
 
 	self.instance = BaseAi:MakeInstance(self:GetCaster(), info)
 end

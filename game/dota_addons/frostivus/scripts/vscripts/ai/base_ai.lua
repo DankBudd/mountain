@@ -424,7 +424,7 @@ BaseAi = {
 				if ab:GetName() == "tiny_toss" then
 					local range = ab:GetSpecialValueFor("grab_radius")
 					if (self.unit:GetAbsOrigin() - units[1]:GetAbsOrigin()):Length2D() >= range then
-						self.unit:MoveToNPC(unit[1])
+						self.unit:MoveToNPC(units[1])
 						return 0.5
 					end
 				end
@@ -591,8 +591,8 @@ BaseAi = {
 			end
 		end
 
-		local spawn = Entities:FindNamedEntity("player_spawn")
-		local home = Entities:FindNamedEntity("End_Trigger")
+		local spawn = Entities:FindByName(nil, "Spawnitem_trigger")
+		local home = Entities:FindByName(nil, "Ending")
 		if home then
 			if (home:GetAbsOrigin() - self.unit:GetAbsOrigin()):Length2D() > 10 then
 				self.unit:MoveToPosition( home:GetAbsOrigin() )

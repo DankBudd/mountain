@@ -258,9 +258,9 @@ modifier_mount_movement = class({
 						--update mount speed
 						self.curSpeed = math.min( self.curSpeed + ( (1/30) * self.speedStep ) + self.boost, self.maxSpeed + self.boost )
 
-						print("","GetIdealSpeed: "..player:GetIdealSpeed() .. "\n",
+					--[[	print("","GetIdealSpeed: "..player:GetIdealSpeed() .. "\n",
 						"GetMoveSpeedModifier: "..player:GetMoveSpeedModifier(player:GetBaseMoveSpeed())-player:GetBaseMoveSpeed() .. "\n",
-						"CurrentSpeed: "..math.ceil(self.curSpeed).."\n")
+						"CurrentSpeed: "..math.ceil(self.curSpeed).."\n")]]
 					else
 						--start decaying speed
 						self.curSpeed = math.max( self.curSpeed - ( (1/30) * self.speedStep ), self.baseSpeed)

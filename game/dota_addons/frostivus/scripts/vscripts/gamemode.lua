@@ -781,6 +781,7 @@ function GameMode:OnPlayerChat( keys )
 
 			t[this:GetClassname()] = (t[this:GetClassname()] ~= nil and t[this:GetClassname()] + 1) or 1
 		end
+		table.sort( t )
 		PrintTable(t)
 	end
 end
