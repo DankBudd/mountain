@@ -69,5 +69,6 @@
 	<CustomUIElement type="EndScreen" 			layoutfile="file://{resources}/layout/custom_game/multiteam_end_screen.xml" />
 	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/player_voting.xml" />
 	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/checkpoints.xml" />
+	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/countdown.xml" />
   </Panel>
 </root>

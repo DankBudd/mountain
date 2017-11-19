@@ -5,30 +5,29 @@
 	<snippets>
     	<snippet name="count_down">
         	<Panel class="CountDown" hittest="false" >
-				<Label id="Name" text="#Countdown :" hittest="false" />
-				<Label id="Count" text="30" hittest="false" />
+				<Label id="Name" text="Countdown :" hittest="false" />
+				<Label id="Count" text=" " hittest="false" />
 			</Panel>
 	   	</snippet>
 	</snippets>
 	<script>
 		(function(){
-			GameEvents.Subscribe( "decrement_countdown", function(args){
-				$.Msg( 10 );
-				var timer;
-				var panel = $.CreatePanel( "Panel", $.GetContextPanel, '');
-				panel.BLoadLayoutSnippet('count_down');
-				timer = $.Schedule( 1, function() {
-					$.Msg( 20 );
-					var decrease = args.decrease || -1
+			var panel =	$("#Count");
+			GameEvents.Subscribe( "countdown", function(args){
+				if (panel == undefined ) {
+					panel = $.CreatePanel( "Panel", $.GetContextPanel(), '');
+					panel.BLoadLayoutSnippet('count_down');
+					var count = $.FindChildInContext("#Count");
+					count.text = String(args.key1);
+				}else{
+					var decrease = args.decrease || -1;
 					var count = $.FindChildInContext("#Count");
 					count.text = String( Number(count.text) + decrease );
-				 	if (Number(count.text) <= 0) {
-						$.Msg( 30 );
-						$.CancelScheduled(timer);
-						panel:RemoveAndDeleteChildren()
-						//count.text = String( 30 );
-					}
-				});
+					if (Number(count.text) < 0) {
+						panel.RemoveAndDeleteChildren();
+						panel = undefined;
+					}	
+				}
 			});
 		})();
 	</script>
