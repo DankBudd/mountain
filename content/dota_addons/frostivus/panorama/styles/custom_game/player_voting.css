@@ -64,6 +64,10 @@ Label {
 	horizontal-align: center;
 }
 
+#ConfirmButton:hover {
+	sound: "ui_rollover_lg";
+}
+
 .selected {
 	margin-top: 5px;
 	margin-bottom: 5px;
@@ -86,6 +90,7 @@ Button {
 
 Button:hover   {
 	brightness: 1.2;
+	sound: "ui_rollover_sm";
 	
 	animation-duration: 3.0s;
 	animation-timing-function: linear;
@@ -95,6 +100,8 @@ Button:hover   {
 
 Button:active	{
 	brightness: 0.7;
+	sound: "General.ButtonClick";
+	sound-out: "General.ButtonClickRelease";
 }
 
 @keyframes 'select'

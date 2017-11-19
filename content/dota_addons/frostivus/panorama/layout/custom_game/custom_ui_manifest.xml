@@ -47,10 +47,16 @@
 				}
 				return false;
 			});
-		})();
 
-		(function() {
 			GameEvents.Subscribe("print", function(args){$.Msg(args.msg);});
+
+			GameEvents.Subscribe("camera_lock", function(args) {
+				GameUI.SetCameraTarget(args.entIndex);
+			});
+
+			GameEvents.Subscribe("camera_unlock", function(args) {
+				GameUI.SetCameraTarget(-1);
+			});
 		})();
 	</script> 
 

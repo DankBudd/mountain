@@ -1,3 +1,11 @@
+function VectorToString(vec, ignoreZ, includeVECTOR)
+	if includeVECTOR == true then includeVECTOR = nil end
+	includeVECTOR = includeVECTOR or "Vector"
+	ignoreZ = ignoreZ or false
+	if not vec then return "" end
+	return (includeVECTOR and includeVECTOR.."(" or "")..math.ceil(vec.x)..","..math.ceil(vec.y)..(not ignoreZ and ","..math.ceil(vec.z)..(includeVECTOR and ")" or "") or (includeVECTOR and ")" or "")) 
+end
+
 function PanoramaPrint(msg)
 	CustomGameEventManager:Send_ServerToAllClients("print", {msg = msg})
 end

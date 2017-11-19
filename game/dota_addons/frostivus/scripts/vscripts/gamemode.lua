@@ -331,6 +331,59 @@ function GameMode:OnThink()
 				item:RemoveSelf()
 			end
 		end
+
+		--currently requires first checkpoint to be reached before it starts working.
+		--this should probably be moved into a timer somewhere for faster updating
+		--
+		--currently you will reach your next checkpoint before the progress bar is full because the trigger has a radius
+		-- max bounds, min bounds
+		-- local max = trigger:GetBoundingMaxs() 
+		-- local min = trigger:GetBoundingMins()
+		-- local forward = trigger:GetForwardVector() -- facing direction
+		-- need to get the 2 corners of the trigger that are closest to the player and determine the distance between the player and the line segment from the 2 corners
+		--
+		----is techinically a 3dRectangle but for my purposes it can be 2d
+		-- min.z = 0
+		-- max.z = 0
+		--	___________max
+		-- 	|         |
+		-- 	|    .    | --> forward
+		--	|         |
+		-- 	|_________| 
+		--min 					--player--
+		--
+		for i=0,PlayerResource:GetPlayerCount() - 1 do
+			local player = PlayerResource:GetPlayer(i)
+			if player then
+				if self.tCPRecord[i] then
+					local hero = PlayerResource:GetSelectedHeroEntity(i)
+					if hero then
+						if hero:HasModifier("modifier_mount_movement") then
+							local num = #split(self.tCPRecord[i], ",")
+							local nextCP = Entities:FindByName(nil, "CP_"..num+1)
+							local lastCP = Entities:FindByName(nil, "CP_"..num)
+
+							if nextCP and lastCP then
+								local toNext = (hero:GetAbsOrigin() - nextCP:GetAbsOrigin()):Length2D() -- CalcDistanceBetweenEntityOBB( hero, nextCP )
+								local toLast = (hero:GetAbsOrigin() - lastCP:GetAbsOrigin()):Length2D()
+								local between = (lastCP:GetAbsOrigin() - nextCP:GetAbsOrigin()):Length2D()
+								
+								local dis = math.floor(toLast).."/"..math.floor(between)
+								--max 100%, minimum 0.1%
+								--math.abs(between - toNext)
+								local width = tostring(math.ceil(math.max( math.min( between - toNext * 0.01, 100 ), 0.1 ))).."%"
+								--print(between, toNext, math.abs(between - toNext) * 0.01)
+								--print(width.."\n")
+								CustomGameEventManager:Send_ServerToPlayer(player, "update_cp_distance", {distance = dis, slider = width})
+							end
+						else
+							--Get back on your mount!!
+							CustomGameEventManager:Send_ServerToPlayer(player, "get_back_on_mount", {penguin = self.mounts[hero:GetPlayerID()]})
+						end
+					end
+				end
+			end
+		end
 	elseif state == DOTA_GAMERULES_STATE_POST_GAME then
 	elseif state == DOTA_GAMERULES_STATE_DISCONNECT then
 	end
@@ -783,6 +836,11 @@ function GameMode:OnPlayerChat( keys )
 		end
 		table.sort( t )
 		PrintTable(t)
+	end
+
+	if IsCommand("-pain", 0) then
+		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
+		hero:SetHealth(hero:GetHealth()/2)
 	end
 end
 

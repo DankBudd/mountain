@@ -5,23 +5,50 @@
 	<script>
 		(function(){
 			GameEvents.Subscribe( "increment_checkpoint", function(args){
-			$.Msg( 1 );
 				if (args.reset == undefined){
-				$.Msg( 2 );
-					var increase = args.increase || 1
+					var increase = args.increase || 1;
 					var count = $.FindChildInContext("#Count");
 					count.text = String( Number(count.text) + increase );
 				} else {
-				$.Msg( 3 );
 					count.text = String( 0 );
 				}
 			});
+
+			GameEvents.Subscribe("update_cp_distance", function(args){
+				var Distance = $.FindChildInContext("#Distance");
+				var Slider = $.FindChildInContext("#Slider");
+
+				Distance.text = args.distance || "0/0";
+				Slider.style.width = args.slider || "0.1%";
+			});
+
+			GameEvents.Subscribe("get_back_on_mount", function(args){
+				var panel = $.CreatePanel("Panel", $.GetContextPanel(), "")
+				panel.BLoadLayoutSnippet("find_your_mount")
+
+				$.Schedule( 0.9, function() { panel.RemoveAndDeleteChildren() } )
+			});
 		})();
 	</script>
-	<Panel class="RootPanel" hittest="false" >
-		<Panel id="Counter" hittest="false" >
-			<Label id="Name" text="#check_point_counter" hittest="false" />
-			<Label id="Count" text="0" hittest="false" />
+	<snippets>
+		<snippet name="find_your_mount" >
+			<Panel class="Mount" >
+				<Label id="MountTxt" text="#get_back_on_mount" />
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="RootPanel" hittestchildren="false" >
+		<Panel id="Redirect" >
+			<Panel id="Counter" >
+				<Label id="Name" text="#check_point_counter" />
+				<Label id="Count" text="0" />
+			</Panel>
+			<Panel id="Separator" />
+			<Label id="Progress" text="#progress_to_next" />
+		</Panel>
+		<Panel id="ProgressBar" >
+			<Panel id="Slider" />
+			<Label id="Distance" text="0/0" />
 		</Panel>
 	</Panel>
 </root>

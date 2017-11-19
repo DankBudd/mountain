@@ -1,5 +1,11 @@
 .RootPanel{
 	margin-top: 12%;
+	flow-children: down;
+}
+
+#Redirect{
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #425663cc ), color-stop( .5, #42566355 ), to( #0000 ) );
+	flow-children: down;
 }
 
 #Counter {
@@ -10,10 +16,6 @@
 	padding-left: 10px;
 	padding-right: 10px;
 	flow-children: right;
-	
-	background-color: gradient( linear, 0% 0%, 100% 0%, from( #425663cc ), color-stop( .5, #42566355 ), to( #0000 ) );
-//	border: 1px solid black;
-//	border-radius: 12px;
 }
 
 #Name {
@@ -31,6 +33,45 @@
 	font-size: 24px;
 	horizontal-align: center;
 	vertical-align: bottom;
+}
+
+#Separator{
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #425663cc ), color-stop( .1, black ), to( #0000 ) );
+	height: 1px;
+	width: 100%;
+}
+
+#Progress {
+	color: #A3B5D0cc;
+	font-weight: black;
+	font-size: 16px;
+	horizontal-align: center;
+}
+
+#ProgressBar {
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #17200d  ), color-stop( 0.2, #222e13 ), color-stop( .5, #1e2911), to( #17200d) );
+	height: fit-children;
+	width: 100%;
+}
+
+#Distance{
+	vertical-align: center;
+	horizontal-align: center;
+	color: white;
+}
+
+#Slider {
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #425d25  ), color-stop( 0.2, #5BA539 ), color-stop( .5, #4D9030), to( #425d25) );
+	height: 20px;
+	width: 50%;
+	horizontal-align: left;
+}
+
+#MountTxt{
+	width: 190px;
+	color: darkRed;
+	horizontal-align: center;
+	font-size: 20px;
 }
 
 Label {

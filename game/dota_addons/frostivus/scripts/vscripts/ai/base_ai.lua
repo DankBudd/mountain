@@ -590,7 +590,8 @@ BaseAi = {
 				talent:SetLevel(1)
 			end
 		end
-		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, ab:GetSpecialValueFor("grab_radius"),DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, ab:GetSpecialValueFor("grab_radius")+20, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
+		for k,v in pairs(units) do print(type(k), k, v) end
 		local spawn = Entities:FindByName(nil, "Spawnitem_trigger")
 		local home = Entities:FindByName(nil, "Ending")
 		if home then
@@ -607,21 +608,22 @@ BaseAi = {
 			self.unit:CastAbilityOnPosition( spawn:GetAbsOrigin(), ab, self.unit:GetPlayerOwnerID() )
 			ab:EndCooldown()
 			if units[1] then
-    			PlayerResource:SetCameraTarget(units[1]:GetPlayerID(), units[1])
-				Timers(5,function()
+
+				CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(units[1]:GetPlayerID()), "camera_lock", {entIndex = units[1]:entindex()})
+				Timers(0.5,function()
 					if not units[1] or units[1]:IsNull() then return end
 					local height = units[1]:GetAbsOrigin().z
 					local ground = GetGroundHeight(units[1]:GetAbsOrigin(), units[1])
 
 					if height == ground then
-						PlayerResource:SetCameraTarget(units[1]:GetPlayerID(), nil)
+						CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(units[1]:GetPlayerID()), "camera_unlock", {})
 						return
 					end
-					return 0.5
+					return 0.1
 				end)
 			end
 		end
 		return 0.1
 	end,
-
 }
+
