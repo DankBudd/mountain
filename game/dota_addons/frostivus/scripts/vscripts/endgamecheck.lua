@@ -47,14 +47,15 @@ function Ending_Check( trigger )
 
 	--perform countdown operation
 	if triggerflag == 2 then
-		local timeEnd = GameRules:GetGameTime() + 30
-		--GameEvents.Subscribe("countdown", CountDown);
-		CustomGameEventManager:Send_ServerToAllClients( "countdown", {0,0})
+		local eventdata = {key1=30,key2=nil}
+		local x = 31
 		Timers(0, function()
-     		if GameRules:GetGameTime() >= timeEnd then
+     		CustomGameEventManager:Send_ServerToAllClients( "countdown", eventdata)
+    		print(x.." seconds left!")
+    		x = x - 1
+    		if x < 0 then
         		return
     		end
-    		print(math.ceil(timeEnd - GameRules:GetGameTime()).." seconds left!")
     		return 1
 		end)
      	local playerCount = 0
