@@ -332,26 +332,8 @@ function GameMode:OnThink()
 			end
 		end
 
-		--currently requires first checkpoint to be reached before it starts working.
+		--currently requires 1 checkpoint to be reached before it starts working.
 		--this should probably be moved into a timer somewhere for faster updating
-		--
-		--currently you will reach your next checkpoint before the progress bar is full because the trigger has a radius
-		-- max bounds, min bounds
-		-- local max = trigger:GetBoundingMaxs() 
-		-- local min = trigger:GetBoundingMins()
-		-- local forward = trigger:GetForwardVector() -- facing direction
-		-- need to get the 2 corners of the trigger that are closest to the player and determine the distance between the player and the line segment from the 2 corners
-		--
-		----is techinically a 3dRectangle but for my purposes it can be 2d
-		-- min.z = 0
-		-- max.z = 0
-		--	___________max
-		-- 	|         |
-		-- 	|    .    | --> forward
-		--	|         |
-		-- 	|_________| 
-		--min 					--player--
-		--
 		for i=0,PlayerResource:GetPlayerCount() - 1 do
 			local player = PlayerResource:GetPlayer(i)
 			if player then
@@ -364,16 +346,59 @@ function GameMode:OnThink()
 							local lastCP = Entities:FindByName(nil, "CP_"..num)
 
 							if nextCP and lastCP then
-								local toNext = (hero:GetAbsOrigin() - nextCP:GetAbsOrigin()):Length2D() -- CalcDistanceBetweenEntityOBB( hero, nextCP )
-								local toLast = (hero:GetAbsOrigin() - lastCP:GetAbsOrigin()):Length2D()
-								local between = (lastCP:GetAbsOrigin() - nextCP:GetAbsOrigin()):Length2D()
-								
+
+--								local function dummy(pos)
+--									CreateUnitByNameAsync("npc_dota_base", pos, false, nil, nil, DOTA_TEAM_NOTEAM, function(unit)
+--										unit:AddNewModifier(nil, nil, "modifier_kill", {duration = 0.999})
+--									end)
+--								end
+
+								local nOrigin = nextCP:GetAbsOrigin()
+								local maxNext = nOrigin + nextCP:GetBoundingMaxs()
+								local minNext = nOrigin + nextCP:GetBoundingMins()
+								maxNext.z = minNext.z --2D bounds
+
+								local next,nc = math.huge, Vector(0,0,0)
+								local next2,nc2 = math.huge, Vector(0,0,0)
+								for k,v in pairs({maxNext, minNext, Vector(maxNext.x, minNext.y, minNext.z), Vector(minNext.x, maxNext.y, maxNext.z)}) do
+									local dist = (hero:GetAbsOrigin() - v):Length2D()
+									if dist < next and dist ~= next2 then
+										next,nc = dist, v
+									end
+									if dist < next2 and dist ~= next then
+										next2,nc2 = dist, v
+									end
+								end
+
+								local lOrigin = lastCP:GetAbsOrigin()
+								local maxLast = lOrigin + lastCP:GetBoundingMaxs()
+								local minLast = lOrigin + lastCP:GetBoundingMins()
+								maxLast.z = minLast.z --2D bounds
+
+								local last,lc = math.huge, Vector(0,0,0)
+								local last2,lc2 = math.huge, Vector(0,0,0)
+								for k,v in pairs({maxLast, minLast, Vector(maxLast.x, minLast.y, minLast.z), Vector(minLast.x, maxLast.y, maxLast.z)}) do
+									local dist = (hero:GetAbsOrigin() - v):Length2D()
+									if dist < last and dist ~= last2 then
+										last,lc = dist, v
+									end
+									if dist < last2 and dist ~= last then
+										last2,lc2 = dist, v
+									end
+								end
+
+								local toNext = CalcDistanceToLineSegment2D(hero:GetAbsOrigin(), nc, nc2)
+								local toLast = CalcDistanceToLineSegment2D(hero:GetAbsOrigin(), lc, lc2)
+
+								local between = CalcDistanceToLineSegment2D( (lc + (lc-lc2):Normalized() * (lc-lc2):Length2D()/2), nc, nc2)
+								--print("tick")
+
 								local dis = math.floor(toLast).."/"..math.floor(between)
 								--max 100%, minimum 0.1%
-								--math.abs(between - toNext)
-								local width = tostring(math.ceil(math.max( math.min( between - toNext * 0.01, 100 ), 0.1 ))).."%"
-								--print(between, toNext, math.abs(between - toNext) * 0.01)
+								local width = tostring(math.ceil(math.max( math.min( (between - toNext) * 0.01, 100 ), 0.1 ))).."%"
+								--print(between, toNext, (between - toNext) * 0.01)
 								--print(width.."\n")
+
 								CustomGameEventManager:Send_ServerToPlayer(player, "update_cp_distance", {distance = dis, slider = width})
 							end
 						else
@@ -464,6 +489,9 @@ function GameMode:OrderManager( keys )
 			or orderType == DOTA_UNIT_ORDER_MOVE_TO_DIRECTION
 			or orderType == DOTA_UNIT_ORDER_PATROL then
 				return false
+			end
+			if orderType == DOTA_UNIT_ORDER_PICKUP_ITEM then
+				--stop them from walking but allow them to pick up the item..?
 			end
 		end
 	end
