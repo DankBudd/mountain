@@ -20,13 +20,15 @@
 					var count = $.FindChildInContext("#Count");
 					count.text = String(args.key1);
 				}else{
-					var decrease = args.decrease || -1;
 					var count = $.FindChildInContext("#Count");
-					count.text = String( Number(count.text) + decrease );
-					if (Number(count.text) < 0) {
+					if (args.key2 =="stop"){
 						panel.RemoveAndDeleteChildren();
 						panel = undefined;
-					}	
+					}else if (args.key1 == 0 && args.key2 == "Start!"){
+						count.text = args.key2;
+					}else{
+						count.text = String(args.key1);
+					}			
 				}
 			});
 		})();
