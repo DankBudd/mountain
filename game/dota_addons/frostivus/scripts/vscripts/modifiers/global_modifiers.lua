@@ -1,6 +1,7 @@
 LinkLuaModifier("modifier_dummy", "modifiers/global_modifiers", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_intelligence_cdr", "modifiers/global_modifiers", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_ice_cyclone", "modifiers/global_modifiers", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_round_stun", "modifiers/global_modifiers", LUA_MODIFIER_MOTION_NONE)
 
 modifier_dummy = class({
 	IsHidden = function(self) return true end,
@@ -80,4 +81,22 @@ modifier_ice_cyclone = class({
 	GetModifierMoveSpeedBonus_Percentage = function(self) return (self.slow or 25) end,
 	GetStatusEffectName = function(self) if self:GetDuration() ~= self.start then return "particles/status_fx/status_effect_frost.vpcf" end end,
 	HeroEffectPriority = function(self) if self:GetDuration() ~= self.start then return 100 end end,
+})
+
+modifier_round_stun = class({
+	IsHidden = function(self) return false end,
+	IsPurgable = function(self) return false end,
+	GetOverrideAnimation = function(self) return ACT_DOTA_DISABLED end,
+
+	CheckState = function(self)
+		return {
+			[MODIFIER_STATE_STUNNED] = true,
+		}
+	end,
+
+	GetAttributes = function(self)
+		return {
+			MODIFIER_ATTRIBUTE_MULTIPLE,
+		}
+	end,
 })
