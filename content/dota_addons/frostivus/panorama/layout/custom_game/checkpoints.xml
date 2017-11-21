@@ -5,9 +5,9 @@
 	<script>
 		(function(){
 			GameEvents.Subscribe( "increment_checkpoint", function(args){
+				var count = $.FindChildInContext("#Count");
 				if (args.reset == undefined){
 					var increase = args.increase || 1;
-					var count = $.FindChildInContext("#Count");
 					count.text = String( Number(count.text) + increase );
 				} else {
 					count.text = String( 0 );
