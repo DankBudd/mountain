@@ -14,8 +14,6 @@ function Ending_Check( trigger )
 	local hHero = trigger.activator --this holds info on checkpoint trigger hero
 	print(hHero:GetName())
 	local triggerflag = 1 --Assume triggered when function called
-	--GameRules.GameMode.tVoteRecord = GameRules.GameMode.tVoteRecord or {}
-	--local tVoteRecord = GameRules.GameMode.tVoteRecord
 	GameRules.GameMode.tRComplete = GameRules.GameMode.tRComplete or {}
 	local tRComplete = GameRules.GameMode.tRComplete--this holds info of hero completing current round for roundstunner
 	
@@ -73,8 +71,7 @@ function Ending_Check( trigger )
 					PlayerList[i] = PlayerResource:GetSelectedHeroEntity(i-1)
 					--code to stun and teleport all players to starting point
 					PlayerList[i]:AddNewModifier(nil, nil, "modifier_round_stun", {})
-					PlayerList[i]:SetAbsOrigin(tploc)
-					FindClearSpaceForUnit(PlayerList[i], tploc+Vector(-900,(i-7)*140,0), false)
+					PlayerList[i]:SetAbsOrigin(tploc+Vector(-900,(i-7)*140,0))
 					PlayerList[i]:SetForwardVector(Vector(1,-1,0))
 					local item --remove items before next round begins
 					for n =0,8 do
@@ -85,7 +82,9 @@ function Ending_Check( trigger )
 					end
 					GameMode:GiveMount(PlayerList[i], "npc_dota_penguin")
 					print(PlayerList[i])
-				end			
+				end	
+				CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(hHero:GetPlayerID()), "increment_checkpoint", {reset=true})		
+				CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(hHero:GetPlayerID()), "update_cp_distance", {distance="0/0",slider="0.1%"})	
 				for i=1,5 do
 					TeamPoints[i] = TeamPoints[i] or 0
 				end
