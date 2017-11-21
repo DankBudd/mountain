@@ -14,8 +14,8 @@ function Ending_Check( trigger )
 	local hHero = trigger.activator --this holds info on checkpoint trigger hero
 	print(hHero:GetName())
 	local triggerflag = 1 --Assume triggered when function called
-	GameRules.GameMode.tVoteRecord = GameRules.GameMode.tVoteRecord or {}
-	local tVoteRecord = GameRules.GameMode.tVoteRecord
+	--GameRules.GameMode.tVoteRecord = GameRules.GameMode.tVoteRecord or {}
+	--local tVoteRecord = GameRules.GameMode.tVoteRecord
 	GameRules.GameMode.tRComplete = GameRules.GameMode.tRComplete or {}
 	local tRComplete = GameRules.GameMode.tRComplete--this holds info of hero completing current round for roundstunner
 	
@@ -63,46 +63,55 @@ function Ending_Check( trigger )
      		event1data.key1 = event1data.key1 - 1
      		if event1data.key1 < -1 or #tRComplete >= PlayerResource:GetPlayerCount() then
         		CustomGameEventManager:Send_ServerToAllClients( "countdown", {key1=0,key2="stop"})
-        		local playerCount = 0
+         		local playerCount = 0
     			for i=DOTA_TEAM_GOODGUYS, DOTA_TEAM_CUSTOM_3 do
 					playerCount = playerCount + PlayerResource:GetPlayerCountForTeam(i)
 				end
-		    	PlayerList[1] = PlayerList[1] or {}
-    			PlayerList[2] = PlayerList[2] or {}
-				for i=1,playerCount do
-					PlayerList[1][i] = PlayerResource:GetPlayer(i-1)
-					PlayerList[2][i] = PlayerResource:GetTeam(i-1)
-				end
+		   		local tploc = Entities:FindByName(nil, "Spawnitem_trigger"):GetAbsOrigin()
 				print "playerlist"
-				print(PlayerList[1][1])
-				--PrintTable(PlayerList)
+				for i=1,playerCount do
+					PlayerList[i] = PlayerResource:GetSelectedHeroEntity(i-1)
+					--code to stun and teleport all players to starting point
+					PlayerList[i]:AddNewModifier(nil, nil, "modifier_round_stun", {})
+					PlayerList[i]:SetAbsOrigin(tploc)
+					FindClearSpaceForUnit(PlayerList[i], tploc+Vector(-900,(i-7)*140,0), false)
+					PlayerList[i]:SetForwardVector(Vector(1,-1,0))
+					local item --remove items before next round begins
+					for n =0,8 do
+						item = PlayerList[i]:GetItemInSlot(n)
+						if item ~= nil then	
+							PlayerList[i]:RemoveItem(item)
+						end
+					end
+					GameMode:GiveMount(PlayerList[i], "npc_dota_penguin")
+					print(PlayerList[i])
+				end			
 				for i=1,5 do
 					TeamPoints[i] = TeamPoints[i] or 0
 				end
 				TeamPoints["currentbest"] = TeamPoints["currentbest"] or 0
-				--code to sum team points up
-				for i=1,playerCount do
-					if string.match(PlayerList[2][i],"DOTA_TEAM_GOODGUYS") ~= nil then
-						TeamPoints[1] = TeamPoints[1] + tPointsRecord(PlayerList[1][i]:GetPlayerOwnerID())
-					elseif string.match(PlayerList[2][i],"DOTA_TEAM_BADGUYS")  ~= nil then
-						TeamPoints[2] = TeamPoints[2] + tPointsRecord(PlayerList[1][i]:GetPlayerOwnerID())
-					elseif string.match(PlayerList[2][i],"DOTA_TEAM_CUSTOM_1")  ~= nil then
-						TeamPoints[3] = TeamPoints[3] + tPointsRecord(PlayerList[1][i]:GetPlayerOwnerID())
-					elseif string.match(PlayerList[2][i],"DOTA_TEAM_CUSTOM_2")  ~= nil then
-						TeamPoints[4] = TeamPoints[4] + tPointsRecord(PlayerList[1][i]:GetPlayerOwnerID())
-					elseif string.match(PlayerList[2][i],"DOTA_TEAM_CUSTOM_3")  ~= nil then
-						TeamPoints[5] = TeamPoints[5] + tPointsRecord(PlayerList[1][i]:GetPlayerOwnerID())
+				--[[code to sum team points up
+				for i=1,playerCount do --enum 2,3,6,7,8 --good,bad,custom:1;2;3
+					if PlayerList[i]:GetTeamNumber() == 2 then
+						TeamPoints[1] = TeamPoints[1] + tPointsRecord(PlayerList[i]:GetPlayerOwnerID())
+					elseif PlayerList[i]:GetTeamNumber() == 3 then
+						TeamPoints[2] = TeamPoints[2] + tPointsRecord(PlayerList[i]:GetPlayerOwnerID())
+					elseif PlayerList[i]:GetTeamNumber() == 6 then
+						TeamPoints[3] = TeamPoints[3] + tPointsRecord(PlayerList[i]:GetPlayerOwnerID())
+					elseif PlayerList[i]:GetTeamNumber() == 7 then
+						TeamPoints[4] = TeamPoints[4] + tPointsRecord(PlayerList[i]:GetPlayerOwnerID())
+					elseif PlayerList[i]:GetTeamNumber() == 8 then
+						TeamPoints[5] = TeamPoints[5] + tPointsRecord(PlayerList[i]:GetPlayerOwnerID())
 					else
 						print"didntenteranyifcase"
 					end
-				end
+				end]]
     			for i=1,5 do
     				if TeamPoints["currentbest"] <= TeamPoints[i] then
     					TeamPoints["currentbest"] = TeamPoints[i]
     				end
     			end
     			--PrintTable(TeamPoints)
-				
 				print(TeamPoints["currentbest"])
 				--print(GameRules.GameMode.tVoteRecord["Selected"])
 				--check game rounds objective vote record
@@ -116,16 +125,18 @@ function Ending_Check( trigger )
     					event2data.key1 = event2data.key1 - 1
     					if event2data.key1 < -1 then
     						CustomGameEventManager:Send_ServerToAllClients( "countdown", {key1=0,key2="stop"})
-        					--remove the stun modifier from each player
+        					--remove the stun modifier from each player 
 							for i=1,playerCount do
-								local hero = PlayerResource:GetSelectedHeroEntity(PlayerList[1][i]:GetPlayerID())
-								hero:RemoveModifierByName("modifier_round_stun")
+								PlayerList[i]:RemoveModifierByName("modifier_round_stun")
 							end
-							--reset placeholder to nil
+							--reset placeholder, round checkpoint and current placing to nil
 							tPointsRecord[7] = nil
 							tPointsRecord[5] = nil
 							tPointsRecord[3] = nil
 							tPointsRecord[2] = nil
+							GameRules.GameMode.tCPRecord = {}
+							GameRules.GameMode.tCurrentPlacing = {}
+							GameRules.GameMode.tRComplete = {}
         					return
     					end
     					return 1
