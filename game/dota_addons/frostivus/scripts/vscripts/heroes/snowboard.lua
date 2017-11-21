@@ -194,7 +194,7 @@ modifier_mount_movement = class({
 				end
 
 				local turnAmount = 0.0
-				local curAngles = mount:GetAngles()
+				local curAngles = player:GetAngles()
 				local angleDiff = AngleDiff( self.desiredYaw, curAngles.y )
 
 				local turnRate
