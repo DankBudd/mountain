@@ -87,16 +87,17 @@ modifier_round_stun = class({
 	IsHidden = function(self) return false end,
 	IsPurgable = function(self) return false end,
 	GetOverrideAnimation = function(self) return ACT_DOTA_DISABLED end,
-
+	OnCreated = function(self, kv)
+		self.p = ParticleManager:CreateParticle("particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf",  PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
+	end,
+	OnDestroy = function(self)
+		ParticleManager:DestroyParticle(self.p, false)
+		ParticleManager:ReleaseParticleIndex(self.p)
+	end,
 	CheckState = function(self)
 		return {
 			[MODIFIER_STATE_STUNNED] = true,
 		}
 	end,
 
-	GetAttributes = function(self)
-		return {
-			MODIFIER_ATTRIBUTE_MULTIPLE,
-		}
-	end,
 })
