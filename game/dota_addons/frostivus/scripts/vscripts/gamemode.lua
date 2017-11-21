@@ -22,7 +22,7 @@ function GameMode:InitGameMode()
 	GameRules:SetHeroSelectionTime( 30 )
 	GameRules:SetStrategyTime( 1 )
 	GameRules:SetShowcaseTime( 0 )
-	GameRules:SetPreGameTime( 30 )
+	GameRules:SetPreGameTime( 15 )
 	GameRules:SetPostGameTime( 30 )
 
 	GameRules:SetTreeRegrowTime( 60 )
@@ -322,6 +322,30 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD then
 	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
 	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+		--self.adjustpos = self.adjustpos or 
+		local event_data = event_data or {key1=3,key2="Start!"}
+		self.countdown = self.countdown or Timers(0, function()
+     		print(event_data.key1.." seconds left!")
+     		CustomGameEventManager:Send_ServerToAllClients( "countdown", event_data)
+    		event_data.key1 = event_data.key1 - 1
+    		if event_data.key1 < -1 then
+    			CustomGameEventManager:Send_ServerToAllClients( "countdown", {key1=0,key2="stop"})
+    			--remove the stun modifier from each player
+    			local i = i or 1
+    			local hero = PlayerResource:GetSelectedHeroEntity(i-1)
+				while hero:HasModifier("modifier_round_stun") do
+					hero:RemoveModifierByName("modifier_round_stun")
+					i = i + 1
+					hero = PlayerResource:GetSelectedHeroEntity(i-1)
+					if not hero or hero:IsNull() then
+						return 
+					end
+				end
+    			return
+    		end
+    		return 1
+		end)
+
 		local time = GameRules:GetGameTime()
 		local expireTime = 60.0
 		local items = Entities:FindAllByClassname("dota_item_drop")
@@ -537,6 +561,7 @@ function GameMode:GiveMount(hero, mountName)
 	if not hero or hero:IsNull() then return end
 	--remove old mount if they have one
 	if self.mounts[hero:GetPlayerID()] then
+		hero:RemoveModifierByName("modifier_mount_movement")
 		UTIL_Remove(EntIndexToHScript(self.mounts[hero:GetPlayerID()]))
 	end
 	--default to penguin
@@ -569,18 +594,24 @@ function GameMode:OnNpcSpawn(keys)
 	end
 	if npc:IsRealHero() then
 		self.lastSpawnedHero = npc
-		GameMode:GiveMount(npc)
-
+		npc:AddNewModifier(nil, nil, "modifier_round_stun", {})
 		for i = 0,6 do
 			local ab = npc:GetAbilityByIndex(i)
 			if ab then
 				ab:SetLevel(1)
 			end
 		end
-
 		if npc:GetPrimaryAttribute() == DOTA_ATTRIBUTE_INTELLECT then
 			npc:AddNewModifier(npc, nil, "modifier_intelligence_cdr", {})
 		end
+		local tploc = Entities:FindByName(nil, "Spawnitem_trigger"):GetAbsOrigin()
+		self.var = self.var or 1
+		Timers(0, function()
+			npc:SetAbsOrigin(tploc+Vector(-900,(self.var-7)*140,0))
+			self.var = self.var + 1
+			npc:SetForwardVector(Vector(1,-1,0))
+			GameMode:GiveMount(npc)
+		end)
 	end
 
 	if npc:HasInventory() then
