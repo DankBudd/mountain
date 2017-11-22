@@ -6,7 +6,6 @@ function Checkpoint_OnStartTouch( trigger )
 	GameRules.GameMode.tCurrentPlacing = GameRules.GameMode.tCurrentPlacing or {}
 	local tCurrentPlacing = GameRules.GameMode.tCurrentPlacing
 	local totalplayer = PlayerResource:GetPlayerCount()-- code that grab total player
-	local place = 1
 	local hHero = trigger.activator --this holds info on checkpoint trigger hero
 	print(hHero:GetName())
 	local sCheckpointTriggerName = thisEntity:GetName() --this holds info on which checkpoint triggered
@@ -18,37 +17,32 @@ function Checkpoint_OnStartTouch( trigger )
 	if hHero:HasModifier("modifier_mount_movement") then
 		if tCPRecord[hHero:GetPlayerOwnerID()] == nil then
 			tCPRecord[hHero:GetPlayerOwnerID()] = sCheckpointTriggerName
-			triggerflag = 2
 			print "create new key using playerID and store this value"
 		elseif string.match(tCPRecord[hHero:GetPlayerOwnerID()],sCheckpointTriggerName) then
 			triggerflag = 0 --set trigger to zero since repeated checkpoint
 			print "checkpoint already triggered, get out of function without doing anything"
 		else
 			tCPRecord[hHero:GetPlayerOwnerID()] = tCPRecord[hHero:GetPlayerOwnerID()] .. "," .. sCheckpointTriggerName
-			triggerflag = 2
 			print "call existing playerID and add this to the value"
 		end
-		if triggerflag == 2 then
+		if triggerflag == 1 then
+			local placing =  1 -- assume always first
 			--- to account for exact number of players current placing and if leading player reaches next checkpoint before last player reaches previous checkpoint
-			while tCurrentPlacing[sCheckpointTriggerName][place] ~= hHero:GetPlayerOwnerID() do
-				if tCurrentPlacing[sCheckpointTriggerName][place] == nil then
-					tCurrentPlacing[sCheckpointTriggerName][place] = hHero:GetPlayerOwnerID()
+			while tCurrentPlacing[sCheckpointTriggerName][placing] ~= hHero do
+				--keep repeating until player has filled one slot
+				--if first available slot is empty fill with hero else check next slot
+				if tCurrentPlacing[sCheckpointTriggerName][placing] == nil then
+					tCurrentPlacing[sCheckpointTriggerName][placing] = hHero
 				else
-					place = place + 1
+					placing = placing + 1
 				end
 			end
-			if place == totalplayer and totalplayer ~= 1 then
-				--function call to give last player tusk summoning skill
-				print ("give tusk summon to"..hHero:GetPlayerOwnerID())
-				--reset all placeholder to nil for the next round if there is one
-				for i=1,totalplayer do
-					tCurrentPlacing[sCheckpointTriggerName][i] = nil
-				end
-
+			if placing == totalplayer and totalplayer ~= 1 then
+				print ("give tusk summon to"..hHero)
+				--function call to unhide last player tusk summoning skill
+				hHero:GetAbilityByIndex(3):SetHidden(false)
 			end
 			CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(hHero:GetPlayerID()), "increment_checkpoint", {})
-		elseif triggerflag == 0 then
-			--notify player checkpoint already triggered
 		end
 	end
 end

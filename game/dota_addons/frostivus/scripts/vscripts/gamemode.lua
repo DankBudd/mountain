@@ -601,6 +601,7 @@ function GameMode:OnNpcSpawn(keys)
 				ab:SetLevel(1)
 			end
 		end
+		npc:GetAbilityByIndex(3):SetHidden(true)
 		if npc:GetPrimaryAttribute() == DOTA_ATTRIBUTE_INTELLECT then
 			npc:AddNewModifier(npc, nil, "modifier_intelligence_cdr", {})
 		end
