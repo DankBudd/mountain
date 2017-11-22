@@ -9,6 +9,7 @@ SENTRY = 7
 BASIM = 8
 CYCLONE = 9
 END_TINY = 10
+TUSK = 11
 
 THINK_STATES = {
 	---------------------------------
@@ -34,6 +35,7 @@ THINK_STATES = {
 	[BASIM] = "BasimThink",
 	[CYCLONE] = "CycloneThink",
 	[END_TINY] = "EndTinyThink",
+	[TUSK] = "TuskThink",
 }
 
 local function HasBehavior(ability, behavior)
@@ -593,7 +595,7 @@ BaseAi = {
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, ab:GetSpecialValueFor("grab_radius")+20, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
 		for k,v in pairs(units) do print(type(k), k, v) end
 		local spawn = Entities:FindByName(nil, "Spawnitem_trigger")
-		local home = Entities:FindByName(nil, "Ending")
+		local home = Entities:FindByName(nil, "End_Platform")
 		if home then
 			if (home:GetAbsOrigin() - self.unit:GetAbsOrigin()):Length2D() > 10 then
 				self.unit:MoveToPosition( home:GetAbsOrigin() )
@@ -624,6 +626,22 @@ BaseAi = {
 			end
 		end
 		return 0.1
+	end,
+
+	TuskThink = function(self)
+		local ab,behav = GetSpellToCast(self.unit)
+		if not ab then return end
+		
+		self.unit.target = self.unit.target or GetFirstPlace()
+		if not self.unit.target then return end
+		local target = self.unit.target
+
+		if not target:IsStunned() then
+			if CastSpell(self.unit, target, ab, behav) then
+			end
+		end
+
+		return
 	end,
 }
 
