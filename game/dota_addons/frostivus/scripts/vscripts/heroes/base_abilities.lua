@@ -122,3 +122,20 @@ modifier_turn = class({
 		end
 	end,
 })
+
+tusk_ability = class({})
+
+function tusk_ability:OnSpellStart()
+	local hero = self:GetCaster()
+	CreateUnitByNameAsync("tusk_the_snowballer", hero:GetAbsOrigin()+RandomVector(250), true, hero, hero, hero:GetTeamNumber(), function(unit)
+		for i=0,5 do
+			local ab = unit:GetAbilityByIndex(i)
+			if ab then
+				ab:SetLevel(1)
+			end
+		end
+
+		BaseAi:MakeInstance(unit, {state = 11})
+	end)
+	self:SetHidden(true)
+end
