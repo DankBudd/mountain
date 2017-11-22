@@ -38,7 +38,7 @@ function Checkpoint_OnStartTouch( trigger )
 				end
 			end
 			if placing == totalplayer and totalplayer ~= 1 then
-				print ("give tusk summon to"..hHero)
+				print ("give tusk summon to"..hHero:GetPlayerOwnerID())
 				--function call to unhide last player tusk summoning skill
 				hHero:GetAbilityByIndex(3):SetHidden(false)
 			end

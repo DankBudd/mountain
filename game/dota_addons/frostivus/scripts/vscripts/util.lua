@@ -220,3 +220,50 @@ function PrintRelevent(t)
 		end
 	end
 end
+
+function GetFirstPlace()
+	--get the highest cp number and players who have reached that cp
+	local highest, players = 0, {}
+	for k,v in pairs(GameRules.GameMode.tCPRecord) do
+		local num = split(v, ",")
+		if #num > highest then
+			highest = #v
+			players = {[1] = k}
+		elseif #num == highest then
+			table.insert(players, k)
+		end
+	end
+
+	--grab end_platform location
+	local entLoc = Entities:FindByName(nil, "End_Platform"):GetAbsOrigin()
+
+	--calculate who is closest to end_platform
+	if #players > 1 then
+		local lowest,h = math.huge, nil
+		for _,id in pairs(players) do
+			local hero = PlayerResource:GetSelectedHeroEntity(id)
+			local path = GridNav:FindPathLength(hero:GetAbsOrigin(), entLoc)
+			if path == -1 then
+				path = (hero:GetAbsOrigin() - entLoc):Length2D()
+			end
+
+			local cpNum = #split(tCPRecord[playerid], ",")
+			local cp1,cp2 = Entities:FindByName(nil, "CP_"..cpNum), Entities:FindByName(nil, "CP_"..cpNum+1)
+			local cpPath = math.huge
+			if cp1 and cp2 then
+				cpPath = GridNav:FindPathLength(cp1:GetAbsOrigin(), cp2:GetAbsOrigin())
+			end
+
+			if path > cpPath then
+				path = (hero:GetAbsOrigin() - entLoc):Length2D()
+			end
+
+			if path < lowest then
+				lowest,h = path,hero
+			end
+		end
+		return h
+	else
+		return PlayerResource:GetSelectedHeroEntity(players[1])
+	end
+end
