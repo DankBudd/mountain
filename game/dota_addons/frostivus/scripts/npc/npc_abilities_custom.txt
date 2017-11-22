@@ -186,4 +186,12 @@
 			}
 		}
 	}
+	"tusk_ability"
+	{
+		"BaseClass"             		"ability_lua"
+		"ScriptFile"					"heroes/base_abilities.lua"
+		"AbilityTextureName"			"tuskarr_icon"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"MaxLevel" 						"1"
+	}
 }
