@@ -414,11 +414,13 @@ BaseAi = {
 			--print("", "found "..tostring(#units).." enemy heroes")
 			if #units > 0 then
 				for _,unit in pairs(units) do
-					if CastSpell(self.unit, unit, ab, behav) then
-						--print("","", "SUCCEEDED in attacking enemy")
-						break
-					else
-						--print("","", "FAILED in attacking enemy")
+					if not unit:IsStunned() then
+						if CastSpell(self.unit, unit, ab, behav) then
+							--print("","", "SUCCEEDED in attacking enemy")
+							break
+						else
+							--print("","", "FAILED in attacking enemy")
+						end
 					end
 				end
 
@@ -631,12 +633,12 @@ BaseAi = {
 	TuskThink = function(self)
 		local ab,behav = GetSpellToCast(self.unit)
 		if not ab then return end
-		
+
 		self.unit.target = self.unit.target or GetFirstPlace()
 		if not self.unit.target then return end
 		local target = self.unit.target
 
-		if not target:IsStunned() then
+		if not target:IsStunned() and not self.unit:HasModifier("modifier_snowball") then
 			if CastSpell(self.unit, target, ab, behav) then
 			end
 		end

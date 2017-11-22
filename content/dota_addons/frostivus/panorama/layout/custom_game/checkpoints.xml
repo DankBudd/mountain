@@ -25,8 +25,7 @@
 			GameEvents.Subscribe("get_back_on_mount", function(args){
 				var panel = $.CreatePanel("Panel", $.GetContextPanel(), "")
 				panel.BLoadLayoutSnippet("find_your_mount")
-
-				$.Schedule( 0.9, function() { panel.RemoveAndDeleteChildren() } )
+				panel.DeleteAsync(0.999)
 			});
 		})();
 	</script>

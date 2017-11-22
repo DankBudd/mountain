@@ -1,0 +1,57 @@
+.IntroRoot{
+	horizontal-align: left;
+	margin-top: 20%;
+	margin-left: 20%;
+}
+
+.PortraitContainer{
+	opacity: 0.95;
+    width: 190px;
+    height: 190px;
+    overflow: clip;
+	
+	opacity-mask: url("s2r://panorama/images/masks/softedge_circle_sharper_png.vtex");
+}
+.TeamContainer{
+	flow-children: down;
+}
+
+#TeamLabel{
+	font-size: 30px;
+	color: darkOrange;
+	text-shadow: 1px 1px 1px 2 #00000099;
+	font-family: RadianceM;
+	horizontal-align: center;
+}
+
+#Portrait{
+    margin-top: -22px;
+    width: 180px;
+    height: 240px;
+}
+
+#entry {
+	background-color: gray;
+	height: 30px;
+	font-size: 20px;
+	width: 250px;
+}
+
+//#{make some empty classes:;}
+.Team1,
+.Team2,
+.Team3,
+.Team4,
+.Team5 {}
+
+//#{
+	//opacity-mask: url("s2r://panorama/images/masks/softedge_circle_sharp_png.vtex");
+	//opacity-mask: url("s2r://panorama/images/masks/softedge_box_png.vtex");
+	//opacity-mask: url("s2r://panorama/images/masks/scratches_horizontal_psd.vtex")1;
+	//opacity-mask: url("s2r://panorama/images/masks/chat_opacity_mask_png.vtex");
+	//opacity-mask: url("s2r://panorama/images/masks/heroportraitfade1_psd.vtex") 1;
+	//opacity-mask: url("s2r://panorama/images/masks/softedge_vertical_png.vtex") 1.0;
+	//opacity-mask: url("s2r://panorama/images/masks/softedge_circle_png.vtex");
+	//opacity-mask: url("s2r://panorama/images/masks/findingmatchscroll_png.vtex");
+	//opacity-mask: url("s2r://panorama/images/masks/softedge_vertical_vscroll_wide_psd.vtex") 1.0;
+//}

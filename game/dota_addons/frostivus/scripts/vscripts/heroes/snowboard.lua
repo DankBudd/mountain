@@ -1,12 +1,15 @@
 LinkLuaModifier("modifier_mount_movement", "heroes/snowboard", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_penguin_thinker", "heroes/snowboard", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_mimic_casters_states", "heroes/snowboard", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_mount_anim", "heroes/snowboard", LUA_MODIFIER_MOTION_NONE)
+
 
 penguin_ability = class({})
 
 function penguin_ability:GetIntrinsicModifierName()
 	return "modifier_penguin_thinker"
 end
+
 
 modifier_penguin_thinker = class({
 	IsHidden = function(self) return true end,
@@ -51,6 +54,9 @@ modifier_penguin_thinker = class({
 							self:GetParent():AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_movement", {}).player = unit
 							unit:AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_movement", {})
 
+							self:GetParent():AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_anim", {})
+							unit:AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_mount_anim", {})
+
 							--mimic states. e.g invisibility
 							self:GetParent():AddNewModifier(unit, self:GetAbility(), "modifier_mimic_casters_states", {})
 						end
@@ -64,17 +70,12 @@ modifier_penguin_thinker = class({
 	end,
 })
 
+
 modifier_mimic_casters_states = class({
 	IsHidden = function(self) return true end,
 	IsPurgable = function(self) return false end,
 
 	CheckState = function(self)
-	--[[print("\n","IsInvisible: "..tostring(self:GetCaster():IsInvisible() ) .."\n",
-		"IsStunned: "..tostring(self:GetCaster():IsStunned() ) .."\n",
-		"IsHexed: "..tostring(self:GetCaster():IsHexed() ) .."\n",
-		"IsFrozen: "..tostring(self:GetCaster():IsFrozen() ) .."\n",
-		"IsRooted: "..tostring(self:GetCaster():IsRooted() ) .."\n",
-		"NoUnitCollision: "..tostring(self:GetCaster():NoUnitCollision() ))]]
 		return {
 			[MODIFIER_STATE_INVISIBLE] = self:GetCaster():IsInvisible(),
 			[MODIFIER_STATE_STUNNED] = self:GetCaster():IsStunned(),
@@ -86,6 +87,18 @@ modifier_mimic_casters_states = class({
 	end,
 })
 
+
+modifier_mount_anim = class({
+	DeclareFunctions = function(self) return {MODIFIER_PROPERTY_OVERRIDE_ANIMATION,} end,
+	GetOverrideAnimation = function(self, keys)
+		if self:GetParent() ~= self:GetCaster() then
+			return ACT_DOTA_FLAIL
+		end
+		return ACT_DOTA_SLIDE_LOOP
+	end,
+})
+
+
 modifier_mount_movement = class({
 	IsHidden = function(self) return true end,
 	IsPurgable = function(self) return false end,
@@ -96,7 +109,6 @@ modifier_mount_movement = class({
 
 	DeclareFunctions = function(self)
 		return {
-			MODIFIER_PROPERTY_OVERRIDE_ANIMATION,
 			MODIFIER_PROPERTY_DISABLE_TURNING,
 			MODIFIER_EVENT_ON_ABILITY_FULLY_CAST,
 			MODIFIER_PROPERTY_MOVESPEED_MAX,
@@ -104,13 +116,6 @@ modifier_mount_movement = class({
 			MODIFIER_PROPERTY_MOVESPEED_BONUS_CONSTANT,
 			MODIFIER_PROPERTY_MOVESPEED_BASE_OVERRIDE,
 		}
-	end,
-
-	GetOverrideAnimation = function(self, keys)
-		if self:GetParent() ~= self:GetCaster() then
-			return ACT_DOTA_FLAIL
-		end
-		return ACT_DOTA_SLIDE_LOOP
 	end,
 
 	GetModifierMoveSpeedBonus_Constant = function(self)
@@ -159,7 +164,6 @@ modifier_mount_movement = class({
 			if not self:GetCaster():IsNull() then
 				self:GetCaster():RemoveModifierByName("modifier_mount_movement")
 			end
-			--TODO: spiritbreaker-like knockback away from crash location (respects gridNav)
 		end
 	end,
 
@@ -185,7 +189,7 @@ modifier_mount_movement = class({
 					"modifier_invoker_tornado",
 					"modifier_jump",
 				}
-				
+
 				--skip this tick if the player is affected by an exception
 				for _,name in pairs(exceptions) do
 					if player:HasModifier(name) then
@@ -209,7 +213,7 @@ modifier_mount_movement = class({
 				end
 
 				turnAmount = math.min( turnRate * (1/30), math.abs( angleDiff ) )
-			
+
 				if angleDiff < 0.0 then
 					turnAmount = turnAmount * -1
 				end
@@ -222,7 +226,7 @@ modifier_mount_movement = class({
 				--short delay before movement, to prevent insta crashing into wall/tree again
 				if self.delay <= 0 then
 					local newPos = player:GetAbsOrigin() + player:GetForwardVector() * ( (1/30) * self.curSpeed )
-					newPos.z = GetGroundHeight(newPos, player) + 10
+					newPos.z = GetGroundHeight(newPos, player) + 20
 
 					--end slide if unpathable, and destroy any trees at unpathable position
 					if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) or #Entities:FindAllByClassnameWithin("dota_temp_tree", newPos, 25) > 0 then

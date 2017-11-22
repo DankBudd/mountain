@@ -1,0 +1,56 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/intro.css" />
+	</styles>
+	<script>
+	
+		function print(one) { $.Msg(one); }
+	
+		(function(){
+			GameEvents.Subscribe( "create_portrait", function(args) {
+				var team = Number(args.team) - 1 || 1;
+				var parent = $.GetContextPanel().FindChildrenWithClassTraverse(".Team"+team)[0];
+
+				if (parent == undefined) {
+					print("making new team panel: Team"+team)
+				
+					parent = $.CreatePanel("Panel", $.GetContextPanel(), "")
+					parent.BLoadLayoutSnippet("teams")
+					parent.AddClass(".Team"+team)
+					parent.style.position = String((team-1)*250)+"px 0px 0px"
+				}
+
+				var p = $.CreatePanel("Panel", parent, "");
+				p.BLoadLayoutSnippet("portrait");
+
+				var child = p.GetChild(0);
+
+				child.heroname = args.heroname || "npc_dota_hero_wisp";
+				//child.heroid = Math.floor(Math.random() * 100);
+
+				var count = $.GetContextPanel().GetChildCount();
+			});
+			
+			GameEvents.Subscribe( "remove_all", function(args) {
+				for (var i=0;i<$.GetContextPanel().GetChildCount();i++){
+					$.GetContextPanel().GetChild(i).RemoveAndDeleteChildren();
+					$.GetContextPanel().GetChild(i).DeleteAsync(0);
+				}
+			});
+		})();
+	</script>
+	<snippets>
+		<snippet name="portrait" >
+			<Panel class="PortraitContainer" hittestchildren="false" >
+				<DOTAHeroMovie id="Portrait" />
+			</Panel>
+		</snippet>
+		<snippet name="teams" >
+			<Panel class="TeamContainer" hittestchildren="false" >
+				<Label id="TeamLabel" text="[TEAM]" />
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="IntroRoot"  hittestchildren="true" >
+	</Panel>
+</root>

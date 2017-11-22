@@ -29,7 +29,7 @@ modifier_dummy = class({
 		end
 	end,
 
-	DeclareFunctions = function(self)
+	DeclareFunctions = function()
 		return {
 			MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE,
 			MODIFIER_PROPERTY_ABSOLUTE_NO_DAMAGE_PHYSICAL,
@@ -55,7 +55,7 @@ modifier_dummy = class({
 modifier_intelligence_cdr = class({
 	IsHidden = function(self) return true end,
 	IsPurgeable = function(self) return false end,
-	DeclareFunctions = function(self) return {MODIFIER_PROPERTY_COOLDOWN_PERCENTAGE_STACKING} end,
+	DeclareFunctions = function() return {MODIFIER_PROPERTY_COOLDOWN_PERCENTAGE_STACKING} end,
 	GetModifierPercentageCooldownStacking = function(self) return self:GetStackCount() * (_G.DOTA_ATTRIBUTE_INTELLIGENCE_COOLDOWN_REDUCTION or 0.5) end,
 
 	--stack count bullshit to transfer Intellect value to client
@@ -63,30 +63,55 @@ modifier_intelligence_cdr = class({
 	OnIntervalThink = function(self) if IsServer() then self:SetStackCount(self:GetParent():GetIntellect()) end end,
 })
 
+
 modifier_ice_cyclone = class({
 	IsHidden = function(self) return self:GetDuration() == self.start end,
 	IsPurgable = function(self) return true end,
+--	DestroyOnExpire = function(self) return self:GetDuration() ~= self.start end,
 	IsStunDebuff = function(self) return self:GetDuration() == self.start end,
 
-	OnDestroy = function(self) if self:GetDuration() == self.start then self:SetDuration( (self.slowDuration or self.start*1.5), true ) end end,
 	OnCreated = function(self, kv)
-		self.slowDuration = kv.slowDuration
-		self.slow = kv.slow
 		self.start = self:GetDuration()
+		self.slow = kv.slow or -25
+		self.slowDuration = kv.slowDuration or (self.start * 1.5)
 	end,
 
-	DeclareFunctions = function(self) return { MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE, } end,
-	CheckState = function(self) return { [MODIFIER_STATE_STUNNED] = self:GetDuration() == self.start, [MODIFIER_STATE_INVULNERABLE] = self:GetDuration() == self.start, } end,
+	OnRemoved = function(self)
+		if self:GetDuration() == self.start then
+			--weird hack
+			self.DestroyOnExpire = function(self) return false end
+			self:SetDuration(self.slowDuration, true)
+		end
+	end,
 
-	GetModifierMoveSpeedBonus_Percentage = function(self) return (self.slow or 25) end,
+	CheckState = function(self) 
+		if self:GetDuration() ~= self.start then
+			--weird hack
+			if self.DestroyOnExpire and not self.DestroyOnExpire() then
+				self.DestroyOnExpire = function(self) return true end
+			end
+			return {}
+		end
+		return { 
+			[MODIFIER_STATE_STUNNED] = self:GetDuration() == self.start,
+			[MODIFIER_STATE_INVULNERABLE] = self:GetDuration() == self.start,
+		}
+	end,
+
+	DeclareFunctions = function() return { MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE, } end,
+	GetModifierMoveSpeedBonus_Percentage = function(self) if self:GetDuration() ~= self.start then return self.slow end end,
+
 	GetStatusEffectName = function(self) if self:GetDuration() ~= self.start then return "particles/status_fx/status_effect_frost.vpcf" end end,
 	HeroEffectPriority = function(self) if self:GetDuration() ~= self.start then return 100 end end,
 })
+
 
 modifier_round_stun = class({
 	IsHidden = function(self) return false end,
 	IsPurgable = function(self) return false end,
 	GetOverrideAnimation = function(self) return ACT_DOTA_DISABLED end,
+	CheckState = function(self) return {[MODIFIER_STATE_STUNNED] = true,} end,
+
 	OnCreated = function(self, kv)
 		self.p = ParticleManager:CreateParticle("particles/econ/items/winter_wyvern/winter_wyvern_ti7/wyvern_cold_embrace_ti7buff.vpcf",  PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
 	end,
@@ -94,10 +119,4 @@ modifier_round_stun = class({
 		ParticleManager:DestroyParticle(self.p, false)
 		ParticleManager:ReleaseParticleIndex(self.p)
 	end,
-	CheckState = function(self)
-		return {
-			[MODIFIER_STATE_STUNNED] = true,
-		}
-	end,
-
 })

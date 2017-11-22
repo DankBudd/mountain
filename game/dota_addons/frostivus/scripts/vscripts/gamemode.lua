@@ -322,28 +322,30 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD then
 	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
 	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
-		--self.adjustpos = self.adjustpos or 
-		local event_data = event_data or {key1=3,key2="Start!"}
-		self.countdown = self.countdown or Timers(0, function()
-     		print(event_data.key1.." seconds left!")
-     		CustomGameEventManager:Send_ServerToAllClients( "countdown", event_data)
-    		event_data.key1 = event_data.key1 - 1
-    		if event_data.key1 < -1 then
-    			CustomGameEventManager:Send_ServerToAllClients( "countdown", {key1=0,key2="stop"})
-    			--remove the stun modifier from each player
-    			local i = i or 1
-    			local hero = PlayerResource:GetSelectedHeroEntity(i-1)
+
+		local event_data = {key1=3,key2="Start!"}
+		self.countdown = self.countdown or Timers(function()
+
+			--print(event_data.key1.." seconds left!")
+			CustomGameEventManager:Send_ServerToAllClients( "countdown", event_data)
+			event_data.key1 = event_data.key1 - 1
+
+			if event_data.key1 < -1 then
+				CustomGameEventManager:Send_ServerToAllClients( "countdown", {key1=0,key2="stop"})
+				--remove the stun modifier from each player
+				local i = 1
+				local hero = PlayerResource:GetSelectedHeroEntity(i-1)
 				while hero:HasModifier("modifier_round_stun") do
 					hero:RemoveModifierByName("modifier_round_stun")
 					i = i + 1
 					hero = PlayerResource:GetSelectedHeroEntity(i-1)
 					if not hero or hero:IsNull() then
-						return 
+						break 
 					end
 				end
-    			return
-    		end
-    		return 1
+				return
+			end
+			return 1
 		end)
 
 		local time = GameRules:GetGameTime()
@@ -461,7 +463,7 @@ function GameMode:OrderManager( keys )
 		local ability = EntIndexToHScript(abilityIndex)
 		if ability then
 			if ability.IsItem then
-				if ability:GetName() == "item_ancient_janggo" and orderType == DOTA_UNIT_ORDER_CAST_NO_TARGET and not GameRules:IsCheatMode() then
+				if ability:GetName() == "item_ancient_janggo" and orderType == DOTA_UNIT_ORDER_CAST_NO_TARGET and not GameRules.wtfEnabled then
 					--set to 2 because its going to use a charge immeditetly after we set it
 					ability:SetCurrentCharges(2)
 				end
@@ -490,7 +492,7 @@ function GameMode:OrderManager( keys )
 	end
 	if units and units["0"] then
 		local hero = EntIndexToHScript(units["0"])
-
+		RemoveTimer(hero.noWalk)
 		if hero:HasModifier("modifier_mount_movement") then
 			local mod = hero:FindModifierByName("modifier_mount_movement")
 
@@ -516,6 +518,18 @@ function GameMode:OrderManager( keys )
 			end
 			if orderType == DOTA_UNIT_ORDER_PICKUP_ITEM then
 				--stop them from walking but allow them to pick up the item..?
+				hero.noWalk = Timers(function() 
+					if not hero or hero:IsNull() then return end
+					if (hero:GetAbsOrigin() - pos):Length2D() <= 10 then return end
+
+					if hero:IsMoving() then
+						local dt = 0.03
+						local speed = hero:GetMoveSpeedModifier(hero:GetBaseMoveSpeed()) * dt
+						hero:SetAbsOrigin(hero:GetAbsOrigin()+hero:GetBackwardVector()*speed)
+					end
+
+					return dt
+				end)
 			end
 		end
 	end
@@ -560,7 +574,7 @@ end
 function GameMode:GiveMount(hero, mountName)
 	if not hero or hero:IsNull() then return end
 	--remove old mount if they have one
-	if self.mounts[hero:GetPlayerID()] then
+	if self.mounts[hero:GetPlayerID()] then	
 		hero:RemoveModifierByName("modifier_mount_movement")
 		UTIL_Remove(EntIndexToHScript(self.mounts[hero:GetPlayerID()]))
 	end
@@ -595,6 +609,8 @@ function GameMode:OnNpcSpawn(keys)
 	if npc:IsRealHero() then
 		self.lastSpawnedHero = npc
 		npc:AddNewModifier(nil, nil, "modifier_round_stun", {})
+		GameMode:GiveMount(npc)
+
 		for i = 0,6 do
 			local ab = npc:GetAbilityByIndex(i)
 			if ab then
@@ -602,12 +618,14 @@ function GameMode:OnNpcSpawn(keys)
 			end
 		end
 		npc:GetAbilityByIndex(3):SetHidden(true)
+
 		if npc:GetPrimaryAttribute() == DOTA_ATTRIBUTE_INTELLECT then
 			npc:AddNewModifier(npc, nil, "modifier_intelligence_cdr", {})
 		end
+
 		local tploc = Entities:FindByName(nil, "Spawnitem_trigger"):GetAbsOrigin()
 		self.var = self.var or 1
-		Timers(0, function()
+		Timers(function()
 			npc:SetAbsOrigin(tploc+Vector(-900,(self.var-7)*140,0))
 			self.var = self.var + 1
 			npc:SetForwardVector(Vector(1,-1,0))
@@ -615,12 +633,12 @@ function GameMode:OnNpcSpawn(keys)
 		end)
 	end
 
-	if npc:HasInventory() then
+	Timers(function()
 		local tpScroll = npc:FindItemInInventory("item_tpscroll")
 		if tpScroll then
-			tpScroll:RemoveSelf()
+			npc:RemoveItem(tpScroll)
 		end
-	end
+	end)
 end
 
 function GameMode:OnPlayerReconnect( keys )
@@ -698,14 +716,16 @@ function GameMode:OnPlayerChat( keys )
 	-- debug chat commands
 	--//////////////////////
 
+	if not GameRules:IsCheatMode() then return end
+
+--[[
 	local devs = {
 		["DankBot"] = 76561198157673452,
 		["Pro§ aren'T☣xic"] = 76561198109346328,
 	}
-
 	local steamid = PlayerResource:GetSteamID(playerID)
-	--print(PlayerResource:GetSelectedHeroEntity(playerID):GetName(), steamid)
 	if not GameRules:IsCheatMode() then
+		return
 		local c = false
 		for k,v in pairs(devs) do
 			if steamid == v then
@@ -714,7 +734,7 @@ function GameMode:OnPlayerChat( keys )
 		end
 		if not c then return end
 	end
-
+]]
 	if IsCommand("-newhero", 1) then
 		local name = arguments[1]
 		local gold = PlayerResource:GetGold(playerID)
@@ -876,7 +896,7 @@ function GameMode:OnPlayerChat( keys )
 		end
 	end
 
-	if IsCommand("-lvlup", 1) then
+	if IsCommand("-lvlup", 0) then
 		if GameRules:IsCheatMode() then return end
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
 		local num = tonumber(arguments[1]) or 1
@@ -902,9 +922,27 @@ function GameMode:OnPlayerChat( keys )
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
 		hero:SetHealth(hero:GetHealth()/2)
 	end
+
+	if IsCommand("-portrait", 0) then
+		local heroname = arguments[1]
+		local team = tonumber(arguments[2]) or DOTA_TEAM_GOODGUYS
+		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerID), "create_portrait", {heroname = heroname, team=team})
+	end
+
+	if IsCommand("-remove", 0) then
+		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerID), "remove_all", {})
+	end
+
+	if IsCommand("-wtf", 0) then
+		if GameRules:IsCheatMode() then
+			GameRules.wtfEnabled = true
+		end
+	end
+
+	if IsCommand("-unwtf", 0) then
+		GameRules.wtfEnabled = false
+	end
 end
-
-
 
 function GameMode:RemovePet(index)
 	if type(index) ~= "number" then

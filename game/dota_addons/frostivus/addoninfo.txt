@@ -1,3 +1,11 @@
 "AddonInfo"
 {
+  "TeamCount" "5"
+  "maps"      "snowboardrace"
+  "IsPlayable"  "1"
+
+  "test_map"
+  {
+  	"MaxPlayers"					"10"
+  }
 }
