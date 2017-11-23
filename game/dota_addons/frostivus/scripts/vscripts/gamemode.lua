@@ -22,7 +22,7 @@ function GameMode:InitGameMode()
 	GameRules:SetHeroSelectionTime( 30 )
 	GameRules:SetStrategyTime( 1 )
 	GameRules:SetShowcaseTime( 0 )
-	GameRules:SetPreGameTime( 15 )
+	GameRules:SetPreGameTime( 25 )
 	GameRules:SetPostGameTime( 30 )
 
 	GameRules:SetTreeRegrowTime( 60 )
@@ -41,29 +41,24 @@ function GameMode:InitGameMode()
 	GameRules:SetCustomGameEndDelay( 5 )
 	GameRules:SetCustomVictoryMessageDuration( 20 )
 
-	GameRules:SetCustomGameSetupAutoLaunchDelay( 0 )
-	GameRules:LockCustomGameSetupTeamAssignment( true )
-	GameRules:EnableCustomGameSetupAutoLaunch( true )
+	--GameRules:SetCustomGameSetupAutoLaunchDelay( 0 )
+	--GameRules:LockCustomGameSetupTeamAssignment( false )
+	--GameRules:EnableCustomGameSetupAutoLaunch( true )
 
 	local teams = {
-		DOTA_TEAM_GOODGUYS,
-		DOTA_TEAM_BADGUYS,
-		DOTA_TEAM_CUSTOM_1,
-		DOTA_TEAM_CUSTOM_2,
-		DOTA_TEAM_CUSTOM_3,
-	--	DOTA_TEAM_CUSTOM_4,
-	--	DOTA_TEAM_CUSTOM_5,
-	--	DOTA_TEAM_CUSTOM_6,
-	--	DOTA_TEAM_CUSTOM_7,
-	--	DOTA_TEAM_CUSTOM_8,
+		[DOTA_TEAM_GOODGUYS] = DOTA_TEAM_GOODGUYS,
+		[DOTA_TEAM_BADGUYS] = DOTA_TEAM_BADGUYS,
+		[DOTA_TEAM_CUSTOM_1] = DOTA_TEAM_CUSTOM_1,
+		[DOTA_TEAM_CUSTOM_2] = DOTA_TEAM_CUSTOM_2,
+		[DOTA_TEAM_CUSTOM_3] = DOTA_TEAM_CUSTOM_3,
 	}
 
-	local maxPlayers = 10
-	local playerCount = PlayerResource:GetPlayerCount()
-	local playersPerTeam = math.floor(maxPlayers / #teams)
-
-	for _,team in pairs(teams) do
-		GameRules:SetCustomGameTeamMaxPlayers(team, playersPerTeam)
+	for i=DOTA_TEAM_FIRST, DOTA_TEAM_COUNT do
+		if teams[i] then
+			GameRules:SetCustomGameTeamMaxPlayers(teams[i], 2)
+		else
+			GameRules:SetCustomGameTeamMaxPlayers(i, 0)
+		end
 	end
 
 	--Setup Tables
@@ -129,7 +124,7 @@ function GameMode:StartGameMode()
 	CustomGameEventManager:Send_ServerToAllClients("camera_zoom", {distance = 2250})
 
 	-- Set GameMode parameters
-	mode:SetTopBarTeamValuesOverride ( false )
+	mode:SetTopBarTeamValuesOverride ( true )
 	mode:SetTopBarTeamValuesVisible( true )
 
 	mode:SetBuybackEnabled( false )
@@ -363,8 +358,8 @@ function GameMode:OnThink()
 		for i=0,PlayerResource:GetPlayerCount() - 1 do
 			local player = PlayerResource:GetPlayer(i)
 			if player then
-				local hero = PlayerResource:GetSelectedHeroEntity(i)
-				if self.tCPRecord[hero] then
+				if self.tCPRecord[i] then
+					local hero = PlayerResource:GetSelectedHeroEntity(i)
 					if hero then
 						if hero:HasModifier("modifier_mount_movement") then
 							local num = #split(self.tCPRecord[hero], ",")
@@ -429,7 +424,7 @@ function GameMode:OnThink()
 							end
 						else
 							--Get back on your mount!!
-							CustomGameEventManager:Send_ServerToPlayer(player, "get_back_on_mount", {penguin = self.mounts[hero:GetPlayerID()]})
+							CustomGameEventManager:Send_ServerToPlayer(player, "get_back_on_mount", {penguin = self.mounts[hero:entindex()]})
 						end
 					end
 				end
@@ -574,9 +569,9 @@ end
 function GameMode:GiveMount(hero, mountName)
 	if not hero or hero:IsNull() then return end
 	--remove old mount if they have one
-	if self.mounts[hero:GetPlayerID()] then	
+	if self.mounts[hero:entindex()] then
 		hero:RemoveModifierByName("modifier_mount_movement")
-		UTIL_Remove(EntIndexToHScript(self.mounts[hero:GetPlayerID()]))
+		UTIL_Remove(EntIndexToHScript(self.mounts[hero:entindex()]))
 	end
 	--default to penguin
 	if not mountName then mountName = "npc_dota_penguin" end
@@ -594,7 +589,7 @@ function GameMode:GiveMount(hero, mountName)
 			end
 		end
 
-		self.mounts[hero:GetPlayerID()] = unit:entindex()
+		self.mounts[hero:entindex()] = unit:entindex()
 	end)
 end
 
@@ -609,12 +604,15 @@ function GameMode:OnNpcSpawn(keys)
 	if npc:IsRealHero() then
 		self.lastSpawnedHero = npc
 		npc:AddNewModifier(nil, nil, "modifier_round_stun", {})
+		--GameMode:GiveMount(npc)
+
 		for i = 0,6 do
 			local ab = npc:GetAbilityByIndex(i)
 			if ab then
 				ab:SetLevel(1)
 			end
 		end
+
 		npc:GetAbilityByIndex(3):SetHidden(true)
 
 		if npc:GetPrimaryAttribute() == DOTA_ATTRIBUTE_INTELLECT then
@@ -714,25 +712,24 @@ function GameMode:OnPlayerChat( keys )
 	-- debug chat commands
 	--//////////////////////
 
-	if not GameRules:IsCheatMode() then return end
-
---[[
 	local devs = {
 		["DankBot"] = 76561198157673452,
 		["Pro§ aren'T☣xic"] = 76561198109346328,
 	}
+
 	local steamid = PlayerResource:GetSteamID(playerID)
+	--print(PlayerResource:GetSelectedHeroEntity(playerID):GetName(), steamid)
 	if not GameRules:IsCheatMode() then
-		return
-		local c = false
+--[[		local c = false
 		for k,v in pairs(devs) do
 			if steamid == v then
 				c = true
 			end
 		end
-		if not c then return end
+		if not c then return end]]
+		return
 	end
-]]
+
 	if IsCommand("-newhero", 1) then
 		local name = arguments[1]
 		local gold = PlayerResource:GetGold(playerID)
@@ -744,9 +741,9 @@ function GameMode:OnPlayerChat( keys )
 		end
 
 		--remove their old mount
-		if self.mounts[playerID] then
-			UTIL_Remove( EntIndexToHScript((self.mounts[playerID])) )
-			self.mounts[playerID] = nil
+		if self.mounts[oldHero:entindex()] then
+			UTIL_Remove( EntIndexToHScript( self.mounts[oldHero:entindex()] ) )
+			self.mounts[oldHero:entindex()] = nil
 		end
 
 		--this is broken i guess? thanks volvo
@@ -894,7 +891,7 @@ function GameMode:OnPlayerChat( keys )
 		end
 	end
 
-	if IsCommand("-lvlup", 0) then
+	if IsCommand("-lvlup", 1) then
 		if GameRules:IsCheatMode() then return end
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
 		local num = tonumber(arguments[1]) or 1
@@ -916,27 +913,11 @@ function GameMode:OnPlayerChat( keys )
 		PrintTable(t)
 	end
 
-	if IsCommand("-pain", 0) then
-		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
-		hero:SetHealth(hero:GetHealth()/2)
-	end
-
-	if IsCommand("-portrait", 0) then
-		local heroname = arguments[1]
-		local team = tonumber(arguments[2]) or DOTA_TEAM_GOODGUYS
-		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerID), "create_portrait", {heroname = heroname, team=team})
-	end
-
-	if IsCommand("-remove", 0) then
-		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerID), "remove_all", {})
-	end
-
 	if IsCommand("-wtf", 0) then
 		if GameRules:IsCheatMode() then
 			GameRules.wtfEnabled = true
 		end
 	end
-
 	if IsCommand("-unwtf", 0) then
 		GameRules.wtfEnabled = false
 	end
