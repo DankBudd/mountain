@@ -17,31 +17,39 @@ function GetFirstPlace()
 	--calculate who is closest to ending
 	if #players > 1 then
 		local lowest,h = math.huge, nil
-		for _,id in pairs(players) do
-			local hero = PlayerResource:GetSelectedHeroEntity(id)
+		for _,hero in pairs(players) do
 			local path = GridNav:FindPathLength(hero:GetAbsOrigin(), entLoc)
 			if path == -1 then
 				path = (hero:GetAbsOrigin() - entLoc):Length2D()
+				print("unpathable, using Length2D")
 			end
+			print("path: "..path)
 
-			local cpNum = #split(tCPRecord[playerid], ",")
+			local cpNum = #split(tCPRecord[hero], ",")
 			local cp1,cp2 = Entities:FindByName(nil, "CP_"..cpNum), Entities:FindByName(nil, "CP_"..cpNum+1)
 			local cpPath = math.huge
 			if cp1 and cp2 then
+				print("cp's exist")
 				cpPath = GridNav:FindPathLength(cp1:GetAbsOrigin(), cp2:GetAbsOrigin())
 			end
+			print("cpPath: "..cpPath)
 
+			print("path > cpPath : ".. (path > cpPath) )
 			if path > cpPath then
+				print("path: "..path)
 				path = (hero:GetAbsOrigin() - entLoc):Length2D()
 			end
 
+			print("path < lowest : ".. (path < lowest) )
 			if path < lowest then
+				print("lowest,h : ".. lowest..","..hero:GetName())
 				lowest,h = path,hero
 			end
 		end
 		return h
 	else
-		return PlayerResource:GetSelectedHeroEntity(players[1])
+		print("single player detected, skip comparisons. \nhero:"..players[1]:GetName())
+		return players[1]
 	end
 end
 

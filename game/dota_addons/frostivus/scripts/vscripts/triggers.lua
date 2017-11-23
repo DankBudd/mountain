@@ -15,15 +15,18 @@ function Checkpoint_OnStartTouch( trigger )
 	tCurrentPlacing[sCheckpointTriggerName] = tCurrentPlacing[sCheckpointTriggerName] or {}
 	-- record checkpoint triggering player based on each case
 	if hHero:HasModifier("modifier_mount_movement") then
-		if tCPRecord[hHero:GetPlayerOwnerID()] == nil then
-			tCPRecord[hHero:GetPlayerOwnerID()] = sCheckpointTriggerName
-			print "create new key using playerID and store this value"
-		elseif string.match(tCPRecord[hHero:GetPlayerOwnerID()],sCheckpointTriggerName) then
+		if tCPRecord[hHero] == nil then
+			tCPRecord[hHero] = sCheckpointTriggerName
+			print "create new key using herohandle and store this value"
+		elseif string.match(tCPRecord[hHero],sCheckpointTriggerName) then
 			triggerflag = 0 --set trigger to zero since repeated checkpoint
 			print "checkpoint already triggered, get out of function without doing anything"
 		else
-			tCPRecord[hHero:GetPlayerOwnerID()] = tCPRecord[hHero:GetPlayerOwnerID()] .. "," .. sCheckpointTriggerName
-			print "call existing playerID and add this to the value"
+			tCPRecord[hHero] = tCPRecord[hHero] .. "," .. sCheckpointTriggerName
+			print "call existing herohandle and add this to the value"
+		end
+		for k,v in pairs(tCPRecord) do
+			print(k,v)
 		end
 		if triggerflag == 1 then
 			local placing =  1 -- assume always first
@@ -38,7 +41,7 @@ function Checkpoint_OnStartTouch( trigger )
 				end
 			end
 			if placing == totalplayer and totalplayer ~= 1 then
-				print ("give tusk summon to"..hHero:GetPlayerOwnerID())
+				print ("give tusk summon to"..tostring(hHero:GetName()))
 				--function call to unhide last player tusk summoning skill
 				hHero:GetAbilityByIndex(3):SetHidden(false)
 			end

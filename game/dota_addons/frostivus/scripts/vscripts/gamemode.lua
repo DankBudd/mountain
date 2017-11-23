@@ -363,11 +363,11 @@ function GameMode:OnThink()
 		for i=0,PlayerResource:GetPlayerCount() - 1 do
 			local player = PlayerResource:GetPlayer(i)
 			if player then
-				if self.tCPRecord[i] then
-					local hero = PlayerResource:GetSelectedHeroEntity(i)
+				local hero = PlayerResource:GetSelectedHeroEntity(i)
+				if self.tCPRecord[hero] then
 					if hero then
 						if hero:HasModifier("modifier_mount_movement") then
-							local num = #split(self.tCPRecord[i], ",")
+							local num = #split(self.tCPRecord[hero], ",")
 							local nextCP = Entities:FindByName(nil, "CP_"..num+1)
 							local lastCP = Entities:FindByName(nil, "CP_"..num)
 
@@ -609,8 +609,6 @@ function GameMode:OnNpcSpawn(keys)
 	if npc:IsRealHero() then
 		self.lastSpawnedHero = npc
 		npc:AddNewModifier(nil, nil, "modifier_round_stun", {})
-		GameMode:GiveMount(npc)
-
 		for i = 0,6 do
 			local ab = npc:GetAbilityByIndex(i)
 			if ab then
