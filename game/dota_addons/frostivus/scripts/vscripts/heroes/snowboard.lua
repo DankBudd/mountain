@@ -88,7 +88,9 @@ modifier_mimic_casters_states = class({
 })
 
 
-modifier_mount_anim = class({
+modifier_mount_anim = class({	
+	IsHidden = function(self) return true end,
+	IsPurgable = function(self) return false end,
 	DeclareFunctions = function(self) return {MODIFIER_PROPERTY_OVERRIDE_ANIMATION,} end,
 	GetOverrideAnimation = function(self, keys)
 		if self:GetParent() ~= self:GetCaster() then
@@ -152,8 +154,9 @@ modifier_mount_movement = class({
 			if self:GetParent() == self:GetCaster() then
 				EmitSoundOn( "Hero_Tusk.IceShards.Penguin", self:GetParent() )
 				self:GetCaster():RemoveGesture( ACT_DOTA_SLIDE_LOOP )
-				self.player:RemoveModifierByName("modifier_mount_movement")
 				self:GetCaster():RemoveModifierByName("modifier_mimic_casters_states")
+				self.player:RemoveModifierByName("modifier_mount_movement")
+				self.player:RemoveModifierByName("modifier_mount_anim")
 				if self.particle then
 					ParticleManager:DestroyParticle(self.particle, true)
 					ParticleManager:ReleaseParticleIndex(self.particle)
@@ -163,6 +166,7 @@ modifier_mount_movement = class({
 			--when destroy on player do
 			if not self:GetCaster():IsNull() then
 				self:GetCaster():RemoveModifierByName("modifier_mount_movement")
+				self:GetCaster():RemoveModifierByName("modifier_mount_anim")
 			end
 		end
 	end,
