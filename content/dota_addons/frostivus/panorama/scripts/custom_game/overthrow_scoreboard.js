@@ -67,7 +67,7 @@ function OnGameStateChanged( table, key, data )
 	//CustomNetTables.SubscribeNetTableListener( "game_state", OnGameStateChanged );
 	
 	GameEvents.Subscribe( "update_goal", UpdateKillsToWin );
-    GameEvents.Subscribe( "countdown", UpdateTimer );
+    GameEvents.Subscribe( "DownTime", UpdateTimer );
     GameEvents.Subscribe( "show_timer", ShowTimer );
     GameEvents.Subscribe( "timer_alert", AlertTimer );
     GameEvents.Subscribe( "overtime_alert", HideTimer );
