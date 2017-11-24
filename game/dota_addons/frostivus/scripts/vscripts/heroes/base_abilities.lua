@@ -131,9 +131,13 @@ function tusk_ability:OnSpellStart()
 		for i=0,5 do
 			local ab = unit:GetAbilityByIndex(i)
 			if ab then
-				ab:SetLevel(1)
+				if not string.match(ab:GetName(), "special_bonus_") then
+					ab:SetLevel(1)
+				end
 			end
 		end
+			
+		unit:AddNewModifier(unit, self, "modifier_kill", {duration = 35})
 
 		BaseAi:MakeInstance(unit, {state = 11})
 	end)
