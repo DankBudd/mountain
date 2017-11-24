@@ -355,8 +355,8 @@ function GameMode:OnThink()
 			local player = PlayerResource:GetPlayer(i)
 			if player then
 				local hero = PlayerResource:GetSelectedHeroEntity(i)
-				if self.tCPRecord[hero] then
-					if hero then
+				if hero then
+					if self.tCPRecord[hero] then
 						if hero:HasModifier("modifier_mount_movement") then
 							local num = #split(self.tCPRecord[hero], ",")
 							local nextCP = Entities:FindByName(nil, "CP_"..num+1)
