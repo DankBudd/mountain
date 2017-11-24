@@ -70,5 +70,6 @@
 	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/player_voting.xml" />
 	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/checkpoints.xml" />
 	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/countdown.xml" />
+	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/overthrow/overthrow_scoreboard_left.xml" />
   </Panel>
 </root>

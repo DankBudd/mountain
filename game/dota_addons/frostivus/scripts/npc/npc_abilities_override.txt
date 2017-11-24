@@ -2527,7 +2527,7 @@
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityChannelTime"			"10"
-		"AbilityCastPoint"				"0.3"
+		"AbilityCastPoint"				"0.1"
 		
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
@@ -3399,7 +3399,7 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"7.0"
+		"AbilityCooldown"				"9.0"
 
 		// Damage.
 		//-------------------------------------------------------------------------------------------------------------
@@ -3460,7 +3460,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"							"5653"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
-		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ALLIES_YES"
 		"SpellDispellableType"			"SPELL_DISPELLABLE_NO"
@@ -3474,7 +3474,7 @@
 		
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"0"
+		"AbilityCooldown"				"6"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -3487,7 +3487,7 @@
 			"01"
 			{	
 				"var_type"			"FIELD_FLOAT"
-				"duration"			"2.0"
+				"duration"			"2.75"
 			}
 			"02"
 			{	

@@ -4,7 +4,7 @@
   "maps"      "snowboardrace"
   "IsPlayable"  "1"
 
-  "test_map"
+  "snowboardrace"
   {
   	"MaxPlayers"					"10"
   }

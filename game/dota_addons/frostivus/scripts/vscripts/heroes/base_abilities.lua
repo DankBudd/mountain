@@ -126,20 +126,22 @@ modifier_turn = class({
 tusk_ability = class({})
 
 function tusk_ability:OnSpellStart()
-	local hero = self:GetCaster()
-	CreateUnitByNameAsync("tusk_the_snowballer", hero:GetAbsOrigin()+RandomVector(250), true, hero, hero, hero:GetTeamNumber(), function(unit)
+	CreateUnitByNameAsync("tusk_the_snowballer", self:GetCaster():GetAbsOrigin()+RandomVector(250), true, self:GetCaster(), self:GetCaster(), self:GetCaster():GetTeamNumber(), function(unit)
 		for i=0,5 do
 			local ab = unit:GetAbilityByIndex(i)
 			if ab then
 				if not string.match(ab:GetName(), "special_bonus_") then
 					ab:SetLevel(1)
+					if not ab:GetName() == "hero_invulnerability" then
+						ab:SetHidden(false)
+					end
 				end
 			end
 		end
-			
-		unit:AddNewModifier(unit, self, "modifier_kill", {duration = 35})
 
+		unit:AddNewModifier(unit, self, "modifier_kill", {duration = 35})
 		BaseAi:MakeInstance(unit, {state = 11})
 	end)
+
 	self:SetHidden(true)
 end

@@ -289,6 +289,7 @@ function GameMode:StartGameMode()
 		end
 
 		CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
+		CustomGameEventManager:Send_ServerToAllClients("update_goal", {kills_to_win = self.tVoteRecord["Selected"]})
 	end)
 end
 
@@ -312,7 +313,12 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_TEAM_SHOWCASE then
 	elseif state == DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD then
 	elseif state == DOTA_GAMERULES_STATE_PRE_GAME then
+
+		CustomGameEventManager:Send_ServerToAllClients( "show_timer", {} )
+		SetClock(0)
+
 	elseif state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+		CountdownClock()
 
 		local event_data = {key1=3,key2="Start!"}
 		self.countdown = self.countdown or Timers(function()
@@ -432,6 +438,7 @@ function GameMode:OnThink()
 	return 1
 end
 
+--doesnt have access to self
 function GameMode:OnPlayerVote( keys )
 	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote] or 0
 	GameRules.GameMode.tVoteRecord[keys.vote] = GameRules.GameMode.tVoteRecord[keys.vote]+1
@@ -628,11 +635,9 @@ function GameMode:OnNpcSpawn(keys)
 				npc:SetForwardVector(Vector(1,-1,0))
 				
 				npc:AddNewModifier(nil, nil, "modifier_round_stun", {})
+				self:GiveMount(npc)
 			end)
 		end
-
-
-		self:GiveMount(npc)
 	end
 
 	Timers(function()
@@ -677,6 +682,7 @@ function GameMode:OnPlayerChat( keys )
 	local command
 	local arguments = {}
 
+	--command variable currently unused other than to skip the first word
 	for k,v in pairs(split(text, " ")) do
 		if string.match(v, "-") and not command then
 			command = v
@@ -885,6 +891,10 @@ function GameMode:OnPlayerChat( keys )
 		for _,ID in pairs(self.debugEntities) do
 			local debug = EntIndexToHScript(ID)
 			if debug then
+				if self.mounts[debug:entindex()] then
+					UTIL_Remove( EntIndexToHScript(self.mounts[debug:entindex()]) )
+					self.mounts[debug:entindex()] = nil
+				end
 				UTIL_Remove(debug)
 				self.debugEntities[ID] = nil
 			end
@@ -913,7 +923,7 @@ function GameMode:OnPlayerChat( keys )
 		end
 	end
 
-	if IsCommand("-lvlup", 1) then
+	if IsCommand("-lvlup", 0) then
 		if GameRules:IsCheatMode() then return end
 		local hero = PlayerResource:GetSelectedHeroEntity(playerID)
 		local num = tonumber(arguments[1]) or 1
@@ -946,7 +956,7 @@ function GameMode:OnPlayerChat( keys )
 	end
 
 	if IsCommand("print", 0) then
-		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = PlayerResource:GetTeam(playerID), score = RandomInt(1, 10)})
+	--	CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = PlayerResource:GetTeam(playerID), score = RandomInt(1, 10)})
 	end
 end
 

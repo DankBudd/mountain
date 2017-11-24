@@ -122,7 +122,7 @@ local function CastSpell(unit, target, ability, behavior)
 	end
 	if behavior == DOTA_ABILITY_BEHAVIOR_POINT then
 		if type(target) ~= "vector" then
-			target = target:GetAbsOrigin() + target:GetForwardVector() * target:GetMoveSpeedModifier(target:GetBaseMoveSpeed())
+			target = target:GetAbsOrigin() + (( IsHeroMovingAnyMeans(target:GetPlayerID()) and target:GetForwardVector() * target:GetMoveSpeedModifier(target:GetBaseMoveSpeed()) ) or Vector(0,0,0))
 		end
 		unit:CastAbilityOnPosition(target, ability, unit:GetPlayerOwnerID())
 		return true
@@ -379,6 +379,7 @@ BaseAi = {
 		if not self.protect or #self.protect <= 0 then
 			--print("", "nothing to protect", self.protect)
 			self.state = WANDER_IDLE
+			print("no protect")
 			return
 		end
 
@@ -388,6 +389,7 @@ BaseAi = {
 			--grab a spell
 			local ab,behav = GetSpellToCast(self.unit)
 			if not ab then
+				print("noab")
 				--print("","", "nothing to cast, stop protecting for this think")
 				break
 			end
@@ -433,6 +435,12 @@ BaseAi = {
 					end
 				end
 			end
+		end
+
+		print("think")
+		if self.unit:IsChanneling() then
+			print("IsChanneling()")
+			return 0.5
 		end
 
 		--print("", "back to wandering..")
@@ -640,10 +648,11 @@ BaseAi = {
 
 		if not target:IsStunned() and not self.unit:HasModifier("modifier_snowball") then
 			if CastSpell(self.unit, target, ab, behav) then
+				return ((ab:GetCastPoint() ~= 0 and ab:GetCastPoint()) or 1.0) + 0.4
 			end
 		end
-
-		return
+		self.unit:MoveToNPC(self.unit.target)
+		return 1.2
 	end,
 }
 

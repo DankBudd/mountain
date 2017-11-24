@@ -1,7 +1,73 @@
+function CountdownClock()
+	if not nCOUNTDOWNTIMER then return end
+
+    nCOUNTDOWNTIMER = nCOUNTDOWNTIMER + 1
+    local t = nCOUNTDOWNTIMER
+    --print( t )
+    local minutes = math.floor(t / 60)
+    local seconds = t - (minutes * 60)
+    local m10 = math.floor(minutes / 10)
+    local m01 = minutes - (m10 * 10)
+    local s10 = math.floor(seconds / 10)
+    local s01 = seconds - (s10 * 10)
+    local broadcast_gametimer = 
+        {
+            timer_minute_10 = m10,
+            timer_minute_01 = m01,
+            timer_second_10 = s10,
+            timer_second_01 = s01,
+        }
+    CustomGameEventManager:Send_ServerToAllClients( "countdown", broadcast_gametimer )
+end
+
+function SetClock( time )
+    --print( "Set the clock to: " .. time )
+    nCOUNTDOWNTIMER = time
+end
+
+function IsHeroMovingAnyMeans(pid)
+	GameMode.tracker = GameMode.tracker or {[1] = Timers( function()
+		GameMode.tracker["heroes"] = GameMode.tracker["heroes"] or (function() 
+			local t = {}
+			for i=0,PlayerResource:GetPlayerCount() do
+				local h = PlayerResource:GetSelectedHeroEntity(i)
+				if h and not h:IsNull() then
+					t[tostring(i)] = h
+				end
+			end
+			return t
+		end)()
+
+		for id,hero in pairs(GameMode.tracker["heroes"]) do
+			GameMode.tracker[id] = GameMode.tracker[id] or {Vector(0,0,0), false}
+			if not hero or hero:IsNull() then 
+				hero = PlayerResource:GetSelectedHeroEntity(tonumber(id))
+			else
+				local Now = hero:GetAbsOrigin()
+				local Then = GameMode.tracker[id][1]
+				if (Now - Then):Length2D() > 10 then
+					GameMode.tracker[id][2] = true
+				else
+					GameMode.tracker[id][2] = false
+				end
+				GameMode.tracker[id][1] = Now
+			end
+		end
+
+		return 0.1
+	end)}
+
+	local step = GameMode.tracker[tostring(pid)]
+	if step then 
+		return step[2]
+	end
+	return false
+end
+
 function GetFirstPlace()
 	--get the highest cp number and players who have reached that cp
 	local highest, players = 0, {}
-	for k,v in pairs(Gamemode.tCPRecord) do
+	for k,v in pairs(GameMode.tCPRecord) do
 		local num = split(v, ",")
 		if #num > highest then
 			highest = #v
