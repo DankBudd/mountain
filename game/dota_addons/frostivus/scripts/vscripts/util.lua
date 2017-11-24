@@ -17,7 +17,7 @@ function CountdownClock()
             timer_second_10 = s10,
             timer_second_01 = s01,
         }
-    CustomGameEventManager:Send_ServerToAllClients( "countdown", broadcast_gametimer )
+    CustomGameEventManager:Send_ServerToAllClients( "DownTime", broadcast_gametimer )
 end
 
 function SetClock( time )
