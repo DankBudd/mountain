@@ -1,27 +1,34 @@
 --[[Snowboard Race end game checker]]
 
 function Ending_Check( trigger )
+	local hHero = trigger.activator --this holds info on checkpoint trigger hero
+	print(hHero:GetName())
 	
-	GameRules.GameMode.tPointsRecord = GameRules.GameMode.tPointsRecord or {}
-	local tPointsRecord = GameRules.GameMode.tPointsRecord --this holds info of all points obtained by player
-	GameRules.GameMode.TeamPoints = GameRules.GameMode.TeamPoints or {}
-	local TeamPoints = GameRules.GameMode.TeamPoints--this holds info of total points obtained by each team
+	local triggerflag = 1 --Assume triggered when function called
+	local G = GameRules.GameMode
+
+	G.PlayerList = G.PlayerList or {}
+	local PlayerList = G.PlayerList--this holds info of the current list of players in game
+
+	G.tPointsRecord = G.tPointsRecord or {}
+	local tPointsRecord = G.tPointsRecord --this holds info of all points obtained by player
+	tPointsRecord[hHero] = tPointsRecord[hHero] or 0
+
+	G.TeamPoints = G.TeamPoints or {}
+	local TeamPoints = G.TeamPoints
+	TeamPoints["currentbest"] = TeamPoints["currentbest"] or 0
 	--------------------------------------------------
 	--12(short) 24(medium) 36(long) team points to win
 	--------------------------------------------------
-	GameRules.GameMode.PlayerList = GameRules.GameMode.PlayerList or {}
-	local PlayerList = GameRules.GameMode.PlayerList--this holds info of the current list of players in game
-	local hHero = trigger.activator --this holds info on checkpoint trigger hero
-	print(hHero:GetName())
-	local triggerflag = 1 --Assume triggered when function called
-	GameRules.GameMode.tRComplete = GameRules.GameMode.tRComplete or {}
-	local tRComplete = GameRules.GameMode.tRComplete--this holds info of hero completing current round for roundstunner
+
+	G.tRComplete = G.tRComplete or {}
+	local tRComplete = G.tRComplete--this holds info of hero completing current round for roundstunner
+
 	local playerCount = PlayerResource:GetPlayerCount()
-	TeamPoints["currentbest"] = TeamPoints["currentbest"] or 0
-	tPointsRecord[hHero] = tPointsRecord[hHero] or 0
 	winningteam = winningteam or 0
+
 	--check checkpoint for cheating
-	if string.match(GameRules.GameMode.tCPRecord[hHero],"CP_1,CP_2,CP_3,CP_4,CP_5,CP_6,CP_7") ~= nil and hHero:HasModifier("modifier_mount_movement") then
+	if string.match(G.tCPRecord[hHero],"CP_1,CP_2,CP_3,CP_4,CP_5,CP_6,CP_7") ~= nil and hHero:HasModifier("modifier_mount_movement") then
 		print "player passed all checkpoints with mount"
 		--store hero completing current round data
 		local VarNum = VarNum or 1
@@ -58,13 +65,6 @@ function Ending_Check( trigger )
 	end
 	
 	if triggerflag ~= 0 then		
-		
-		for i = 1,5 do
-			if TeamPoints[i] == nil then
-				TeamPoints[i] = 0
-			end
-		end
-		
 		--code to sum team points up
 		for i=1,playerCount do --enum 2,3,6,7,8 --good,bad,custom:1;2;3
 			PlayerList[i] = PlayerResource:GetSelectedHeroEntity(i-1)
@@ -91,19 +91,15 @@ function Ending_Check( trigger )
 				if x==cap then
 					scores[t]["total"] = 0
 					for l,m in pairs(scores[t]) do
-						if not l == "total" then
+						if l ~= "total" then
 							scores[t]["total"] = scores[t]["total"] + m
 						end
 					end
+					CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = t, score = scores[t]["total"]})
 				end
 			end
 		end
-		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 2, score = scores[2]["total"]})
-		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 3, score = scores[3]["total"]})
-		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 6, score = scores[6]["total"]})
-		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 7, score = scores[7]["total"]})
-		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 8, score = scores[8]["total"]})
-		
+
 		TeamPoints["currentbest"] = 0
 		winningenum = nil
 		for k,v in pairs({[DOTA_TEAM_GOODGUYS] = scores[DOTA_TEAM_GOODGUYS]["total"], [DOTA_TEAM_BADGUYS] = scores[DOTA_TEAM_BADGUYS]["total"], [DOTA_TEAM_CUSTOM_1] = scores[DOTA_TEAM_CUSTOM_1]["total"], [DOTA_TEAM_CUSTOM_2] = scores[DOTA_TEAM_CUSTOM_2]["total"], [DOTA_TEAM_CUSTOM_3] = scores[DOTA_TEAM_CUSTOM_3]["total"]}) do
@@ -112,7 +108,11 @@ function Ending_Check( trigger )
 				winningenum = k
 			end
 		end
-		if TeamPoints["currentbest"] >= GameRules.GameMode.tVoteRecord["Selected"] then
+
+		print(winningenum)
+		print(TeamPoints["currentbest"],G.tVoteRecord["Selected"], TeamPoints["currentbest"] >= G.tVoteRecord["Selected"])
+
+		if TeamPoints["currentbest"] >= G.tVoteRecord["Selected"] then
 			for i=1,playerCount do
 				if PlayerList[i]:GetTeamNumber() ~= winningenum then
 					PlayerList[i]:AddNewModifier(nil, nil, "modifier_round_stun", {})
@@ -150,15 +150,14 @@ function Ending_Check( trigger )
 							PlayerList[i]:RemoveItem(item)
 						end
 					end
-					GameMode:GiveMount(PlayerList[i], "npc_dota_penguin")
+					GameMode:GiveMount(PlayerList[i])
 					print(PlayerList[i])
 				end	
-				CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(hHero:GetPlayerID()), "increment_checkpoint", {reset=true})		
-				CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(hHero:GetPlayerID()), "update_cp_distance", {distance="0/0",slider="0.1%"})	
-
+				CustomGameEventManager:Send_ServerToAllClients("increment_checkpoint", {reset=true})
+				CustomGameEventManager:Send_ServerToAllClients("update_cp_distance", {distance="0/0",slider="0.1%"})
 				--check game rounds objective vote record
 				--restart round if first place team points not greater than voted end point
-				if TeamPoints["currentbest"] < GameRules.GameMode.tVoteRecord["Selected"] then
+				if TeamPoints["currentbest"] < G.tVoteRecord["Selected"] then
 					--new round countdown
 					local event2data = {key1=3,key2="Start!"}
 					Timers(0, function()
@@ -177,9 +176,9 @@ function Ending_Check( trigger )
 							tPointsRecord[3] = nil
 							tPointsRecord[2] = nil
 							VarNum = 1
-							GameRules.GameMode.tCPRecord = {}
-							GameRules.GameMode.tCurrentPlacing = {}
-							GameRules.GameMode.tRComplete = {}
+							G.tCPRecord = {}
+							G.tCurrentPlacing = {}
+							G.tRComplete = {}
         					return
     					end
     					return 1

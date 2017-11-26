@@ -37,10 +37,9 @@ function AutoSpawnItems()
             	local rand = RandomInt(0, #_G.tItemList)
         		if rand ~= 0 then
                 	local item = CreateItem(_G.tItemList[rand], nil, nil)
-                	CreateItemOnPositionSync(_G.tItemSpawnLocation[i], item)
+                	CreateItemOnPositionSync(_G.tItemSpawnLocation[i]+Vector(RandomInt(-150,150),RandomInt(-150,150),0) , item)
                     --print ("item spawned: "..item:GetName())
-                    FindClearSpaceForItem(item, item:GetAbsOrigin())
-           		end
+           		end 
            		itemnum = itemnum + 1
         	end
         end 
