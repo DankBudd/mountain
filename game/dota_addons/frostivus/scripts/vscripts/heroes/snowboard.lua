@@ -28,7 +28,7 @@ modifier_penguin_thinker = class({
 		if IsServer() then
 			self.tick = 1.0
 			self.waitTime = 0
-			self:StartIntervalThink(1.0)
+			self:StartIntervalThink( self.tick )
 		end
 	end,
 
@@ -212,7 +212,7 @@ modifier_mount_movement = class({
 					turnRate = self.turnRate*2
 				end
 				local turnMod = player:FindModifierByName("modifier_turn")
-				if turnMod then
+				if turnMod and turnMod.turnRate then
 					turnRate = turnRate + (360 * turnMod.turnRate)
 				end
 

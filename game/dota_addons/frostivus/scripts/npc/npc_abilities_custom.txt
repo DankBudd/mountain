@@ -186,6 +186,7 @@
 			}
 		}
 	}
+
 	"tusk_ability"
 	{
 		"BaseClass"             		"ability_lua"

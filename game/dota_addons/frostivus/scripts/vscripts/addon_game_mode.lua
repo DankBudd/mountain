@@ -4,6 +4,7 @@ require('gamemode')
 
 function Precache( context )
 	local heroes = {
+		--pickable
 		"doom_bringer",
 		"chaos_knight",
 		"huskar",
@@ -14,9 +15,8 @@ function Precache( context )
 		"ogre_magi",
 		"warlock",
 		"ember_spirit",
-	}
 
-	local enemyHeroes = {
+		--enemies
 		"tusk",
 		"tiny",
 		"drow_ranger",
@@ -29,10 +29,6 @@ function Precache( context )
 	}
 	
 	for _,heroName in pairs(heroes) do
-		PrecacheUnitByNameSync("npc_dota_hero_"..heroName, context)
-	end
-
-	for _,heroName in pairs(enemyHeroes) do
 		PrecacheUnitByNameSync("npc_dota_hero_"..heroName, context)
 	end
 

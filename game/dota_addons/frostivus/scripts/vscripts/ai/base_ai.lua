@@ -379,8 +379,13 @@ BaseAi = {
 		if not self.protect or #self.protect <= 0 then
 			--print("", "nothing to protect", self.protect)
 			self.state = WANDER_IDLE
-			print("no protect")
 			return
+		end
+
+		print("think")
+		if self.unit:IsChanneling() then
+			print("IsChanneling()")
+			return 0.5
 		end
 
 		--iterate thru areas/units to protect
@@ -389,7 +394,6 @@ BaseAi = {
 			--grab a spell
 			local ab,behav = GetSpellToCast(self.unit)
 			if not ab then
-				print("noab")
 				--print("","", "nothing to cast, stop protecting for this think")
 				break
 			end
@@ -402,8 +406,7 @@ BaseAi = {
 					--print("", "our unit can be buffed")
 					if CastSpell(self.unit, protect, ab, behav) then
 						--print("", "SUCCEEDED in buffing ally")
-					else
-						--print("", "FAILED in buffing ally")
+					--else print("", "FAILED in buffing ally")
 					end
 				end
 				protect = protect:GetAbsOrigin()
@@ -420,8 +423,7 @@ BaseAi = {
 						if CastSpell(self.unit, unit, ab, behav) then
 							--print("","", "SUCCEEDED in attacking enemy")
 							break
-						else
-							--print("","", "FAILED in attacking enemy")
+						--else print("","", "FAILED in attacking enemy")
 						end
 					end
 				end
@@ -435,12 +437,6 @@ BaseAi = {
 					end
 				end
 			end
-		end
-
-		print("think")
-		if self.unit:IsChanneling() then
-			print("IsChanneling()")
-			return 0.5
 		end
 
 		--print("", "back to wandering..")
@@ -514,7 +510,7 @@ BaseAi = {
 			--print("", "target is out of range..")
 			--find new target
 			if #units > 0 then
-				print("","", "found a new target, continue think")
+				--print("","", "found a new target, continue think")
 				self.aggroTarget = units[1]
 				return
 			end
@@ -530,7 +526,10 @@ BaseAi = {
 	SentryThink = function(self)
 		--print("sentry_think")
 		local ab,behav = GetSpellToCast(self.unit)
-		if not ab then print("", "no valid ability to cast") return end
+		if not ab then
+			--print("", "no valid ability to cast")
+			return
+		end
 
 		local range = ab:GetCastRange() or self.aggroRange
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, range,
@@ -554,8 +553,8 @@ BaseAi = {
 	--this needs work
 	BasimThink = function(self)
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, 800, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
-		self.lastSnowball = self.lastSnowball or GameRules:GetGameTime()
-		if self.lastSnowball+10 < GameRules:GetGameTime() then
+		self.lastSnowball = self.lastSnowball or GameRules:GetGameTime()+10
+		if self.lastSnowball < GameRules:GetGameTime() then
 			if units then
 				if not self.snowballing then
 					self.unit:FaceTowards(units[1]:GetAbsOrigin())
@@ -608,7 +607,7 @@ BaseAi = {
 		local home = Entities:FindByName(nil, "End_Platform")
 		if home then
 			if (home:GetAbsOrigin() - self.unit:GetAbsOrigin()):Length2D() > 10 then
-				self.unit:MoveToPosition( home:GetAbsOrigin() )
+				self.unit:MoveToPosition(home:GetAbsOrigin())
 			else
 				if spawn then
 					self.unit:FaceTowards( (spawn:GetAbsOrigin()-self.unit:GetAbsOrigin()):Normalized() )
@@ -617,7 +616,7 @@ BaseAi = {
 		end
 
 		if spawn then
-			self.unit:CastAbilityOnPosition( spawn:GetAbsOrigin(), ab, self.unit:GetPlayerOwnerID() )
+			self.unit:CastAbilityOnPosition(spawn:GetAbsOrigin(), ab, self.unit:GetPlayerOwnerID())
 			ab:EndCooldown()
 			if units[1] then
 

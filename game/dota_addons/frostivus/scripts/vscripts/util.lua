@@ -26,8 +26,9 @@ function SetClock( time )
 end
 
 function IsHeroMovingAnyMeans(pid)
-	GameMode.tracker = GameMode.tracker or {[1] = Timers( function()
-		GameMode.tracker["heroes"] = GameMode.tracker["heroes"] or (function() 
+	GameMode.movementTracker = GameMode.movementTracker or {[1] = Timers( function()
+		GameMode.movementTracker["heroes"] = GameMode.movementTracker["heroes"] or (function() 
+			--print("IsHeroMovingAnyMeans", "Init Hero Table")
 			local t = {}
 			for i=0,PlayerResource:GetPlayerCount() do
 				local h = PlayerResource:GetSelectedHeroEntity(i)
@@ -38,29 +39,34 @@ function IsHeroMovingAnyMeans(pid)
 			return t
 		end)()
 
-		for id,hero in pairs(GameMode.tracker["heroes"]) do
-			GameMode.tracker[id] = GameMode.tracker[id] or {Vector(0,0,0), false}
+		for id,hero in pairs(GameMode.movementTracker["heroes"]) do
 			if not hero or hero:IsNull() then 
-				hero = PlayerResource:GetSelectedHeroEntity(tonumber(id))
+				GameMode.movementTracker["heroes"][id] = PlayerResource:GetSelectedHeroEntity(tonumber(id))
+				--print("IsHeroMovingAnyMeans", "null hero, grabing new hero...", (not GameMode.movementTracker["heroes"][id]:IsNull() and GameMode.movementTracker["heroes"][id]:GetName()) or "no hero to grab")
 			else
+				GameMode.movementTracker[id] = GameMode.movementTracker[id] or {hero:GetAbsOrigin(), false}
 				local Now = hero:GetAbsOrigin()
-				local Then = GameMode.tracker[id][1]
-				if (Now - Then):Length2D() > 10 then
-					GameMode.tracker[id][2] = true
+				local Then = GameMode.movementTracker[id][1]
+				if (Now - Then):Length2D() > 0 then
+					GameMode.movementTracker[id][2] = true
+					--print("IsHeroMovingAnyMeans", (Now - Then):Length2D(), true)
 				else
-					GameMode.tracker[id][2] = false
+					GameMode.movementTracker[id][2] = false
+					--print("IsHeroMovingAnyMeans", (Now - Then):Length2D(), false)
 				end
-				GameMode.tracker[id][1] = Now
+				GameMode.movementTracker[id][1] = Now
 			end
 		end
 
-		return 0.1
+		return 0.05
 	end)}
 
-	local step = GameMode.tracker[tostring(pid)]
-	if step then 
-		return step[2]
+	local result = GameMode.movementTracker[tostring(pid)]
+	if result then
+		--print("IsHeroMovingAnyMeans", "result: "..tostring(result[2]))
+		return result[2]
 	end
+	--print("IsHeroMovingAnyMeans", "still initializing, force false")
 	return false
 end
 
@@ -87,28 +93,28 @@ function GetFirstPlace()
 			local path = GridNav:FindPathLength(hero:GetAbsOrigin(), entLoc)
 			if path == -1 then
 				path = (hero:GetAbsOrigin() - entLoc):Length2D()
-				print("unpathable, using Length2D")
+				print("GetFirstPlace", "unpathable, using Length2D")
 			end
-			print("path: "..path)
+			print("GetFirstPlace", "path: "..path)
 
 			local cpNum = #split(tCPRecord[hero], ",")
 			local cp1,cp2 = Entities:FindByName(nil, "CP_"..cpNum), Entities:FindByName(nil, "CP_"..cpNum+1)
 			local cpPath = math.huge
 			if cp1 and cp2 then
-				print("cp's exist")
+				print("GetFirstPlace", "cp's exist")
 				cpPath = GridNav:FindPathLength(cp1:GetAbsOrigin(), cp2:GetAbsOrigin())
 			end
-			print("cpPath: "..cpPath)
+			print("GetFirstPlace", "cpPath: "..cpPath)
 
-			print("path > cpPath : ".. (path > cpPath) )
+			print("GetFirstPlace", "path > cpPath : ".. (path > cpPath) )
 			if path > cpPath then
 				print("path: "..path)
 				path = (hero:GetAbsOrigin() - entLoc):Length2D()
 			end
 
-			print("path < lowest : ".. (path < lowest) )
+			print("GetFirstPlace", "path < lowest : ".. (path < lowest) )
 			if path < lowest then
-				print("lowest,h : ".. lowest..","..hero:GetName())
+				print("GetFirstPlace", "lowest,h : ".. lowest..","..hero:GetName())
 				lowest,h = path,hero
 			end
 		end
@@ -123,7 +129,8 @@ function VectorToString(vec, ignoreZ, includeVECTOR)
 	if includeVECTOR == true then includeVECTOR = nil end
 	includeVECTOR = includeVECTOR or "Vector"
 	ignoreZ = ignoreZ or false
-	if not vec then return "" end
+	if not vec or type(vec) ~= "userdata" then return "" end
+	if not vec.x or not vec.y or not vec.z then return "" end
 	return (includeVECTOR and includeVECTOR.."(" or "")..math.ceil(vec.x)..","..math.ceil(vec.y)..(not ignoreZ and ","..math.ceil(vec.z)..(includeVECTOR and ")" or "") or (includeVECTOR and ")" or "")) 
 end
 

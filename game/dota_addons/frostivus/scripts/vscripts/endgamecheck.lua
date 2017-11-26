@@ -9,10 +9,6 @@ function Ending_Check( trigger )
 	--------------------------------------------------
 	--12(short) 24(medium) 36(long) team points to win
 	--------------------------------------------------
-	GameRules.GameMode.SumTemp1 = GameRules.GameMode.SumTemp1 or {}
-	SumTemp1 = GameRules.GameMode.SumTemp1
-	GameRules.GameMode.SumTemp2 = GameRules.GameMode.SumTemp2 or {}
-	SumTemp2 = GameRules.GameMode.SumTemp2
 	GameRules.GameMode.PlayerList = GameRules.GameMode.PlayerList or {}
 	local PlayerList = GameRules.GameMode.PlayerList--this holds info of the current list of players in game
 	local hHero = trigger.activator --this holds info on checkpoint trigger hero
@@ -75,66 +71,47 @@ function Ending_Check( trigger )
 			if tPointsRecord[PlayerList[i]] == nil then
 				tPointsRecord[PlayerList[i]] = 0
 			end
-			if PlayerList[i]:GetTeamNumber() == 2 then
-				if SumTemp1[1] == nil then
-					SumTemp1[1] = tPointsRecord[PlayerList[i]]
-				else
-					SumTemp2[1] = tPointsRecord[PlayerList[i]]
+		end
+		local teams = {
+			DOTA_TEAM_GOODGUYS,
+			DOTA_TEAM_BADGUYS,
+			DOTA_TEAM_CUSTOM_1,
+			DOTA_TEAM_CUSTOM_2,
+			DOTA_TEAM_CUSTOM_3,
+		}
+		local scores = {}
+		for _,t in pairs(teams) do
+			scores[t] = {}
+			local cap = PlayerResource:GetPlayerCountForTeam(t)
+			for x = 1,cap do
+				local pid = PlayerResource:GetNthPlayerIDOnTeam(t, x)
+				local h = PlayerResource:GetSelectedHeroEntity(pid)
+
+				scores[t][h] = tPointsRecord[h]
+				if x==cap then
+					scores[t]["total"] = 0
+					for l,m in pairs(scores[t]) do
+						if not l == "total" then
+							scores[t]["total"] = scores[t]["total"] + m
+						end
+					end
 				end
-			elseif PlayerList[i]:GetTeamNumber() == 3 then
-				if SumTemp1[2] == nil then
-					SumTemp1[2] = tPointsRecord[PlayerList[i]]
-				else
-					SumTemp2[2] = tPointsRecord[PlayerList[i]]
-				end	
-			elseif PlayerList[i]:GetTeamNumber() == 6 then
-				if SumTemp1[3] == nil then
-					SumTemp1[3] = tPointsRecord[PlayerList[i]]
-				else
-					SumTemp2[3] = tPointsRecord[PlayerList[i]]
-				end
-			elseif PlayerList[i]:GetTeamNumber() == 7 then
-				if SumTemp1[4] == nil then
-					SumTemp1[4] = tPointsRecord[PlayerList[i]]
-				else
-					SumTemp2[4] = tPointsRecord[PlayerList[i]]
-				end
-			elseif PlayerList[i]:GetTeamNumber() == 8 then
-				if SumTemp1[5] == nil then
-					SumTemp1[5] = tPointsRecord[PlayerList[i]]
-				else
-					SumTemp2[5] = tPointsRecord[PlayerList[i]]
-				end
-			else
-				print "wtf"
 			end
 		end
-		TeamPoints[1] = (SumTemp1[1] or 0) + (SumTemp2[1] or 0)--enum 2 
-		TeamPoints[2] = (SumTemp1[2] or 0) + (SumTemp2[2] or 0)--enum 3
-		TeamPoints[3] = (SumTemp1[3] or 0) + (SumTemp2[3] or 0)--enum 6
-		TeamPoints[4] = (SumTemp1[4] or 0) + (SumTemp2[4] or 0)--enum 7
-		TeamPoints[5] = (SumTemp1[5] or 0) + (SumTemp2[5] or 0)--enum 8
-		for i=1,5 do	
-			if TeamPoints["currentbest"] <= TeamPoints[i] then
-  				TeamPoints["currentbest"] = TeamPoints[i]
-				winningteam = i
-	   			print(winningteam)
-			end	
-		end			  			
-	    for k,v in pairs(TeamPoints) do
-			print(k,v) 
+		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 2, score = scores[2]["total"]})
+		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 3, score = scores[3]["total"]})
+		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 6, score = scores[6]["total"]})
+		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 7, score = scores[7]["total"]})
+		CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = 8, score = scores[8]["total"]})
+		
+		TeamPoints["currentbest"] = 0
+		winningenum = nil
+		for k,v in pairs({[DOTA_TEAM_GOODGUYS] = scores[DOTA_TEAM_GOODGUYS]["total"], [DOTA_TEAM_BADGUYS] = scores[DOTA_TEAM_BADGUYS]["total"], [DOTA_TEAM_CUSTOM_1] = scores[DOTA_TEAM_CUSTOM_1]["total"], [DOTA_TEAM_CUSTOM_2] = scores[DOTA_TEAM_CUSTOM_2]["total"], [DOTA_TEAM_CUSTOM_3] = scores[DOTA_TEAM_CUSTOM_3]["total"]}) do
+			if v > TeamPoints["currentbest"] then
+				TeamPoints["currentbest"] = v
+				winningenum = k
+			end
 		end
-		if winningteam == 1 then
-	   		winningenum = 2
-	   	elseif winningteam == 2 then
-	   		winningenum = 3
-	   	elseif winningteam == 3 then
-	   		winningenum = 6
-	   	elseif winningteam == 4 then
-	   		winningenum = 7
-	   	elseif winningteam == 5 then
-	   		winningenum = 8
-	   	end	
 		if TeamPoints["currentbest"] >= GameRules.GameMode.tVoteRecord["Selected"] then
 			for i=1,playerCount do
 				if PlayerList[i]:GetTeamNumber() ~= winningenum then
@@ -143,7 +120,9 @@ function Ending_Check( trigger )
 					PlayerList[i]:RemoveModifierByName("modifier_round_stun")
 				end
 			end
-			GameRules:SetGameWinner(winningteam)
+			CustomGameEventManager:Send_ServerToAllClients( "countdown", {key1=0,key2="stop"})
+			Thinkers.thinkers = {}
+			GameRules:SetGameWinner(winningenum)
 		end
 		print "EndHere"
 	end
@@ -201,8 +180,6 @@ function Ending_Check( trigger )
 							GameRules.GameMode.tCPRecord = {}
 							GameRules.GameMode.tCurrentPlacing = {}
 							GameRules.GameMode.tRComplete = {}
-							GameRules.GameMode.SumTemp1 = {}
-							GameRules.GameMode.SumTemp2 = {} 
         					return
     					end
     					return 1

@@ -1,5 +1,7 @@
 Thinkers = {
 	Init = function(self)
+		if self.initialized then return end
+		self.initialized = true
 		self.thinkers = {}
 		local ent = SpawnEntityFromTableSynchronous("info_target", {targetname = "thinker"})
 		ent:SetThink("Think", self)
