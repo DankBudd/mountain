@@ -299,12 +299,11 @@
 		// Abilities
 		//----------------------------------------------------------------
 		"Ability1"		"morphling_waveform"
-		"Ability2"		"morphling_adaptive_strike_agi"
-		"Ability3"		"morphling_adaptive_strike_str"
-		"Ability4"		"morphling_morph_agi"
-		"Ability5"		"morphling_morph_str"
-		"Ability6"		"generic_invulnerablity"
-		"Ability7"		"base_ai"
+		"Ability2"		"adaptive_strike" //custom
+		"Ability3"		"morphling_morph_agi"
+		"Ability4"		"morphling_morph_str"
+		"Ability5"		"generic_invulnerablity"
+		"Ability6"		"base_ai"
 
 		"state"		 "PATROL"
 		"aggroRange" "800"

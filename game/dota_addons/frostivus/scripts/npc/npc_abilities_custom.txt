@@ -92,7 +92,7 @@
 	"base_ai"
 	{
 		"BaseClass"             		"ability_lua"
-		"ScriptFile"					"heroes/base_ai.lua"
+		"ScriptFile"					"heroes/base_ai"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityTextureName"			"disruptor_thunder_strike"
 		"MaxLevel" 						"1"
@@ -101,7 +101,7 @@
 	"jump_ability"
 	{
 		"BaseClass"             		"ability_lua"
-		"ScriptFile"					"heroes/base_abilities.lua"
+		"ScriptFile"					"heroes/base_abilities"
 		"AbilityTextureName"			"mirana_leap"
 
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
@@ -129,7 +129,7 @@
 	"dash_ability"
 	{
 		"BaseClass"             		"ability_lua"
-		"ScriptFile"					"heroes/base_abilities.lua"
+		"ScriptFile"					"heroes/base_abilities"
 		"AbilityTextureName"			"spirit_breaker_charge_of_darkness"
 
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
@@ -157,7 +157,7 @@
 	"turn_ability"
 	{
 		"BaseClass"             		"ability_lua"
-		"ScriptFile"					"heroes/base_abilities.lua"
+		"ScriptFile"					"heroes/base_abilities"
 		"AbilityTextureName"			"axe_counter_helix"
 
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_TOGGLE"
@@ -190,9 +190,63 @@
 	"tusk_ability"
 	{
 		"BaseClass"             		"ability_lua"
-		"ScriptFile"					"heroes/base_abilities.lua"
+		"ScriptFile"					"heroes/base_abilities"
 		"AbilityTextureName"			"tuskarr_icon"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_HIDDEN"
 		"MaxLevel" 						"1"
+	}
+
+	"adaptive_strike"
+	{
+		"BaseClass"             		"ability_lua"
+		"ScriptFile"					"ai/adaptive_strike"
+		"AbilityTextureName"			"morphling_adaptive_strike"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+
+		"AbilityCooldown"				"6.0"
+		"AbilityManaCost"				"0"
+		"AbilityDamage"					"0"
+
+		"precache"
+		{
+			"particle"  "particles/units/heroes/hero_morphling/morphling_adaptive_strike.vpcf"
+			"particle"  "particles/units/heroes/hero_morphling/morphling_adaptive_strike_agi_proj.vpcf"
+			"particle"  "particles/units/heroes/hero_morphling/morphling_adaptive_strike_str.vpcf"
+			"particle"  "particles/units/heroes/hero_morphling/morphling_adaptive_strike_str_proj.vpcf"
+			"soundfile" "soundevents/game_sounds_heroes/game_sounds_morphling.vsndevts"
+		}
+
+		"MaxLevel" 						"1"
+
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"min_stun_duration"	"0.5"
+			}
+			"02"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"max_stun_duration"	"3.0"
+			}
+			"03"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"min_knockback_distance" "100"
+			}
+			"04"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"max_knockback_distance" "550"
+			}
+			"05"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"knockback_speed"	"2000"
+			}
+		}
 	}
 }

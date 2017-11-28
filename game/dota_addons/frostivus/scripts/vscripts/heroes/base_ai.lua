@@ -48,6 +48,21 @@ function base_ai:OnUpgrade()
 
 	--grab patrol points from map
 	if self:GetCaster():GetUnitName() == "morphling_the_striker" then
+		Timers(30, function()
+			local agi = self:GetCaster():FindAbilityByName("morphling_morph_agi")
+			local str = self:GetCaster():FindAbilityByName("morphling_morph_str")
+
+			if not agi:GetToggleState() and not str:GetToggleState() then
+				agi:ToggleAbility()
+			elseif agi:GetToggleState() then
+				str:ToggleAbility()
+			elseif str:GetToggleState() then
+				agi:ToggleAbility()
+			end
+
+			return RandomInt(5, 7)
+		end)
+
 		local thisMorph
 		for _,morph in pairs({Entities:FindByName(nil,"Morph_1"), Entities:FindByName(nil,"Morph_2")}) do
 			if morph == self:GetCaster() then
