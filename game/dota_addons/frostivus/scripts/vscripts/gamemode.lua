@@ -252,11 +252,16 @@ function GameMode:StartGameMode()
 			end)
 		end)
 	end
+end
 
-	Timers(30,function()
+function GameMode:OnGameStateChanged()
+	local state = GameRules:State_Get()
+	if state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
 		local maxvalue = math.max(self.tVoteRecord[12] or 0, self.tVoteRecord[24] or 0, self.tVoteRecord[36] or 0)
 		--allsame 
+		print(self.tVoteRecord[12], self.tVoteRecord[24], self.tVoteRecord[36])
 		if self.tVoteRecord[12] == self.tVoteRecord[24] and self.tVoteRecord[24] == self.tVoteRecord[36] and self.tVoteRecord[36] == self.tVoteRecord[12] then
+			print("default to 24")
 			self.tVoteRecord["Selected"] = 24 --default to medium
 		elseif self.tVoteRecord[12] == self.tVoteRecord[24] and self.tVoteRecord[12] == maxvalue then --short & medium same
 			if RollPercentage(50) then
@@ -290,7 +295,7 @@ function GameMode:StartGameMode()
 
 		CustomGameEventManager:Send_ServerToAllClients("remove_voting_screen", {})
 		CustomGameEventManager:Send_ServerToAllClients("update_goal", {kills_to_win = self.tVoteRecord["Selected"]})
-	end)
+	end
 end
 
 -- Evaluate the state of the game
@@ -435,6 +440,11 @@ function GameMode:OnThink()
 	elseif state == DOTA_GAMERULES_STATE_POST_GAME then
 	elseif state == DOTA_GAMERULES_STATE_DISCONNECT then
 	end
+
+	if self.lastGameState and self.lastGameState ~= state then
+		self:OnGameStateChanged()
+	end
+	self.lastGameState = state
 	return 1
 end
 
