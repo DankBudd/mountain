@@ -1,16 +1,5 @@
 "use strict";
 
-GameEvents.Subscribe("SetScoreForTeam", function(args) {
-	var team = args.team || 2;
-	var score = args.score || 0;
-	
-	var teamPanel = $.GetContextPanel().GetParent().FindChildTraverse("_dynamic_team_"+team);
-	$.Msg(team, score, teamPanel);
-	if (teamPanel) {
-		teamPanel.SetAttributeInt("team_score__", score)
-	}
-});
-
 //=============================================================================
 //=============================================================================
 function _ScoreboardUpdater_SetTextSafe( panel, childName, textValue )
@@ -239,7 +228,10 @@ function _ScoreboardUpdater_UpdateTeamPanel( scoreboardConfig, containerPanel, t
 	}
 
 	//	$.Msg(teamPanel.id, ": ", teamPanel.GetAttributeInt("team_score__", 0))
-	_ScoreboardUpdater_SetTextSafe( teamPanel, "TeamScore", teamPanel.GetAttributeInt("team_score__", 0) )
+	var score = 0;
+	var net = CustomNetTables.GetTableValue("scores", String(teamId));
+	if (net) { score = net.score }
+	_ScoreboardUpdater_SetTextSafe( teamPanel, "TeamScore", score)
 	_ScoreboardUpdater_SetTextSafe( teamPanel, "TeamName", $.Localize( teamDetails.team_name ) )
 	
 	if ( GameUI.CustomUIConfig().team_colors )
@@ -466,7 +458,7 @@ function ScoreboardUpdater_GetSortedTeamInfoList( scoreboardHandle )
 	{
 		teamsList.sort( stableCompareFunc );		
 	}
-	
-	return teamsList;
-}
 
+	return teamsList;
+
+}
