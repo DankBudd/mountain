@@ -382,9 +382,9 @@ BaseAi = {
 			return
 		end
 
-		print("think")
+		--print("think")
 		if self.unit:IsChanneling() then
-			print("IsChanneling()")
+			--print("IsChanneling()")
 			return 0.5
 		end
 
@@ -602,7 +602,6 @@ BaseAi = {
 			end
 		end
 		local units = FindUnitsInRadius(self.unit:GetTeam(), self.unit:GetAbsOrigin(), nil, ab:GetSpecialValueFor("grab_radius")+20, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, false)
-		for k,v in pairs(units) do print(type(k), k, v) end
 		local spawn = Entities:FindByName(nil, "Spawnitem_trigger")
 		local home = Entities:FindByName(nil, "End_Platform")
 		if home then

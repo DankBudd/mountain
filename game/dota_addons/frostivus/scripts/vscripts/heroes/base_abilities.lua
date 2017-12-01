@@ -10,6 +10,7 @@ function jump_ability:OnSpellStart()
 		DisplayError(self:GetCaster():GetPlayerID(), "#must_be_mounted")
 		return
 	end
+
 	ProjectileManager:ProjectileDodge(self:GetCaster())
 	self:GetCaster():AddNewModifier(self:GetCaster(), self, "modifier_jump", {duration = 0.5}) --safety duration in case something goes wrong
 end
@@ -53,6 +54,7 @@ modifier_jump = class({
 		end
 	end,
 })
+
 
 
 dash_ability = class({})
@@ -122,6 +124,8 @@ modifier_turn = class({
 		end
 	end,
 })
+
+
 
 tusk_ability = class({})
 

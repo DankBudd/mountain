@@ -106,5 +106,5 @@ function base_ai:OnUpgrade()
 	end
 
 
-	self.instance = BaseAi:MakeInstance(self:GetCaster(), info)
+	self:GetCaster().instance = BaseAi:MakeInstance(self:GetCaster(), info)
 end

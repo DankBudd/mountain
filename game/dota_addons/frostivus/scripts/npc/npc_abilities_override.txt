@@ -2612,7 +2612,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"							"5376"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
 		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
 		"MaxLevel"						"1"
@@ -2630,7 +2630,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastRange"				"1000"
 		"AbilityCastPoint"				"0.05"
-		"AbilityCooldown"				"0.5"
+		"AbilityCooldown"				"9.0"
 		"AbilityManaCost"				"0"
 
 		// Stats
@@ -2681,7 +2681,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"							"5381"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
@@ -2692,7 +2692,7 @@
 
 		// Stats
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"0"
+		"AbilityCooldown"				"10.0"
 		"AbilityManaCost"				"0"
 		"AbilityCastPoint"				"0.05"
 		
@@ -2703,7 +2703,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"100.0"
+				"duration"				"10.0"
 			}
 			"02"
 			{
@@ -2713,7 +2713,7 @@
 			"03"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"enemy_slow"			"-150"
+				"enemy_slow"			"-90"
 				"levelkey"				"quaslevel"
 			}
 			"04"
@@ -2725,7 +2725,7 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"aura_fade_time"		"4.0"
+				"aura_fade_time"		"1.0"
 			}
 		}
 	}
@@ -2738,7 +2738,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"							"5382"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
@@ -2752,7 +2752,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastRange"				"4000"
 		"AbilityCastPoint"				"0.05"
-		"AbilityCooldown"				"60"
+		"AbilityCooldown"				"20"
 		"AbilityManaCost"				"0"
 			
 		// Special
@@ -2819,7 +2819,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"							"5389"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
@@ -2832,7 +2832,7 @@
 
 		// Stats
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"27"
+		"AbilityCooldown"				"20.0"
 		"AbilityManaCost"				"0"
 		"AbilityCastPoint"				"0.05"
 		
@@ -2843,13 +2843,13 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"duration"				"13.5"
+				"duration"				"10.0"
 				"levelkey"				"quaslevel"
 			}
 			"02"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"slow"					"-200"
+				"slow"					"-80"
 				"levelkey"				"quaslevel"
 			}
 			"03"
@@ -2866,12 +2866,12 @@
 			"05"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"wall_place_distance"	"250"
+				"wall_place_distance"	"200"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"num_wall_elements"		"25"
+				"num_wall_elements"		"15"
 			}
 			"07"
 			{
@@ -2881,7 +2881,7 @@
 			"08"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"wall_element_radius"	"150"
+				"wall_element_radius"	"105"
 			}
 		}
 	}
@@ -2893,7 +2893,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"							"5390"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
 		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
@@ -2908,7 +2908,7 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityCastRange"				"1500"
 		"AbilityCastPoint"				"0.05"
-		"AbilityCooldown"				"40"
+		"AbilityCooldown"				"20"
 		"AbilityManaCost"				"0"
 		"AbilityModifierSupportValue"	"0.5"	// Applies 2 modifiers
 

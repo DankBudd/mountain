@@ -475,11 +475,11 @@
 		// Abilities
 		//----------------------------------------------------------------
 		"AbilityLayout"		"6"
-		"Ability1"		"invoker_ice_wall"
-		"Ability2"		"invoker_ghost_walk"
-		"Ability3"		"invoker_cold_snap"
-		"Ability4"		"invoker_tornado"
-		"Ability5"		"invoker_deafening_blast"
+		"Ability1"		"invoker_tornado"
+		"Ability2"		"invoker_deafening_blast"
+		//"Ability3"		"invoker_cold_snap"
+		"Ability4"		"invoker_ice_wall"
+		"Ability5"		"invoker_ghost_walk"
 		"Ability6"		"generic_invulnerablity"
 		"Ability7"		"base_ai"
 

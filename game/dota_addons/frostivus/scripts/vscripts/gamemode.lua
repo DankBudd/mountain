@@ -120,11 +120,11 @@ function GameMode:StartGameMode()
 	CustomGameEventManager:Send_ServerToAllClients("camera_zoom", {distance = 2250})
 
 	-- Set GameMode parameters
-	mode:SetTopBarTeamValuesOverride ( true )
+	mode:SetTopBarTeamValuesOverride( true )
 	mode:SetTopBarTeamValuesVisible( true )
 
 	mode:SetBuybackEnabled( false )
-	mode:SetCustomBuybackCostEnabled( false  )
+	mode:SetCustomBuybackCostEnabled( false )
 	mode:SetCustomBuybackCooldownEnabled( false )
 	mode:SetGoldSoundDisabled( false )
 
@@ -184,7 +184,7 @@ function GameMode:StartGameMode()
 				--ai for the cylone to move around
 				BaseAi:MakeInstance(unit, {state = CYCLONE, spawn = unit:GetAbsOrigin()})
 
-				Timers(0, function()
+				Timers(function()
 					if not unit or unit:IsNull() then return end
 					unit.particle:SetAbsOrigin(unit:GetAbsOrigin())
 					return 0.03
@@ -659,29 +659,29 @@ function GameMode:OnNpcSpawn(keys)
 end
 
 function GameMode:OnPlayerReconnect( keys )
-	print("reconnect")
+	--print("reconnect")
 end
 
 function GameMode:OnPlayerDisconnect( keys )
-	print("disconnect")
+	--print("disconnect")
 end
 
 function GameMode:PlayerConnect( keys )
-	print("connect")
+	--print("connect")
 end
 
 -- This function is called once when the player fully connects and becomes "Ready" during Loading
 function GameMode:PlayerConnectFull( keys )
-	print("connect FULL")
+	--print("connect FULL")
 	GameMode:StartGameMode()
 end
 
 function GameMode:OnPlayerPickHero( keys )
-	print("pick hero")
+	--print("pick hero")
 end
 
 function GameMode:OnIllusionsCreated( keys )
-	print("illusion")
+	--print("illusion")
 end
 
 function GameMode:OnPlayerChat( keys )
@@ -874,17 +874,6 @@ function GameMode:OnPlayerChat( keys )
 			unit:SetOwner(hero)
 			FindClearSpaceForUnit(unit, unit:GetAbsOrigin(), true)
 
-			--[[
-				unit.instance = BaseAi:MakeInstance(unit, {
-					state = WANDER_IDLE,
-					aggroRange = 600,
-					leash = 800,
-					buffer = 200,
-					spawn = unit:GetAbsOrigin(),
-					override = true,
-				})
-			]]
-
 			for i = 0,6 do
 				local ab = unit:GetAbilityByIndex(i)
 				if ab then
@@ -963,10 +952,6 @@ function GameMode:OnPlayerChat( keys )
 
 	if IsCommand("-unwtf", 0) then
 		GameRules.wtfEnabled = false
-	end
-
-	if IsCommand("print", 0) then
-	--	CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = PlayerResource:GetTeam(playerID), score = RandomInt(1, 10)})
 	end
 end
 

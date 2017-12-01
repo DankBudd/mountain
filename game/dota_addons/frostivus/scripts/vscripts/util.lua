@@ -1,28 +1,28 @@
 function CountdownClock()
 	if not nCOUNTDOWNTIMER then return end
 
-    nCOUNTDOWNTIMER = nCOUNTDOWNTIMER + 1
-    local t = nCOUNTDOWNTIMER
-    --print( t )
-    local minutes = math.floor(t / 60)
-    local seconds = t - (minutes * 60)
-    local m10 = math.floor(minutes / 10)
-    local m01 = minutes - (m10 * 10)
-    local s10 = math.floor(seconds / 10)
-    local s01 = seconds - (s10 * 10)
-    local broadcast_gametimer = 
-        {
-            timer_minute_10 = m10,
-            timer_minute_01 = m01,
-            timer_second_10 = s10,
-            timer_second_01 = s01,
-        }
-    CustomGameEventManager:Send_ServerToAllClients( "DownTime", broadcast_gametimer )
+	nCOUNTDOWNTIMER = nCOUNTDOWNTIMER + 1
+	local t = nCOUNTDOWNTIMER
+	--print( t )
+	local minutes = math.floor(t / 60)
+	local seconds = t - (minutes * 60)
+	local m10 = math.floor(minutes / 10)
+	local m01 = minutes - (m10 * 10)
+	local s10 = math.floor(seconds / 10)
+	local s01 = seconds - (s10 * 10)
+	local broadcast_gametimer = 
+	{
+		timer_minute_10 = m10,
+		timer_minute_01 = m01,
+		timer_second_10 = s10,
+		timer_second_01 = s01,
+	}
+	CustomGameEventManager:Send_ServerToAllClients( "DownTime", broadcast_gametimer )
 end
 
 function SetClock( time )
-    --print( "Set the clock to: " .. time )
-    nCOUNTDOWNTIMER = time
+	--print( "Set the clock to: " .. time )
+	nCOUNTDOWNTIMER = time
 end
 
 function IsHeroMovingAnyMeans(pid)
@@ -93,34 +93,34 @@ function GetFirstPlace()
 			local path = GridNav:FindPathLength(hero:GetAbsOrigin(), entLoc)
 			if path == -1 then
 				path = (hero:GetAbsOrigin() - entLoc):Length2D()
-				print("GetFirstPlace", "unpathable, using Length2D")
+				--print("GetFirstPlace", "unpathable, using Length2D")
 			end
-			print("GetFirstPlace", "path: "..path)
+			--print("GetFirstPlace", "path: "..path)
 
 			local cpNum = #split(tCPRecord[hero], ",")
 			local cp1,cp2 = Entities:FindByName(nil, "CP_"..cpNum), Entities:FindByName(nil, "CP_"..cpNum+1)
 			local cpPath = math.huge
 			if cp1 and cp2 then
-				print("GetFirstPlace", "cp's exist")
+				--print("GetFirstPlace", "cp's exist")
 				cpPath = GridNav:FindPathLength(cp1:GetAbsOrigin(), cp2:GetAbsOrigin())
 			end
-			print("GetFirstPlace", "cpPath: "..cpPath)
+			--print("GetFirstPlace", "cpPath: "..cpPath)
 
-			print("GetFirstPlace", "path > cpPath : ".. (path > cpPath) )
+			--print("GetFirstPlace", "path > cpPath : ".. (path > cpPath) )
 			if path > cpPath then
-				print("path: "..path)
+				--print("path: "..path)
 				path = (hero:GetAbsOrigin() - entLoc):Length2D()
 			end
 
-			print("GetFirstPlace", "path < lowest : ".. (path < lowest) )
+			--print("GetFirstPlace", "path < lowest : ".. (path < lowest) )
 			if path < lowest then
-				print("GetFirstPlace", "lowest,h : ".. lowest..","..hero:GetName())
+				--print("GetFirstPlace", "lowest,h : ".. lowest..","..hero:GetName())
 				lowest,h = path,hero
 			end
 		end
 		return h
 	else
-		print("single player detected, skip comparisons. \nhero:"..players[1]:GetName())
+		--print("GetFirstPlace", "single player detected, skip comparisons. \nhero:"..players[1]:GetName())
 		return players[1]
 	end
 end
@@ -160,7 +160,7 @@ function FindClearSpaceForItem( item, point )
 			local x = d.x
 			local y = d.y
 
-			print("FindClearSpaceForItem | X: "..x..", Y: "..y)
+			--print("FindClearSpaceForItem | X: "..x..", Y: "..y)
 			if x == 0 and y == 0 then x,y = 0,1
 			elseif x == -1 and y > 0 then x,y = 1,1
 			elseif y > x and y >= x * -1 then x,y = 1,0
@@ -216,21 +216,6 @@ function CDOTA_BaseNPC:GetItemSlot(item)
       return nil
     end
   end
-end
-
-function BoolToString(b)
-  if b == true or b == 1 then return "true" end
-  if b == false or b == 0 then return "false" end
-end
-
-function TableCount(t)
-  local count = 0
-  if type(t) == "table" then
-    for k,v in pairs(t) do
-      count = count+1
-    end
-  end
-  return count
 end
 
 function CDOTA_BaseNPC:GetBackwardVector()
