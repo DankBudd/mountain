@@ -20,7 +20,6 @@ function Ending_Check( trigger )
 	--------------------------------------------------
 	--12(short) 24(medium) 36(long) team points to win
 	--------------------------------------------------
-
 	G.tRComplete = G.tRComplete or {}
 	local tRComplete = G.tRComplete--this holds info of hero completing current round for roundstunner
 
@@ -95,7 +94,7 @@ function Ending_Check( trigger )
 							scores[t]["total"] = scores[t]["total"] + m
 						end
 					end
-					CustomGameEventManager:Send_ServerToAllClients("SetScoreForTeam", {team = t, score = scores[t]["total"]})
+					CustomNetTables:SetTableValue("scores", tostring(t), {score = scores[t]["total"]})
 				end
 			end
 		end
@@ -123,6 +122,7 @@ function Ending_Check( trigger )
 			CustomGameEventManager:Send_ServerToAllClients( "countdown", {key1=0,key2="stop"})
 			Thinkers.thinkers = {}
 			GameRules:SetGameWinner(winningenum)
+			print "imdonehere"
 		end
 		print "EndHere"
 	end
