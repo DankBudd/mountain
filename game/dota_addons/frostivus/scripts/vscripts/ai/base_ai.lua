@@ -213,11 +213,17 @@ BaseAi = {
 				if instance.unit and not instance.unit:IsNull() then
 					--print("unit can think: "..instance.unit:GetUnitName())
 
-					success,int = xpcall(function()
-						return Dynamic_Wrap(self, THINK_STATES[instance.state])(instance)
-					end, function(err)
-						return err.."\n"..debug.traceback().."\n"
-					end)
+					if not instance.unit:IsStunned() then
+						success,int = xpcall(function()
+							return Dynamic_Wrap(self, THINK_STATES[instance.state])(instance)
+						end, function(err)
+							return err.."\n"..debug.traceback().."\n"
+						end)
+					else
+						print("unit "..instance.unit:GetName() .." is stunned, try again next tick")
+						success = true
+						int = 0.01
+					end
 				else
 					print("null unit is trying to think.. kill thinker", id)
 					self.thinkers[id] = nil
@@ -336,6 +342,8 @@ BaseAi = {
 		--send them back to spawn if they go too far away
 		if (self.spawn - self.unit:GetAbsOrigin()):Length2D() > self.leash+self.buffer then
 			self.unit:MoveToPosition(self.spawn)
+			self.waypoints = {}
+			self.wpTimes = {}
 			return 3.0
 		end
 
