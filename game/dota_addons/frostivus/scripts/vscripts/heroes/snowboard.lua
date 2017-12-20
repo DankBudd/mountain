@@ -26,7 +26,7 @@ modifier_penguin_thinker = class({
 
 	OnCreated = function(self, kv)
 		if IsServer() then
-			self.tick = 1.0
+			self.tick = 0.5
 			self.waitTime = 0
 			self:StartIntervalThink( self.tick )
 		end
@@ -35,7 +35,7 @@ modifier_penguin_thinker = class({
 	OnIntervalThink = function(self)
 		if IsServer() then
 			if self:GetParent():HasModifier("modifier_mount_movement") then
-				self.waitTime = self.tick*2
+				self.waitTime = self.tick*2.0
 				return
 			end
 			--dont let them remount immedietly
@@ -91,7 +91,7 @@ modifier_mimic_casters_states = class({
 modifier_mount_anim = class({	
 	IsHidden = function(self) return true end,
 	IsPurgable = function(self) return false end,
-	DeclareFunctions = function(self) return {MODIFIER_PROPERTY_OVERRIDE_ANIMATION,} end,
+	DeclareFunctions = function() return {MODIFIER_PROPERTY_OVERRIDE_ANIMATION,} end,
 	GetOverrideAnimation = function(self, keys)
 		if self:GetParent() ~= self:GetCaster() then
 			return ACT_DOTA_FLAIL
@@ -109,7 +109,7 @@ modifier_mount_movement = class({
 	GetModifierMoveSpeed_Limit = function(self) return self.maxSpeed*2 end,
 	GetModifierMoveSpeedOverride = function(self) return self.baseSpeed end,
 
-	DeclareFunctions = function(self)
+	DeclareFunctions = function()
 		return {
 			MODIFIER_PROPERTY_DISABLE_TURNING,
 			MODIFIER_EVENT_ON_ABILITY_FULLY_CAST,
@@ -180,17 +180,13 @@ modifier_mount_movement = class({
 			if self:GetCaster() ~= self:GetParent() then
 
 				if player:IsHexed() or player:IsRooted() or player:IsStunned() then
-					self.curSpeed = self.baseSpeed
+					self.curSpeed = math.max(self.curSpeed * (0.8 * 1/30), self.baseSpeed)
+					self:SetStackCount(math.ceil(self.curSpeed))
 					return
 				end
 
 				local exceptions = {
-					"modifier_eul_cyclone",
-					"modifier_tiny_toss",
 					"modifier_item_forcestaff_active",
-					"modifier_tusk_walrus_punch_air_time",
-					"modifier_tusk_walrus_kick_air_time",
-					"modifier_invoker_tornado",
 					"modifier_jump",
 				}
 
@@ -234,7 +230,7 @@ modifier_mount_movement = class({
 
 					--end slide if unpathable, and destroy any trees at unpathable position
 					if not GridNav:CanFindPath( player:GetAbsOrigin(), newPos ) or #Entities:FindAllByClassnameWithin("dota_temp_tree", newPos, 25) > 0 then
-						GridNav:DestroyTreesAroundPoint( newPos, 25, true)
+						GridNav:DestroyTreesAroundPoint( newPos, 25, true )
 						ResolveNPCPositions( player:GetAbsOrigin(), 25 )
 						self:Destroy()
 						return

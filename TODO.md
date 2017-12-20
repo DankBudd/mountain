@@ -2,15 +2,15 @@
 	sort players by team at the start
 	force players onto penguins at the start
 
-### penguin:
+### penguin: ✔
+<pre>
+	faster search interval for mounting players ✔
+	increase base penguin speed ✔
+	decrease max penguin speed ✔
 
-	faster search interval for mounting players
-	increase base penguin speed
-	decrease max penguin speed
-
-	increase base penguin turn rate greatly
-	lower penguin turn rate based on current speed
-
+	increase base penguin turn rate greatly ✔
+	lower penguin turn rate based on current speed <b>X scrapped</b>
+</pre>
 ### rework map; shorter, prettier, more clear on where to go
 	and stop players from skipping ahead to areas where they shouldnt be yet
 
