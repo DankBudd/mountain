@@ -1,3 +1,21 @@
+function UpgradeGrow(tiny, level)
+	--tiny_01 (no grow)
+	--tiny_02, tiny_03, tiny_04 (grow lvl 1-3)
+	level = level+1
+	local model = "models/heroes/tiny_"..level.."/_tiny_"..level..".vmdl"
+	local parts = {body, head, left_arm, right_arm}
+	tiny.oldparts = tiny.oldparts or {}
+
+	tiny:SetOriginalModel(model)
+	for _,part in pairs(parts) do
+		if tiny.oldparts[part] then
+			UTIL_Remove(tiny.oldparts[part])
+		end
+		tiny.oldparts[part] = SpawnEntityFromTableSynchronous("prop_dynamic", {model = "models/heroes/tiny_"..level.."/tiny_"..level..part..".vmdl"})
+		tiny.oldparts[part]:FollowEntity(tiny, true)
+	end
+end
+
 function CountdownClock()
 	if not nCOUNTDOWNTIMER then return end
 
@@ -195,6 +213,16 @@ function split(pString, pPattern)
 	return Table
 end
 
+function TableCount(t)
+  local count = 0
+  if type(t) == "table" then
+    for k,v in pairs(t) do
+      count = count+1
+    end
+  end
+  return count
+end
+
 function DisplayError( pid, message )
   if pid then
     local player = PlayerResource:GetPlayer(pid)
@@ -267,9 +295,9 @@ function PrintTable(t, indent, done)
   end
 end
 
-
 --orderfilter printer, prints only data relevant to the ordertype passed in filterTable
 function PrintRelevent(t)
+	if not t then return end
 	local oT = {
 		[0] = "DOTA_UNIT_ORDER_NONE",
 		[1] = "DOTA_UNIT_ORDER_MOVE_TO_POSITION",
@@ -332,4 +360,5 @@ function PrintRelevent(t)
 			print(k..": "..v)
 		end
 	end
+	print("-------------")
 end
