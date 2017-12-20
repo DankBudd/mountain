@@ -2,7 +2,7 @@ function UpgradeGrow(tiny, level)
 	--tiny_01 (no grow)
 	--tiny_02, tiny_03, tiny_04 (grow lvl 1-3)
 	level = level+1
-	local model = "models/heroes/tiny_"..level.."/_tiny_"..level..".vmdl"
+	local model = "models/heroes/tiny_0"..level.."/_tiny_0"..level..".vmdl"
 	local parts = {body, head, left_arm, right_arm}
 	tiny.oldparts = tiny.oldparts or {}
 
@@ -11,7 +11,7 @@ function UpgradeGrow(tiny, level)
 		if tiny.oldparts[part] then
 			UTIL_Remove(tiny.oldparts[part])
 		end
-		tiny.oldparts[part] = SpawnEntityFromTableSynchronous("prop_dynamic", {model = "models/heroes/tiny_"..level.."/tiny_"..level..part..".vmdl"})
+		tiny.oldparts[part] = SpawnEntityFromTableSynchronous("prop_dynamic", {model = "models/heroes/tiny_0"..level.."/tiny_0"..level..part..".vmdl"})
 		tiny.oldparts[part]:FollowEntity(tiny, true)
 	end
 end
