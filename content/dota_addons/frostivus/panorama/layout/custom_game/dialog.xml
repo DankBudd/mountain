@@ -1,0 +1,16 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/dialog.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/dialog.js" />
+	</scripts>
+	<snippets>
+		<snippet name="DialogueBox" >
+			<Panel class="Box" >
+				<Label id="Dialogue" text="..." />
+			</Panel>
+		<snippet>
+	</snippets>
+	<Panel class="DialogContainer" hittestchildren="false" />
+</root>

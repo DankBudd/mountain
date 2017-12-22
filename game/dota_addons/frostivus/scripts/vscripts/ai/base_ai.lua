@@ -10,6 +10,7 @@ BASIM = 8
 CYCLONE = 9
 END_TINY = 10
 TUSK = 11
+INVOKER = 12
 
 THINK_STATES = {
 	---------------------------------
@@ -23,19 +24,19 @@ THINK_STATES = {
 	-------------------------------------------
 										 -- UNIQUE PARAMETERS
 	[WANDER_IDLE] = "WanderIdleThink", 	 -- 
-
 	[PROTECTIVE] = "ProtectiveThink",	 -- aggroTarget (unit)
 										 -- protect (table); units or positions that the thinking unit will attempt to protect
 
 	[PATROL] = "PatrolThink",			 -- patrolPoints (table); positions that the thinking unit will repeatedly traverse in table order
-
 	[PATROL_AGGRO] = "PatrolAggroThink", -- aggroTarget (unit)
+
 	[SENTRY] = "SentryThink",			 -- spawn (vector)
 
 	[BASIM] = "BasimThink",
 	[CYCLONE] = "CycloneThink",
 	[END_TINY] = "EndTinyThink",
 	[TUSK] = "TuskThink",
+	[INVOKER] = "InvokerThink",
 }
 
 local function HasBehavior(ability, behavior)
@@ -60,6 +61,38 @@ local function CanTargetUnit(ability, unit)
 	if team == DOTA_UNIT_TARGET_TEAM_BOTH then return true end
 	--if HasBehavior(ability, DOTA_ABILITY_BEHAVIOR_NO_TARGET) then return true end
 	return false
+end
+
+local function GetSpellToCastOn(unit, target, optStart)
+	local min = optStart or 0
+	local max = 5
+	if min > max then return end
+
+	local ab
+	local behav
+	local targetBehavior
+	if type(target) == "number" then
+		targetBehavior = target
+	else
+		targetBehavior = (type(target) == "userdata" and DOTA_ABILITY_BEHAVIOR_POINT) or DOTA_ABILITY_BEHAVIOR_UNIT_TARGET
+	end
+
+	for i = min,max do
+		local ability = unit:GetAbilityByIndex(i)
+		if ability then
+			if ability:GetLevel() > 0 and ability:IsCooldownReady() and ability:GetManaCost(-1) <= unit:GetMana() then
+				if ability:HasBehavior(targetBehavior) then
+					ab = ability
+					behav = targetBehavior
+					break
+				end
+			end
+		end
+	end
+	if not ab and type(target) ~= "number" then
+		return GetSpellToCastOn(unit, DOTA_ABILITY_BEHAVIOR_NO_TARGET)
+	end
+	return ab,behav
 end
 
 local function GetSpellToCast(unit, optStart)
@@ -97,22 +130,27 @@ local function GetSpellToCast(unit, optStart)
 		elseif HasBehavior(ab, DOTA_ABILITY_BEHAVIOR_NO_TARGET) then
 			behav = DOTA_ABILITY_BEHAVIOR_NO_TARGET
 		end
-	else
-		behav = nil
 	end
 
 	return ab,behav
 end
 
-local function CastSpell(unit, target, ability, behavior)
-	if unit:IsChanneling() then return end
-
-	if not CanTargetUnit(ability, target) then
-		return false
+local function GetAndCastSpell(unit, target)
+	local ab,behav = GetSpellToCast(unit)
+	if ab then
+		if CastSpell(unit, target, ab, behav) then
+			return ab,behav
+		end
+		return nil
 	end
+	return nil
+end
+
+local function CastSpell(unit, target, ability, behavior)
+	if unit:IsChanneling() then return false end
 
 	if behavior == DOTA_ABILITY_BEHAVIOR_UNIT_TARGET then
-		if type(target) == "vector" then
+		if type(target) == "userdata" then
 			target = FindUnitsInRadius(unit:GetAbsOrigin(), target, nil, 250,
 			 DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_TYPE_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)[1]
 		end
@@ -121,7 +159,8 @@ local function CastSpell(unit, target, ability, behavior)
 		return true
 	end
 	if behavior == DOTA_ABILITY_BEHAVIOR_POINT then
-		if type(target) ~= "vector" then
+		if type(target) ~= "userdata" then
+			--"smart" targeting; cast where they are going to be, not where they are
 			target = target:GetAbsOrigin() + (( IsHeroMovingAnyMeans(target:GetPlayerID()) and target:GetForwardVector() * target:GetMoveSpeedModifier(target:GetBaseMoveSpeed()) ) or Vector(0,0,0))
 		end
 		unit:CastAbilityOnPosition(target, ability, unit:GetPlayerOwnerID())
@@ -172,7 +211,7 @@ BaseAi = {
 
 		self.thinkers[instance.id] = instance
 
-		print('created instance: '..instance.id)
+		print('created instance: '..instance.id.. " for unit: "..unit:GetUnitName())
 
 		--fix for tiny toss
 		if unit:GetUnitName() == "tiny_the_tosser" then
@@ -189,11 +228,21 @@ BaseAi = {
 		return instance
 	end,
 
+	RemoveInstance = function(self, instance)
+		if not self.initialized then self:Init() end
+		if instance and self.thinkers[instance] then
+			self.thinkers[instance] = nil
+			instance.unit.instance = nil
+			return true
+		end
+		return false
+	end,
+
 	Init = function(self)
 		self.thinkers = {}
 		self.initialized = true
 
-		local thinker = SpawnEntityFromTableSynchronous("info_target",{targetname="ai_thinker"})
+		local thinker = SpawnEntityFromTableSynchronous("info_target", {targetname="ai_thinker"})
 		thinker:SetThink("Think", self)
 
 		print("AI_INIT")
@@ -220,9 +269,9 @@ BaseAi = {
 							return err.."\n"..debug.traceback().."\n"
 						end)
 					else
-						print("unit "..instance.unit:GetName() .." is stunned, try again next tick")
+						print("unit "..instance.unit:GetName() .." is stunned, try again later")
 						success = true
-						int = 0.01
+						int = 0.5
 					end
 				else
 					print("null unit is trying to think.. kill thinker", id)
@@ -641,7 +690,7 @@ BaseAi = {
 				end)
 			end
 		end
-		return 0.1
+		return 0.2
 	end,
 
 	TuskThink = function(self)
@@ -659,6 +708,47 @@ BaseAi = {
 		end
 		self.unit:MoveToNPC(self.unit.target)
 		return 1.2
+	end,
+
+	InvokerThink = function(self)
+		--introduction
+		if true then
+			local intro = Entities:FindByName(nil, "intro_target")
+			local introFace = Entities:FindByName(nil, "intro_target_face")
+
+			if intro and introFace then
+				if (intro:GetAbsOrigin() - self.unit:GetAbsOrigin()):Length2D() >= 10 then
+					self.unit:MoveToPosition( intro:GetAbsOrigin() )
+				else
+					self.unit:FaceTowards( introFace:GetAbsOrigin() )
+				end
+			end
+
+			local lines = {
+				"#intro_1", "#intro_2", "#intro_3", --etc
+			}
+			self.nextLine = self.nextLine or 1
+			for k,v in pairs(lines) do
+				if k == self.nextLine then
+					SetDialogue(self.unit, v, 3.0)
+					self.nextLine = self.nextLine+1
+					break
+				end
+			end
+			return 3.0
+		end
+		--intro interuption
+		if something then
+
+		end
+		--cursed
+		if something then
+			
+
+			--stop thinking
+			BaseAi:RemoveInstance(self)
+		end
+		return 1.0
 	end,
 }
 

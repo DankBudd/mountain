@@ -1,19 +1,54 @@
+function SetDialogue(unit, msg, duration)
+	print("SetDialogue("..unit:GetName()..", ".. msg..", ".. (duration and duration or "")..")" )
+	unit:AddNewModifier(nil, nil, "modifier_dialogue", { duration = (duration or -1) })
+	
+	CustomGameEventManager:Send_ServerToAllClients("SetDialogue", {entindex = unit:entindex(), text = (msg or "...")})
+end
+
 function UpgradeGrow(tiny, level)
 	--tiny_01 (no grow)
 	--tiny_02, tiny_03, tiny_04 (grow lvl 1-3)
 	level = level+1
 	local model = "models/heroes/tiny_0"..level.."/_tiny_0"..level..".vmdl"
 	local parts = {body, head, left_arm, right_arm}
-	tiny.oldparts = tiny.oldparts or {}
+	tiny.oldparts = (tiny.oldparts and tiny.oldparts) --if oldparts exists set it to be itself or
+	 or HideWearables(tiny) or {} --hide tinys original parts and define the table
 
 	tiny:SetOriginalModel(model)
 	for _,part in pairs(parts) do
 		if tiny.oldparts[part] then
 			UTIL_Remove(tiny.oldparts[part])
 		end
-		tiny.oldparts[part] = SpawnEntityFromTableSynchronous("prop_dynamic", {model = "models/heroes/tiny_0"..level.."/tiny_0"..level..part..".vmdl"})
+		tiny.oldparts[part] = SpawnEntityFromTableSynchronous("prop_dynamic", {model = "models/heroes/tiny_0"..level.."/tiny_0"..level.."_"..part..".vmdl"})
 		tiny.oldparts[part]:FollowEntity(tiny, true)
 	end
+end
+
+function HideWearables(unit)
+	for _,model in pairs(GetWearables(unit)) do
+		model:AddEffects(EF_NODRAW) -- Set model hidden
+	end
+end
+
+function ShowWearables(unit)
+	for _,model in pairs(GetWearables(unit)) do
+		model:RemoveEffects(EF_NODRAW)
+	end
+end
+
+function GetWearables(unit)
+	GameMode.wearables = GameMode.wearables or {}
+	GameMode.wearables[unit:entindex()] = GameMode.wearables[unit:entindex()] or {}
+	if #GameMode.wearables[unit:entindex()] <= 0 then
+		local model = unit:FirstMoveChild()
+		while model do
+			if model:GetClassname() == "dota_item_wearable" then
+				table.insert(GameMode.wearables[unit:entindex()], model)
+			end
+			model = model:NextMovePeer()
+		end
+	end
+	return GameMode.wearables[unit:entindex()]
 end
 
 function CountdownClock()

@@ -1,0 +1,15 @@
+.DialogueContainer {
+}
+
+.Box {
+	width: fit-children;
+	height: fit-children;
+	
+	background-color: darkRed;
+}
+
+#Dialogue {
+	font-family: Radiance;
+	font-size: 16px;
+	color: black;
+}

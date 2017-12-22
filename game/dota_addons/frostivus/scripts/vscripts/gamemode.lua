@@ -5,13 +5,16 @@ end
 
 --require stuff
 require('ai/base_ai')
-require('modifiers/global_modifiers')
 require('thinkers')
+require('modifiers/global_modifiers')
+require('bridgegrid')
+require('constants')
 
 --link global modifiers
 --LinkLuaModifier(className,fileName,LuaModifierType)
 
 function GameMode:InitGameMode()
+	GameMode = self
 	GameRules:GetGameModeEntity():SetThink( "OnThink", self, "GlobalThink", 2 )
 
 	 -- Setup Rules
@@ -57,6 +60,47 @@ function GameMode:InitGameMode()
 		GameRules:SetCustomGameTeamMaxPlayers(k, v)
 	end
 
+	GameMode.GetActivePlayersID = function(self)
+		local p = {}
+		local ids = self:GetAllPlayersID()
+		for k,v in pairs(players) do
+			if PlayerResource:IsValidPlayer(v) and (PlayerResource:GetConnectionState(v) == DOTA_CONNECTION_STATE_NOT_YET_CONNECTED or PlayerResource:GetConnectionState(v) == DOTA_CONNECTION_STATE_CONNECTED) then
+				table.insert(p, v)
+			end
+		end
+		return p
+	end
+
+	GameMode.GetAllPlayersID = function(self)
+		if not self.AllPlayersID then
+			local p = {}
+			for t=DOTA_TEAM_FIRST,DOTA_TEAM_COUNT do 
+				for i=1,DOTA_MAX_PLAYERS do
+					local pid = PlayerResource:GetNthPlayerIDOnTeam(t,i)
+					if PlayerResource:IsValidPlayerID(pid) then
+						table.insert(p, pid)
+					end
+				end
+			end
+			self.AllPlayersID = p
+		end
+		return self.AllPlayersID
+	end
+
+	GameMode.GetAllPlayers = function(self)
+		local p = {}
+		local ids = self:GetAllPlayersID()
+		for k,v in pairs(ids) do
+			if PlayerResource:IsValidPlayer(v) then
+				local player = PlayerResource:GetPlayer(v)
+				if player then
+					table.insert(p, player)
+				end
+			end
+		end
+		return p
+	end
+
 	--Setup Tables
 	self.trackedEntities = {}
 	self.debugEntities = {}
@@ -65,7 +109,6 @@ function GameMode:InitGameMode()
 	self.tVoteRecord = {}
 	print("set tables")
 
-	GameMode = self
 	--Setup Listeners
 	ListenToGameEvent("player_chat", Dynamic_Wrap(GameMode, 'OnPlayerChat'), self)
 	ListenToGameEvent("player_reconnected", Dynamic_Wrap(GameMode, 'OnPlayerReconnect'), self)
@@ -465,7 +508,7 @@ function GameMode:OrderManager( keys )
 	local queue = keys.queue
 	local sequenceNumber = keys.sequence_number_const
 
-	--PrintRelevent(filterTable)
+	--PrintRelevent(keys)
 
 	if abilityIndex then
 		local ability = EntIndexToHScript(abilityIndex)
@@ -501,6 +544,7 @@ function GameMode:OrderManager( keys )
 	if units and units["0"] then
 		local hero = EntIndexToHScript(units["0"])
 		RemoveTimer(hero.noWalk)
+		BridgeGrid:StopCrossing(hero)
 		if hero:HasModifier("modifier_mount_movement") then
 			local mod = hero:FindModifierByName("modifier_mount_movement")
 
@@ -539,6 +583,21 @@ function GameMode:OrderManager( keys )
 					return dt
 				end)
 			end
+		else
+			local moveorders = constants("DOTA_UNIT_ORDER", "move")
+			if vlua.find(moveorders, orderType) then
+				BridgeGrid:PathToBridge(hero, pos)
+			end
+			--[[
+			if not GridNav:CanFindPath(hero:GetAbsOrigin(), pos) then
+				if BridgeGrid:IsBridge(hero:GetAbsOrigin()) then
+					local bridge = BridgeGrid:GetBridgeBetweenVectors(hero:GetAbsOrigin(), pos)
+					if bridge then
+						BridgeGrid:CrossBridge(hero, BridgeGrid:GetBridgeOrigin(bridge))
+					end
+				end
+			end
+			]]
 		end
 	end
 	--return true by default to keep all other orders unchanged
@@ -633,20 +692,23 @@ function GameMode:OnNpcSpawn(keys)
 			npc:AddNewModifier(npc, nil, "modifier_intelligence_cdr", {})
 		end
 
-		local tploc = Entities:FindByName(nil, "Spawnitem_trigger"):GetAbsOrigin()
+		local spawnEnt = Entities:FindByName(nil, "Spawnitem_trigger")
+		if spawnEnt then
+			local tploc = spawnEnt:GetAbsOrigin()
 
-		self.var = self.var or -5
-		self.hasSpawned = self.hasSpawned or {}
-		if not self.hasSpawned[npc:GetPlayerID()] then
-			self.hasSpawned[npc:GetPlayerID()] = true
-			Timers(1.5, function() 
-				npc:SetAbsOrigin(tploc+Vector(-900,(self.var)*160,0))
-				self.var = self.var + 1
-				npc:SetForwardVector(Vector(1,-1,0))
-				
-				npc:AddNewModifier(nil, nil, "modifier_round_stun", {})
-				self:GiveMount(npc)
-			end)
+			self.var = self.var or -5
+			self.hasSpawned = self.hasSpawned or {}
+			if not self.hasSpawned[npc:GetPlayerID()] then
+				self.hasSpawned[npc:GetPlayerID()] = true
+				Timers(1.5, function() 
+					npc:SetAbsOrigin(tploc+Vector(-900,(self.var)*160,0))
+					self.var = self.var + 1
+					npc:SetForwardVector(Vector(1,-1,0))
+					
+					npc:AddNewModifier(nil, nil, "modifier_round_stun", {})
+					self:GiveMount(npc)
+				end)
+			end
 		end
 	end
 
@@ -843,7 +905,7 @@ function GameMode:OnPlayerChat( keys )
 		--autocomplete for our units
 		for k,v in pairs(exceptions) do
 			if string.len(name) >= 3 then
-				if string.match(name, k) then
+				if string.match(k, name) then
 					name = k
 				end
 			end
@@ -876,11 +938,16 @@ function GameMode:OnPlayerChat( keys )
 
 			for i = 0,6 do
 				local ab = unit:GetAbilityByIndex(i)
-				if ab then
+				if ab and ab:GetLevel() <= 0 then
 					ab:SetLevel(1)
 					ab:SetHidden(false)
 				end
 			end
+
+			BaseAi:MakeInstance(unit, {
+				state = INVOKER,
+				override = true,
+			})
 
 			table.insert(self.debugEntities, unit:entindex())
 		end)
