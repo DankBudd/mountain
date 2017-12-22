@@ -3,6 +3,8 @@
 		<include src="file://{resources}/scripts/custom_game/camera_zoom.js" />
 		<include src="file://{resources}/scripts/custom_game/display_error.js" />
 		<include src="file://{resources}/scripts/custom_game/shared_scoreboard_updater.js" />
+		<include src="file://{resources}/scripts/custom_game/util.js" />
+		<include src="file://{resources}/scripts/custom_game/underscore-min.js" />
 	</scripts>
 	<script>
 		// Uncomment any of the following lines in order to disable that portion of the default UI
@@ -71,5 +73,6 @@
 	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/checkpoints.xml" />
 	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/countdown.xml" />
 	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/overthrow/overthrow_scoreboard_left.xml" />
+	<CustomUIElement type="Hud" 				layoutfile="file://{resources}/layout/custom_game/dialog.xml" />
   </Panel>
 </root>
